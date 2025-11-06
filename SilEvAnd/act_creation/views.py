@@ -195,3 +195,10 @@ def act_creation(request):
         }
     )
     return render(request, 'act_creation.html', context)
+
+
+def docx_create(request):
+    context = {
+
+    }
+    return render(request, 'docx_create.html', context)
