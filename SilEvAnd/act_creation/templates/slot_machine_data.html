@@ -9,13 +9,15 @@
 
 <div class="container">
 <br>
-    <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
-        <h3 class="d-flex justify-content-center">
-            <b>Журнал актов технического освидетельствования (ТО)</b>
-        </h3>
-        <a href="{% url 'docx_create' %}" class="btn btn-success">Сформировать акт ТО в формате .docx</a>
+    <div class="row d-flex justify-content-center py-3 mb-4 border-bottom border-success">
+        <div>
+            <a href="{% url 'docx_create' %}" class="btn btn-success">Сформировать акт ТО в формате .docx</a>
+        </div>
     </div>
 <br>
+    <h3>
+        <b>Журнал актов технического освидетельствования (ТО)</b>
+    </h3>
     <form class="search-form d-flex" role="search">
     <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
       <thead class="table table-success table-bordered border-success align-middle">

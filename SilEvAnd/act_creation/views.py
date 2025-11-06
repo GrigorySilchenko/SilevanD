@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import Registry, Act, Conformity
+from .models import Registry, Act, Conformity, Boss, StickPlace
 import openpyxl
 from django.contrib.auth.decorators import permission_required
 from distribution.models import ControlJournal
-from .forms import ActInput
+from .forms import ActInput, ActDataInput, ActDataInput
 from django.forms import formset_factory
-import json
+import time
+from datetime import date
 
 @permission_required('act_creation.view_registry')
 def registry(request):
@@ -198,7 +199,36 @@ def act_creation(request):
 
 
 def docx_create(request):
-    context = {
+    acts = Act.objects.all().order_by('-act_number')
+    bosses = Boss.objects.all()
+    stick_places = StickPlace.objects.all()
+    monthes = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
+               7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
+    date_now = date.today()
+    year = date_now.strftime("%Y")
+    date_for_word = f'{date_now.strftime("%d")} {monthes[date_now.month]} {year} г.'
 
+    form = ActDataInput()
+
+    if request.method == 'POST':
+        form = ActDataInput(request.POST)
+        if form.is_valid():
+            act_number = int(str(form.cleaned_data['act_number']))
+            boss = bosses.get(name=str(form.cleaned_data['boss']))
+            stick_place = stick_places.get(board_name=str(form.cleaned_data['stick_place']))
+
+            word_context = {
+                'act_number': act_number,
+                'boss': boss.name,
+                'boss_position': boss.position,
+                'year': year,
+                'date_for_word': date_for_word,
+                'sticker': stick_place.stick_place
+
+
+            }
+    print(word_context)
+    context = {
+        'form': form,
     }
     return render(request, 'docx_create.html', context)
