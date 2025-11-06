@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block page_content %}
+<style>
+    .search-form .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+</style>
+
+<div class="container">
+        <div class="row d-flex justify-content-center py-3 mb-4">
+            <h3><b>{{ user_now.get_full_name }} ниже представлены заявки, которые Вам необходимо исполнить:</b></h3>
+            {% for users_application in users_applications %}
+            <div class="col-md-3 mb-3 d-flex align-items-stretch">
+                <div class="card h-100 border border-success">
+                    <div class="card-body">
+                        <h5 class="card-title"><b>{{ users_application.application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</b></h5>
+                        <p class="card-text">{{ users_application.application.declarant }}</p>
+                        <p class="card-text"><b>{{ users_application.application.num_of_mach }} шт.</b></p>
+                        <p class="card-text">Статус заявки: {{ users_application.application.status }}</p>
+                        <a href="{% url 's_m_data_input' users_application.pk %}"
+                           class="stretched-link">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+{% endblock %}

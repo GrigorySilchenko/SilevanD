@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block page_content %}
+
+<div class="container">
+  <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
+            <div class="row">
+                <div class="col">
+                    <br>
+                        <form action="{% url 'application_distribution' application.pk %}" method="post">
+                            {% csrf_token %}
+                            <dl class="row">
+                            {% for field in form %}
+                                <dt class="col-sm-4">{{ field.label_tag }}</dt>
+                                <dd class="col-sm-8">{{ field }}</dd>
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+                            {% endfor %}
+                            </dl>
+                            <button type="submit" class="btn btn-success">Отправить заявку в работу</button>
+                            <a href="{% url 'distribution' %}" class="btn btn-success">Вернуться на страницу распределения работ</a>
+                        </form>
+                    {% if success_message %}
+                        <div class="alert alert-success mt-3 text-center">
+                            {{ success_message }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <br>
+                    <dl class="row">
+                        <dt class="col-sm-3">Заявка</dt>
+                        <dd class="col-sm-9">№ {{ application }} от {{ application.created_on|date:"d.m.Y" }}</dd>
+                        <dt class="col-sm-3">PDF</dt>
+                        <dd class="col-sm-9">
+                            {% if app.pdf %}
+                                <a href="{{ application.pdf.url }}" class="text text-success" target="_blank">Просмотр</a>
+                            {% else %}
+                                <a class="text text-danger">Пусто</a>
+                            {% endif %}
+                        </dd>
+                        <dt class="col-sm-3">Заявитель</dt>
+                        <dd class="col-sm-9">{{ application.declarant }}</dd>
+                        <dt class="col-sm-3">Юр. адрес заявителя</dt>
+                        <dd class="col-sm-9">{{ application.declarant.address }}</dd>
+                        <dt class="col-sm-3">Количество ИА</dt>
+                        <dd class="col-sm-9">{{ application.num_of_mach }} шт.</dd>
+                        <dt class="col-sm-3">Счет</dt>
+                        <dd class="col-sm-9">№ {{ application.bill_number }} от {{ application.bill_date|date:"d.m.Y" }}</dd>
+                        <dt class="col-sm-3">Вход.№ БелГИСС</dt>
+                        <dd class="col-sm-9">№ {{ application.application_number_belgiss }} от {{ application.date_belgiss|date:"d.m.Y" }}</dd>
+                    </dl>
+                </div>
+            </div>
+  </div>
+        <h3 class="d-flex justify-content-center">
+            <b>Журнал распределения работ по техническому освидетельствованию игровых автоматов</b>
+        </h3>
+      <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+      <thead class="table table-success table-bordered border-success align-middle">
+        <tr>
+          <th scope="col" colspan="3">Заявка</th>
+          <th scope="col">Наименование заявителя</th>
+          <th scope="col">Модели ИА</th>
+          <th scope="col" style="width: 50px;">Кол-во ИА</th>
+          <th scope="col" style="width: 100px;">Место проведения ТО</th>
+          <th scope="col" style="width: 100px;">Акт ТО</th>
+          <th scope="col" style="width: 80px;">Исп-ль</th>
+          <th scope="col">Примечания</th>
+          <th scope="col" style="width: 50px;">Изм.</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for distribution in distributions %}
+        <tr>
+          <td>{{ distribution }}</td>
+          <td>{{ distribution.application.created_on|date:"d.m.Y" }}</td>
+          <td>
+              {% if distribution.application.pdf %}
+                <a href="{{ distribution.application.pdf.url }}" class="text text-success" target="_blank">Просмотр</a>
+              {% else %}
+                <a class="text text-danger">Пусто</a>
+              {% endif %}
+          </td>
+          <td class="text-start ps-4">{{ distribution.application.declarant }}</td>
+          <td>{{ distribution.short_slot_name }}</td>
+          <td>{{ distribution.application.num_of_mach }}</td>
+          <td>{{ distribution.place }}</td>
+          <td>{{ distribution.act }}</td>
+          <td>{{ distribution.user }}</td>
+          <td>{{ distribution.notice }}</td>
+          <td><a href="{% url 'distribution_change' distribution.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block page_content %}
+
+
+<div class="container">
+    <div class="border-bottom border-success">
+        <div class="container">
+            <h2>Внесите изменения в заявку №{{ applications }}:</h2>
+            <form action="{% url 'application_change' applications.pk %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <dl class="row">
+                {% for field in form %}
+                    <dt class="col-sm-4">{{ field.label_tag }}</dt>
+                    <dd class="col-sm-8">{{ field }}</dd>
+                        {% if field.errors %}
+                            <div class="text-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                {% endfor %}
+                </dl>
+                <button type="submit" class="btn btn-success">Сохранить изменения</button>
+                <a href="{% url 'application' %}" class="btn btn-success">Вернуться на страницу регистрации заявок</a>
+            </form>
+            {% if success_message %}
+                <div class="text-success">
+                    {{ success_message }}
+                </div>
+            {% endif %}
+            <br>
+        </div>
+    </div>
+    <br>
+    <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+      <thead class="table table-success table-bordered border-success align-middle">
+        <tr>
+          <th scope="col" colspan="3">Заявка</th>
+          <th scope="col" rowspan="2">Наименование заявителя</th>
+          <th scope="col" colspan="2">Входящий номер БелГИСС</th>
+          <th scope="col" rowspan="2" style="width: 100px;">Количество игровых автоматов</th>
+          <th scope="col" colspan="2">Номер счета</th>
+        </tr>
+      </thead>
+      <thead class="table table-success table-bordered border-success">
+        <tr>
+          <th scope="col">№</th>
+          <th scope="col">Дата</th>
+          <th scope="col">PDF</th>
+          <th scope="col"></th>
+          <th scope="col">Вход.№</th>
+          <th scope="col">Дата</th>
+          <th scope="col"></th>
+          <th scope="col">№ счета</th>
+          <th scope="col">Дата</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ applications.application_number }}</td>
+          <td>{{ applications.created_on|date:"d.m.Y" }}</td>
+          <td>
+              {% if applications.pdf %}
+                <a href="{{ applications.pdf.url }}" class="text text-success" target="_blank">Заявка PDF</a>
+              {% else %}
+                <a class="text text-danger">Пусто</a>
+              {% endif %}
+          </td>
+          <td class="text-start ps-4">{{ applications.declarant }}</td>
+          <td>{{ applications.application_number_belgiss }}</td>
+          <td>{{ applications.date_belgiss|date:"d.m.Y" }}</td>
+          <td>{{ applications.num_of_mach }}</td>
+          <td>{{ applications.bill_number }}</td>
+          <td>{{ applications.bill_date|date:"d.m.Y" }}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+
+    <script type="text/template" id="form-template">
+    <tr>
+        {{ empty_form.management_form }}
+        {{ empty_form.hidden_fields }}
+        {% for field in empty_form.visible_fields %}
+            <td>{{ field }}</td>
+        {% endfor %}
+    </tr>
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addButton = document.getElementById('add-form');
+        const tableBody = document.getElementById('formset-tbody');
+        const totalForms = document.querySelector('input[name="{{ formset.management_form.TOTAL_FORMS.html_name }}"]');
+        const templateStr = document.getElementById('form-template').innerHTML;
+
+        addButton.addEventListener('click', function() {
+            const formIdx = parseInt(totalForms.value);
+            const newFormHtml = templateStr.replace(/__prefix__/g, formIdx);
+            tableBody.insertAdjacentHTML('beforeend', newFormHtml);
+            totalForms.value = formIdx + 1;
+        });
+    });
+    </script>
