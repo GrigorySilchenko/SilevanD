@@ -21,3 +21,4 @@ class ActInput(forms.ModelForm):
         # Получить объект Conformity с названием 'соотв.' или создать его, если не существует
         default_conformity, created = Conformity.objects.get_or_create(conformity='Соотв.')
         self.fields['conformity'].initial = default_conformity.pk
+

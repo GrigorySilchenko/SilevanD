@@ -15,6 +15,12 @@ class Manufacturer(models.Model):
     def __str__(self):
         return self.name
 
+class Boss(models.Model):
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=200)
+    def __str__(self):
+        return self.name
+
 class StickPlace(models.Model):
     board_name = models.CharField(max_length=100)
     stick_place = models.TextField(max_length=500)
