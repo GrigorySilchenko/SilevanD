@@ -1,6 +1,10 @@
+import os.path
+
+from django.conf import settings
 from django.shortcuts import render, redirect
 from .models import Registry, Act, Conformity, Boss, StickPlace
 import openpyxl
+from docxtpl import DocxTemplate
 from django.contrib.auth.decorators import permission_required
 from distribution.models import ControlJournal
 from .forms import ActInput, ActDataInput, ActDataInput
@@ -199,35 +203,68 @@ def act_creation(request):
 
 
 def docx_create(request):
-    acts = Act.objects.all().order_by('-act_number')
+    acts_all = Act.objects.all().order_by('-act_number')
     bosses = Boss.objects.all()
     stick_places = StickPlace.objects.all()
+
     monthes = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
                7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
     date_now = date.today()
+    date_filename = date_now.strftime("%d.%m.%y")
     year = date_now.strftime("%Y")
     date_for_word = f'{date_now.strftime("%d")} {monthes[date_now.month]} {year} г.'
 
     form = ActDataInput()
-
     if request.method == 'POST':
         form = ActDataInput(request.POST)
         if form.is_valid():
-            act_number = int(str(form.cleaned_data['act_number']))
+            acts = acts_all.filter(act_number=int(str(form.cleaned_data['act_number'])))
+            print(len(acts))
+            act_first = acts.first()
+            bill_date = act_first.distribution.application.bill_date.strftime("%d.%m.%Y")
+            bill_num = f'{act_first.distribution.application.bill_number} от {bill_date}'
+            app_date = act_first.distribution.application.created_on.strftime("%d.%m.%Y")
+            app_num = f'{act_first.distribution.application.application_number} от {app_date}'
             boss = bosses.get(name=str(form.cleaned_data['boss']))
+            executor = f'{act_first.distribution.user.first_name}{act_first.distribution.user.last_name}'
             stick_place = stick_places.get(board_name=str(form.cleaned_data['stick_place']))
 
             word_context = {
-                'act_number': act_number,
+                'act_number': act_first.act_number,
                 'boss': boss.name,
                 'boss_position': boss.position,
                 'year': year,
                 'date_for_word': date_for_word,
-                'sticker': stick_place.stick_place
-
-
+                'bill_num': bill_num,
+                'app_num': app_num,
+                'declarant': act_first.distribution.application.declarant.name,
+                'declarant_address': act_first.distribution.application.declarant.address,
+                'executor': executor,
+                'sticker': stick_place.stick_place,
+                'manufacturer': act_first.model_registry.manufacturer,
+                'acts': acts
             }
-    print(word_context)
+            print(word_context)
+
+            docx_file_name = (f'{str(word_context['act_number'])} {word_context['declarant'].replace('"', '')} '
+                      f'{stick_place.board_name} {date_filename}.docx')
+            print(docx_file_name)
+            save_path = os.path.join(settings.MEDIA_ROOT, 'acts', docx_file_name)
+            print(save_path)
+            template_path = os.path.join(settings.BASE_DIR, 'templates', 'temp_tab_1.docx')
+            print(template_path)
+            doc = DocxTemplate(template_path)
+            doc.render(word_context)
+            try:
+                doc.save(save_path)
+                print(
+                    f'Акт технического освидетельствования с именем "{docx_file_name}" добавится в папку с '
+                    f'данным скриптом после завершения его работы.')
+            except PermissionError:
+                print('!!!ОШИБКА!!!')
+                print(
+                    'У вас открыт файл с таким же именем. Программа не может сохранить файл. Закройте файл word и повторите скрипт')
+
     context = {
         'form': form,
     }
