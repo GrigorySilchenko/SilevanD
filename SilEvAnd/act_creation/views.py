@@ -1,6 +1,7 @@
 import os.path
 
 from django.conf import settings
+from django.http import FileResponse, HttpResponse
 from django.shortcuts import render, redirect
 from .models import Registry, Act, Conformity, Boss, StickPlace
 import openpyxl
@@ -201,11 +202,12 @@ def act_creation(request):
     )
     return render(request, 'act_creation.html', context)
 
-
+@permission_required('act_creation.add_act')
 def docx_create(request):
-    acts_all = Act.objects.all().order_by('-act_number')
+    slot_machines_data = Act.objects.all().order_by('-act_number')
     bosses = Boss.objects.all()
     stick_places = StickPlace.objects.all()
+    success_message, danger_message = '', ''
 
     monthes = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
                7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
@@ -218,7 +220,7 @@ def docx_create(request):
     if request.method == 'POST':
         form = ActDataInput(request.POST)
         if form.is_valid():
-            acts = acts_all.filter(act_number=int(str(form.cleaned_data['act_number'])))
+            acts = slot_machines_data.filter(act_number=int(str(form.cleaned_data['act_number'])))
             print(len(acts))
             act_first = acts.first()
             bill_date = act_first.distribution.application.bill_date.strftime("%d.%m.%Y")
@@ -244,28 +246,64 @@ def docx_create(request):
                 'manufacturer': act_first.model_registry.manufacturer,
                 'acts': acts
             }
-            print(word_context)
 
             docx_file_name = (f'{str(word_context['act_number'])} {word_context['declarant'].replace('"', '')} '
                       f'{stick_place.board_name} {date_filename}.docx')
-            print(docx_file_name)
             save_path = os.path.join(settings.MEDIA_ROOT, 'acts', docx_file_name)
-            print(save_path)
             template_path = os.path.join(settings.BASE_DIR, 'templates', 'temp_tab_1.docx')
-            print(template_path)
             doc = DocxTemplate(template_path)
             doc.render(word_context)
             try:
                 doc.save(save_path)
                 print(
-                    f'Акт технического освидетельствования с именем "{docx_file_name}" добавится в папку с '
-                    f'данным скриптом после завершения его работы.')
+                    f'Акт технического освидетельствования с именем "{docx_file_name}" добавится в папку media после завершения его работы.')
             except PermissionError:
                 print('!!!ОШИБКА!!!')
                 print(
                     'У вас открыт файл с таким же именем. Программа не может сохранить файл. Закройте файл word и повторите скрипт')
+            success_message = f'Акт {docx_file_name} успешно сгенерирован и сохранен.'
+            return redirect('download_act_docx', file_name=docx_file_name)
+
+    list_keys = [
+        'act_number', 'application', 'control_sticks_number',
+        'declarant', 'result', 'model', 'version', 'slot_number',
+        'reg_number', 'board_number'
+    ]
+    param_dict = {_: request.GET.get(_) for _ in list_keys}
+    for key, value in param_dict.items():
+        if value:
+            if key == 'application':
+                filter_name = f'distribution__application__application_number__icontains'
+            elif key == 'declarant':
+                filter_name = f'distribution__application__declarant__name__icontains'
+            elif key == 'model' or key == 'version':
+                filter_name = f'model_registry__{key}__icontains'
+            elif key == 'reg_number':
+                filter_name = f'model_registry__number__icontains'
+            else:
+                filter_name = f'{key}__icontains'
+            slot_machines_data = slot_machines_data.filter(**{filter_name: str(value)})
 
     context = {
         'form': form,
+        'slot_machines_data': slot_machines_data,
+        'act_number': param_dict['act_number'],
+        'application': param_dict['application'],
+        'control_sticks_number': param_dict['control_sticks_number'],
+        'declarant': param_dict['declarant'],
+        'result': param_dict['result'],
+        'model': param_dict['model'],
+        'version': param_dict['version'],
+        'slot_number': param_dict['slot_number'],
+        'reg_number': param_dict['reg_number'],
+        'board_number': param_dict['board_number'],
+        'success_message': success_message
     }
     return render(request, 'docx_create.html', context)
+
+def download_act_docx(request, file_name):
+    file_path = os.path.join(settings.MEDIA_ROOT, 'acts', file_name)
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
+    else:
+        return HttpResponse('Файл не найден', status=404)

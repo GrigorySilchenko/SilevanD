@@ -21,7 +21,89 @@
                     </div>
                 {% endif %}
             {% endfor %}
+        </dl>
         <button type="submit" class="btn btn-success">Сформировать файл</button>
     </form>
+    {% if success_message %}
+        <div class="alert alert-success mt-3 text-center">
+            {{ success_message }}
+        </div>
+    {% endif %}
+
+<br>
+    <h3>
+        <b>Журнал актов технического освидетельствования (ТО)</b>
+    </h3>
+    <form class="search-form d-flex" role="search">
+    <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+      <thead class="table table-success table-bordered border-success align-middle">
+        <tr>
+            <th scope="col">№ Акта</th>
+            <th scope="col">Заявка</th>
+            <th scope="col" style="width: 100px;">Номера средств контроля</th>
+            <th scope="col">Наименование заявителя</th>
+            <th scope="col">Результат</th>
+            <th scope="col">Модель</th>
+            <th scope="col">Версия</th>
+            <th scope="col">Серийный номер ИА</th>
+            <th scope="col">Номер по реестру</th>
+            <th scope="col">Номер платы</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+            <td>
+                <input type="search" name="act_number" class="form-control me-2" value="{{ act_number|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="application" class="form-control me-2" value="{{ application|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="control_sticks_number" class="form-control me-2" value="{{ control_sticks_number|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="declarant" class="form-control me-2" value="{{ declarant|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="result" class="form-control me-2" value="{{ result|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="model" class="form-control me-2" value="{{ model|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="version" class="form-control me-2" value="{{ version|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="slot_number" class="form-control me-2" value="{{ slot_number|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="reg_number" class="form-control me-2" value="{{ reg_number|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="board_number" class="form-control me-2" value="{{ board_number|default:'' }}" aria-label="Search">
+                <button type="submit" class="btn btn-outline-success" style="display: none;">
+                        <i class="bi bi-search"></i>
+                </button>
+            </td>
+        </tr>
+      {% for data in slot_machines_data %}
+        <tr>
+            <td>{{ data.act_number }}</td>
+            <td>{{ data.distribution.application }}</td>
+            <td>{{ data.control_sticks_number }}</td>
+            <td>{{ data.distribution.application.declarant }}</td>
+            <td>{{ data.conformity }}</td>
+            <td>{{ data.model_registry.model }}</td>
+            <td>{{ data.model_registry.version }}</td>
+            <td>{{ data.slot_number }}</td>
+            <td>{{ data.model_registry }}</td>
+            <td>{{ data.board_number }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </form>
+</div>
+
 </div>
 {% endblock %}

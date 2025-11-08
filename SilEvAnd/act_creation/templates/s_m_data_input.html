@@ -56,17 +56,25 @@
 
                             <tbody id="formset-tbody">
                                 {% for form in formset %}
-                                    <tr>
-                                        {% for field in form %}
-                                            <td>{{ field }}</td>
-                                        {% endfor %}
-                                    </tr>
+                                    {% if form %}
+                                        <tr>
+                                            {% for field in form %}
+                                                <td>{{ field }}</td>
+                                                {% if field.errors %}
+                                                    <div class="text-danger">
+                                                        {{ field.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tr>
+                                    {% endif %}
                                 {% endfor %}
                             </tbody>
                         </table>
                     <button type="button" id="add-form" class="btn btn-success">Добавить пустую форму</button>
                     <button type="submit" class="btn btn-success" name="save_draft">Сохранить черновик</button>
                     <button type="submit" class="btn btn-success" name="save_form">Отправить в журнал актов ТО</button>
+                    <a href="{% url 'docx_create' %}" class="btn btn-success">Сформировать акт ТО в формате .docx</a>
                     <a href="{% url 'act_creation' %}" class="btn btn-success">Вернуться на страницу исполнителя</a>
                 </form>
                 {% if success_message %}
@@ -81,8 +89,7 @@
     <script type="text/template" id="form-template">
     <tr>
         {{ empty_form.management_form }}
-        {{ empty_form.hidden_fields }}
-        {% for field in empty_form.visible_fields %}
+        {% for field in empty_form %}
             <td>{{ field }}</td>
         {% endfor %}
     </tr>
@@ -97,7 +104,9 @@
 
         addButton.addEventListener('click', function() {
             const formIdx = parseInt(totalForms.value);
+            console.log(formIdx);
             const newFormHtml = templateStr.replace(/__prefix__/g, formIdx);
+            console.log(newFormHtml);
             tableBody.insertAdjacentHTML('beforeend', newFormHtml);
             totalForms.value = formIdx + 1;
         });
