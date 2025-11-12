@@ -16,7 +16,7 @@
                         <dd class="col-sm-9">№ {{ users_application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</dd>
                         <dt class="col-sm-3">PDF</dt>
                         <dd class="col-sm-9">
-                            {% if app.pdf %}
+                            {% if users_application.application.pdf %}
                                 <a href="{{ users_application.application.pdf.url }}" class="text text-success" target="_blank">Просмотр</a>
                             {% else %}
                                 <a class="text text-danger">Пусто</a>
