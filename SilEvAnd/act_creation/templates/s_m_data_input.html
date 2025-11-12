@@ -5,6 +5,14 @@
         border-color: #198754;
         box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
     }
+    #formset-tbody td {
+        padding-top: 0.1rem; /* Adjust as needed, e.g., 0.1rem for minimal padding */
+        padding-bottom: 0.1rem; /* Adjust as needed */
+    }
+    .auto-resize-textarea {
+    overflow-y: hidden;  /* Скрывает вертикальный скроллбар */
+    }
+
 </style>
 
 <div class="container">
@@ -80,6 +88,22 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const textareas = document.querySelectorAll('.auto-resize-textarea');
+                        textareas.forEach(textarea => {
+                            textarea.style.height = 'auto'; // Сначала сбрасываем высоту
+                            textarea.style.width = '80px'
+                            textarea.style.height = (textarea.scrollHeight) + 'px'; // Устанавливаем высоту по контенту
+                            textarea.addEventListener('input', function() {
+                                textarea.style.height = 'auto';
+                                textarea.style.height = (textarea.scrollHeight) + 'px';
+                            });
+                        });
+                    });
+                    </script>
+
                     <button type="button" id="add-form" class="btn btn-success">Добавить пустую форму</button>
                     <button type="submit" class="btn btn-success" name="save_draft">Сохранить черновик</button>
                     <button type="submit" class="btn btn-success" name="save_form">Отправить в журнал актов ТО</button>

@@ -12,7 +12,7 @@ class ActInput(forms.ModelForm):
                   'slot_number',
                   'board_number']
         widgets = {
-            'control_sticks_number': forms.Textarea(attrs={'cols': 10, 'rows': 4}),
+            'control_sticks_number': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
             'act_number': forms.NumberInput(attrs={'size': '10', 'maxlength': '10'})
         }
 

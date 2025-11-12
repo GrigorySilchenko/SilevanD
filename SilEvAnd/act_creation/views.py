@@ -1,4 +1,5 @@
 import os.path
+import re
 
 from django.conf import settings
 from django.http import FileResponse, HttpResponse
@@ -106,8 +107,8 @@ def s_m_data_input(request, pk):
         if data:
             initial_session_data = data
             for form in initial_session_data:
-                form['conformity'] = conformity.get(conformity=form['conformity'])
-                form['model_registry'] = registry.get(number=form['model_registry'])
+                form['conformity'] = conformity.get(id=form['conformity'])
+                form['model_registry'] = registry.get(id=form['model_registry'])
         else:
             initial_session_data = None
         formset = ActFormSet(initial=initial_session_data)
@@ -120,9 +121,21 @@ def s_m_data_input(request, pk):
             if 'save_draft' in request.POST.keys():
                 cleaned_data_list = [form.cleaned_data for form in formset if form.cleaned_data]
                 for form in cleaned_data_list:
-                    form['conformity'] = str(form['conformity'])
-                    form['model_registry'] = str(form['model_registry'])
+                    pattern = r'^\d{6}$'
+                    form_stickers = form['control_sticks_number']
+                    if re.match(pattern, form_stickers):
+                        num = int(form_stickers)
+                        nums = [str(i + num) for i in range(int(number_stickers))]
+                        form['control_sticks_number'] = ' '.join(nums)
+                    form['conformity'] = form['conformity'].id
+                    form['model_registry'] = form['model_registry'].id
                 request.session['act_formset_data'] = cleaned_data_list
+                # for form in cleaned_data_list:
+                #     form['conformity'] = conformity.get(id=form['conformity'])
+                #     form['model_registry'] = registry.get(id=form['model_registry'])
+                # print(cleaned_data_list)
+                # print('-----------------------------------------------------------')
+                formset = ActFormSet(initial=cleaned_data_list)
                 success_message = 'Черновик успешно сохранен в сессии.'
             elif 'save_form' in request.POST.keys():
                 last_act = slot_machines_data.first().act_number
