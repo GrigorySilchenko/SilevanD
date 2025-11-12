@@ -98,27 +98,30 @@ def s_m_data_input(request, pk):
     registry = Registry.objects.all()
     ActFormSet = formset_factory(ActInput,extra=1)
     success_message = ''
+    number_stickers = '1'
 
-    initial_session_data = None
     if request.method == 'GET':
         data = request.session.get('act_formset_data')
+        number_stickers = request.session.get('number_stickers', '1')
         if data:
             initial_session_data = data
             for form in initial_session_data:
                 form['conformity'] = conformity.get(conformity=form['conformity'])
                 form['model_registry'] = registry.get(number=form['model_registry'])
+        else:
+            initial_session_data = None
         formset = ActFormSet(initial=initial_session_data)
 
     elif request.method == 'POST':
+        number_stickers = request.POST['amount_numbers']
+        request.session['number_stickers'] = number_stickers
         formset = ActFormSet(request.POST)
-
         if formset.is_valid():
             if 'save_draft' in request.POST.keys():
                 cleaned_data_list = [form.cleaned_data for form in formset if form.cleaned_data]
                 for form in cleaned_data_list:
                     form['conformity'] = str(form['conformity'])
                     form['model_registry'] = str(form['model_registry'])
-                print(cleaned_data_list)
                 request.session['act_formset_data'] = cleaned_data_list
                 success_message = 'Черновик успешно сохранен в сессии.'
             elif 'save_form' in request.POST.keys():
@@ -145,6 +148,7 @@ def s_m_data_input(request, pk):
                             slot_machines_data_new.save()
                             formset = ActFormSet()
                             request.session.pop('act_formset_data', None)
+                            request.session.pop('number_stickers', None)
                             success_message = 'Акт успешно добавлен в журнал'
 
     list_keys = [
@@ -183,7 +187,8 @@ def s_m_data_input(request, pk):
             'slot_number': param_dict['slot_number'],
             'reg_number': param_dict['reg_number'],
             'board_number': param_dict['board_number'],
-            'empty_form': formset.empty_form
+            'empty_form': formset.empty_form,
+            'number_stickers': number_stickers
         }
     )
     return render(request, 's_m_data_input.html', context)
