@@ -149,10 +149,16 @@ def s_m_data_input(request, pk):
                         act_number = last_act + 1
                     for form in formset:
                         if form.cleaned_data:
+                            num_SK = form.cleaned_data.get('control_sticks_number').split()
+                            if len(num_SK) == 4:
+                                control_sticks_number_corrected = [f'ИА {num}' for num in num_SK]
+                                control_sticks_number_cleaned = ' '.join(control_sticks_number_corrected)
+                            else:
+                                control_sticks_number_cleaned = form.cleaned_data.get('control_sticks_number')
                             slot_machines_data_new = Act(
                                 act_number=act_number,
                                 distribution=users_application,
-                                control_sticks_number=form.cleaned_data['control_sticks_number'],
+                                control_sticks_number=control_sticks_number_cleaned,
                                 conformity=form.cleaned_data['conformity'],
                                 model_registry=form.cleaned_data['model_registry'],
                                 slot_number=form.cleaned_data['slot_number'],
