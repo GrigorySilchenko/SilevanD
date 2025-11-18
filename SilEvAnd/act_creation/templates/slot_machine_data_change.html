@@ -8,6 +8,33 @@
 </style>
 
 <div class="container">
+    <div class="border-bottom border-success">
+        <div class="container">
+            <h2>Внесите изменения в данные об ИА с среийным номером №{{ slot_machine_data.slot_number }}:</h2>
+            <form action="{% url 'slot_machine_data_change' slot_machine_data.pk %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <dl class="row">
+                {% for field in form %}
+                    <dt class="col-sm-4">{{ field.label_tag }}</dt>
+                    <dd class="col-sm-8">{{ field }}</dd>
+                        {% if field.errors %}
+                            <div class="text-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                {% endfor %}
+                </dl>
+                <button type="submit" class="btn btn-success">Сохранить изменения</button>
+                <a href="{% url 'slot_machine_data' %}" class="btn btn-success">Вернуться в журнал актов ИА</a>
+            </form>
+            {% if success_message %}
+                <div class="text-success">
+                    {{ success_message }}
+                </div>
+            {% endif %}
+            <br>
+        </div>
+    </div>
 <br>
     <div class="row d-flex justify-content-center py-3 mb-4 border-bottom border-success">
         <div>

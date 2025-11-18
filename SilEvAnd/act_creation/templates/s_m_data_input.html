@@ -164,6 +164,7 @@
             <th scope="col">Серийный номер ИА</th>
             <th scope="col">Номер по реестру</th>
             <th scope="col">Номер платы</th>
+            <th scope="col" style="width: 100px;">Изм.</th>
         </tr>
       </thead>
       <tbody>
@@ -201,6 +202,7 @@
                         <i class="bi bi-search"></i>
                 </button>
             </td>
+            <td></td>
         </tr>
       {% for data in slot_machines_data %}
         <tr>
@@ -214,6 +216,7 @@
             <td>{{ data.slot_number }}</td>
             <td>{{ data.model_registry }}</td>
             <td>{{ data.board_number }}</td>
+            <td><a href="{% url 'slot_machine_data_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
         </tr>
       {% endfor %}
       </tbody>
