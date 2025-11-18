@@ -91,6 +91,27 @@ def slot_machine_data(request):
 
     return render(request, 'slot_machine_data.html', context)
 
+
+def slot_machine_data_change(request, pk):
+    slot_machine_data_change = Act.objects.get(pk=pk)
+    success_message = ''
+    if request.method == 'POST':
+        form = ActInput(request.POST, instance=slot_machine_data_change)
+        if form.is_valid():
+            form.save()
+            success_message = 'Данные по ИА успешно изменены!'
+    else:
+        form = ActInput(instance=slot_machine_data_change)
+    context = (
+        {
+            'form': form,
+            'slot_machine_data': slot_machine_data_change,
+            'success_message': success_message
+        }
+    )
+    return render(request, 'slot_machine_data_change.html', context)
+
+
 @permission_required('act_creation.add_act')
 def s_m_data_input(request, pk):
     users_application = ControlJournal.objects.get(pk=pk)
