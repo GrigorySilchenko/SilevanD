@@ -18,32 +18,34 @@
 <div class="container">
     <div class="d-flex justify-content-center align-items-center py-3 mb-4 border-bottom border-success">
         <div class="col">
-                    <br>
-                    <dl class="row">
-                        <dt class="col-sm-3">Заявка</dt>
-                        <dd class="col-sm-9">№ {{ users_application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</dd>
-                        <dt class="col-sm-3">PDF</dt>
-                        <dd class="col-sm-9">
-                            {% if users_application.application.pdf %}
-                                <a href="{{ users_application.application.pdf.url }}" class="text text-success" target="_blank">Просмотр</a>
-                            {% else %}
-                                <a class="text text-danger">Пусто</a>
-                            {% endif %}
-                        </dd>
-                        <dt class="col-sm-3">Заявитель</dt>
-                        <dd class="col-sm-9">{{ users_application.application.declarant }}</dd>
-                        <dt class="col-sm-3">Юр. адрес заявителя</dt>
-                        <dd class="col-sm-9">{{ users_application.application.declarant.address }}</dd>
-                        <dt class="col-sm-3">Количество ИА</dt>
-                        <dd class="col-sm-9">{{ users_application.application.num_of_mach }} шт.</dd>
-                        <dt class="col-sm-3">Счет</dt>
-                        <dd class="col-sm-9">№ {{ users_application.application.bill_number }} от {{ users_application.application.bill_date|date:"d.m.Y" }}</dd>
-                        <dt class="col-sm-3">Вход.№ БелГИСС</dt>
-                        <dd class="col-sm-9">№ {{ users_application.application.application_number_belgiss }} от {{ users_application.application.date_belgiss|date:"d.m.Y" }}</dd>
-                    </dl>
-                </div>
+            <br>
+            <dl class="row">
+                <dt class="col-sm-3">Заявка</dt>
+                <dd class="col-sm-9">№ {{ users_application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</dd>
+                <dt class="col-sm-3">PDF</dt>
+                <dd class="col-sm-9">
+                    {% if users_application.application.pdf %}
+                        <a href="{{ users_application.application.pdf.url }}" class="text text-success" target="_blank">Просмотр</a>
+                    {% else %}
+                        <a class="text text-danger">Пусто</a>
+                    {% endif %}
+                </dd>
+                <dt class="col-sm-3">Заявитель</dt>
+                <dd class="col-sm-9">{{ users_application.application.declarant }}</dd>
+                <dt class="col-sm-3">Юр. адрес заявителя</dt>
+                <dd class="col-sm-9">{{ users_application.application.declarant.address }}</dd>
+                <dt class="col-sm-3">Количество ИА</dt>
+                <dd class="col-sm-9">{{ users_application.application.num_of_mach }} шт.</dd>
+                <dt class="col-sm-3">Счет</dt>
+                <dd class="col-sm-9">№ {{ users_application.application.bill_number }} от {{ users_application.application.bill_date|date:"d.m.Y" }}</dd>
+                <dt class="col-sm-3">Вход.№ БелГИСС</dt>
+                <dd class="col-sm-9">№ {{ users_application.application.application_number_belgiss }} от {{ users_application.application.date_belgiss|date:"d.m.Y" }}</dd>
+            </dl>
+        </div>
     </div>
+
     <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
+
         <div class="row">
             <h4>
                 <b>Внесите данные ИА в журнал актов ТО:</b>
@@ -53,7 +55,7 @@
                 <form action="{% url 's_m_data_input' users_application.pk %}" method="post">
                     {% csrf_token %}
                     <div>
-                    <label for="id_amount_numbers">Количество СК:</label>
+                        <label for="id_amount_numbers">Количество СК:</label>
                         <select id="id_amount_numbers" name="amount_numbers">
                             {% for i in "123456789" %}
                                 <option value="{{ i }}" {% if i == number_stickers %}selected{% endif %}>{{ i }}</option>
@@ -120,108 +122,117 @@
     </div>
 
     <script type="text/template" id="form-template">
-    <tr>
-        {{ empty_form.management_form }}
-        {% for field in empty_form %}
-            <td>{{ field }}</td>
-        {% endfor %}
-    </tr>
+        <tr>
+            {{ empty_form.management_form }}
+            {% for field in empty_form %}
+                <td>{{ field }}</td>
+            {% endfor %}
+        </tr>
     </script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const addButton = document.getElementById('add-form');
-        const tableBody = document.getElementById('formset-tbody');
-        const totalForms = document.querySelector('input[name="{{ formset.management_form.TOTAL_FORMS.html_name }}"]');
-        const templateStr = document.getElementById('form-template').innerHTML;
+        document.addEventListener('DOMContentLoaded', function() {
+            const addButton = document.getElementById('add-form');
+            const tableBody = document.getElementById('formset-tbody');
+            const totalForms = document.querySelector('input[name="{{ formset.management_form.TOTAL_FORMS.html_name }}"]');
+            const templateStr = document.getElementById('form-template').innerHTML;
 
-        addButton.addEventListener('click', function() {
-            const formIdx = parseInt(totalForms.value);
-            console.log(formIdx);
-            const newFormHtml = templateStr.replace(/__prefix__/g, formIdx);
-            console.log(newFormHtml);
-            tableBody.insertAdjacentHTML('beforeend', newFormHtml);
-            totalForms.value = formIdx + 1;
+            addButton.addEventListener('click', function() {
+                const formIdx = parseInt(totalForms.value);
+                console.log(formIdx);
+                const newFormHtml = templateStr.replace(/__prefix__/g, formIdx);
+                console.log(newFormHtml);
+                tableBody.insertAdjacentHTML('beforeend', newFormHtml);
+                totalForms.value = formIdx + 1;
+            });
         });
-    });
     </script>
 
-<br>
+    <br>
     <h4 class="d-flex justify-content-center">
         <b>Журнал актов ТО:</b>
     </h4>
-    <form class="search-form d-flex" role="search" method="get">
-    <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
-      <thead class="table table-success table-bordered border-success align-middle">
-        <tr>
-            <th scope="col">№ Акта</th>
-            <th scope="col">Заявка</th>
-            <th scope="col" style="width: 100px;">Номера средств контроля</th>
-            <th scope="col">Наименование заявителя</th>
-            <th scope="col">Результат</th>
-            <th scope="col">Модель</th>
-            <th scope="col">Версия</th>
-            <th scope="col">Серийный номер ИА</th>
-            <th scope="col">Номер по реестру</th>
-            <th scope="col">Номер платы</th>
-            <th scope="col" style="width: 100px;">Изм.</th>
-        </tr>
-      </thead>
-      <tbody>
-      <tr>
-            <td>
-                <input type="search" name="act_number" class="form-control me-2" value="{{ act_number|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="application" class="form-control me-2" value="{{ application|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="control_sticks_number" class="form-control me-2" value="{{ control_sticks_number|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="declarant" class="form-control me-2" value="{{ declarant|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="result" class="form-control me-2" value="{{ result|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="model" class="form-control me-2" value="{{ model|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="version" class="form-control me-2" value="{{ version|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="slot_number" class="form-control me-2" value="{{ slot_number|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="reg_number" class="form-control me-2" value="{{ reg_number|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="board_number" class="form-control me-2" value="{{ board_number|default:'' }}" aria-label="Search">
-                <button type="submit" class="btn btn-outline-success" style="display: none;">
-                        <i class="bi bi-search"></i>
-                </button>
-            </td>
-            <td></td>
-        </tr>
-      {% for data in slot_machines_data %}
-        <tr>
-            <td>{{ data.act_number }}</td>
-            <td>{{ data.distribution.application }}</td>
-            <td>{{ data.control_sticks_number }}</td>
-            <td>{{ data.distribution.application.declarant }}</td>
-            <td>{{ data.conformity }}</td>
-            <td>{{ data.model_registry.model }}</td>
-            <td>{{ data.model_registry.version }}</td>
-            <td>{{ data.slot_number }}</td>
-            <td>{{ data.model_registry }}</td>
-            <td>{{ data.board_number }}</td>
-            <td><a href="{% url 'slot_machine_data_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-    </form>
+            <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+                <thead class="table table-success table-bordered border-success align-middle">
+                    <tr>
+                        <th scope="col">№ Акта</th>
+                        <th scope="col">Заявка</th>
+                        <th scope="col" style="width: 100px;">Номера средств контроля</th>
+                        <th scope="col">Наименование заявителя</th>
+                        <th scope="col">Результат</th>
+                        <th scope="col">Модель</th>
+                        <th scope="col">Версия</th>
+                        <th scope="col">Серийный номер ИА</th>
+                        <th scope="col">Номер по реестру</th>
+                        <th scope="col">Номер платы</th>
+                        <th scope="col" style="width: 50px;">Изм.</th>
+                        <th scope="col" style="width: 100px;">Добавить в форму</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <form class="search-form" role="search" method="get">
+                        <tr>
+                            <td>
+                                <input type="search" name="act_number" class="form-control me-2" value="{{ act_number|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="application" class="form-control me-2" value="{{ application|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="control_sticks_number" class="form-control me-2" value="{{ control_sticks_number|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="declarant" class="form-control me-2" value="{{ declarant|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="result" class="form-control me-2" value="{{ result|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="model" class="form-control me-2" value="{{ model|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="version" class="form-control me-2" value="{{ version|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="slot_number" class="form-control me-2" value="{{ slot_number|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="reg_number" class="form-control me-2" value="{{ reg_number|default:'' }}" aria-label="Search">
+                            </td>
+                            <td>
+                                <input type="search" name="board_number" class="form-control me-2" value="{{ board_number|default:'' }}" aria-label="Search">
+                                <button type="submit" class="btn btn-outline-success" style="display: none;">
+                                        <i class="bi bi-search"></i>
+                                </button>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </form>
+                    {% for data in slot_machines_data %}
+                        <tr>
+                            <td>{{ data.act_number }}</td>
+                            <td>{{ data.distribution.application }}</td>
+                            <td>{{ data.control_sticks_number }}</td>
+                            <td>{{ data.distribution.application.declarant }}</td>
+                            <td>{{ data.conformity }}</td>
+                            <td>{{ data.model_registry.model }}</td>
+                            <td>{{ data.model_registry.version }}</td>
+                            <td>{{ data.slot_number }}</td>
+                            <td>{{ data.model_registry }}</td>
+                            <td>{{ data.board_number }}</td>
+                            <td><a href="{% url 'slot_machine_data_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a></td>
+                            <td>
+                                <form action="{% url 's_m_data_input' users_application.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success" name="get_data_to_formset" value="{{ data.pk }}" style="padding: 2px 6px; font-size: 12px;">Доб.</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
 </div>
 
 {% endblock %}

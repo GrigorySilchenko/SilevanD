@@ -1,6 +1,5 @@
 import os.path
 import re
-
 from django.conf import settings
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import render, redirect
@@ -135,61 +134,79 @@ def s_m_data_input(request, pk):
         formset = ActFormSet(initial=initial_session_data)
 
     elif request.method == 'POST':
-        number_stickers = request.POST['amount_numbers']
-        request.session['number_stickers'] = number_stickers
         formset = ActFormSet(request.POST)
-        if formset.is_valid():
-            if 'save_draft' in request.POST.keys():
-                cleaned_data_list = [form.cleaned_data for form in formset if form.cleaned_data]
-                for form in cleaned_data_list:
-                    pattern = r'^\d{6}$'
-                    form_stickers = form['control_sticks_number']
-                    if re.match(pattern, form_stickers):
-                        num = int(form_stickers)
-                        nums = [str(i + num) for i in range(int(number_stickers))]
-                        form['control_sticks_number'] = ' '.join(nums)
-                    form['conformity'] = form['conformity'].id
-                    form['model_registry'] = form['model_registry'].id
-                request.session['act_formset_data'] = cleaned_data_list
-                # for form in cleaned_data_list:
-                #     form['conformity'] = conformity.get(id=form['conformity'])
-                #     form['model_registry'] = registry.get(id=form['model_registry'])
-                # print(cleaned_data_list)
-                # print('-----------------------------------------------------------')
-                formset = ActFormSet(initial=cleaned_data_list)
-                success_message = 'Черновик успешно сохранен в сессии.'
-            elif 'save_form' in request.POST.keys():
-                last_act = slot_machines_data.first().act_number
-                formset = ActFormSet(request.POST)
-                if formset.is_valid():
-                    act_number = None
-                    for form in formset:
-                        if form.cleaned_data and form.cleaned_data.get('act_number'):
-                            act_number = form.cleaned_data.get('act_number')
-                    if act_number is None:
-                        act_number = last_act + 1
-                    for form in formset:
-                        if form.cleaned_data:
-                            num_SK = form.cleaned_data.get('control_sticks_number').split()
-                            if len(num_SK) == 4:
-                                control_sticks_number_corrected = [f'ИА {num}' for num in num_SK]
-                                control_sticks_number_cleaned = ' '.join(control_sticks_number_corrected)
-                            else:
-                                control_sticks_number_cleaned = form.cleaned_data.get('control_sticks_number')
-                            slot_machines_data_new = Act(
-                                act_number=act_number,
-                                distribution=users_application,
-                                control_sticks_number=control_sticks_number_cleaned,
-                                conformity=form.cleaned_data['conformity'],
-                                model_registry=form.cleaned_data['model_registry'],
-                                slot_number=form.cleaned_data['slot_number'],
-                                board_number=form.cleaned_data['board_number']
-                            )
-                            slot_machines_data_new.save()
-                            formset = ActFormSet()
-                            request.session.pop('act_formset_data', None)
-                            request.session.pop('number_stickers', None)
-                            success_message = 'Акт успешно добавлен в журнал'
+        if 'get_data_to_formset' in request.POST.keys():
+            pk_data = request.POST.get('get_data_to_formset')
+            data_to_formset = Act.objects.get(pk=pk_data)
+            data = request.session.get('act_formset_data')
+            new_data_dict = {
+                'act_number': None,
+                'control_sticks_number': '',
+                'conformity': data_to_formset.conformity.id,
+                'model_registry': data_to_formset.model_registry.id,
+                'slot_number': data_to_formset.slot_number,
+                'board_number': data_to_formset.board_number
+            }
+            if data:
+                data.append(new_data_dict)
+            else:
+                data = list()
+                data.append(new_data_dict)
+            request.session['act_formset_data'] = data
+            if request.session['number_stickers']:
+                number_stickers = request.session['number_stickers']
+            formset = ActFormSet(initial=data)
+            success_message = f'Данные ИА с номером {data_to_formset.slot_number} добавлены в форму и сохранены в сессии.'
+        else:
+            number_stickers = request.POST['amount_numbers']
+            request.session['number_stickers'] = number_stickers
+            if formset.is_valid():
+                if 'save_draft' in request.POST.keys():
+                    cleaned_data_list = [form.cleaned_data for form in formset if form.cleaned_data]
+                    for form in cleaned_data_list:
+                        pattern = r'^\d{6}$'
+                        form_stickers = form['control_sticks_number']
+                        if re.match(pattern, form_stickers):
+                            num = int(form_stickers)
+                            nums = [str(i + num) for i in range(int(number_stickers))]
+                            form['control_sticks_number'] = ' '.join(nums)
+                        form['conformity'] = form['conformity'].id
+                        form['model_registry'] = form['model_registry'].id
+                    request.session['act_formset_data'] = cleaned_data_list
+                    formset = ActFormSet(initial=cleaned_data_list)
+                    success_message = 'Черновик успешно сохранен в сессии.'
+                elif 'save_form' in request.POST.keys():
+                    last_act = slot_machines_data.first().act_number
+                    formset = ActFormSet(request.POST)
+                    if formset.is_valid():
+                        act_number = None
+                        for form in formset:
+                            if form.cleaned_data and form.cleaned_data.get('act_number'):
+                                act_number = form.cleaned_data.get('act_number')
+                        if act_number is None:
+                            act_number = last_act + 1
+                        for form in formset:
+                            if form.cleaned_data:
+                                num_SK = form.cleaned_data.get('control_sticks_number').split()
+                                if len(num_SK) == 4:
+                                    control_sticks_number_corrected = [f'ИА {num}' for num in num_SK]
+                                    control_sticks_number_cleaned = ' '.join(control_sticks_number_corrected)
+                                else:
+                                    control_sticks_number_cleaned = form.cleaned_data.get('control_sticks_number')
+                                slot_machines_data_new = Act(
+                                    act_number=act_number,
+                                    distribution=users_application,
+                                    control_sticks_number=control_sticks_number_cleaned,
+                                    conformity=form.cleaned_data['conformity'],
+                                    model_registry=form.cleaned_data['model_registry'],
+                                    slot_number=form.cleaned_data['slot_number'],
+                                    board_number=form.cleaned_data['board_number']
+                                )
+                                slot_machines_data_new.save()
+                                formset = ActFormSet()
+                                request.session.pop('act_formset_data', None)
+                                request.session.pop('number_stickers', None)
+                                success_message = 'Акт успешно добавлен в журнал'
 
     list_keys = [
         'act_number', 'application', 'control_sticks_number',
@@ -253,14 +270,12 @@ def docx_create(request):
     bosses = Boss.objects.all()
     stick_places = StickPlace.objects.all()
     success_message, danger_message = '', ''
-
     monthes = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
                7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
     date_now = date.today()
     date_filename = date_now.strftime("%d.%m.%y")
     year = date_now.strftime("%Y")
     date_for_word = f'{date_now.strftime("%d")} {monthes[date_now.month]} {year} г.'
-
     form = ActDataInput()
     if request.method == 'POST':
         form = ActDataInput(request.POST)
@@ -275,7 +290,6 @@ def docx_create(request):
             boss = bosses.get(name=str(form.cleaned_data['boss']))
             executor = f'{act_first.distribution.user.first_name}{act_first.distribution.user.last_name}'
             stick_place = stick_places.get(board_name=str(form.cleaned_data['stick_place']))
-
             word_context = {
                 'act_number': act_first.act_number,
                 'boss': boss.name,
@@ -291,7 +305,6 @@ def docx_create(request):
                 'manufacturer': act_first.model_registry.manufacturer,
                 'acts': acts
             }
-
             docx_file_name = (f'{str(word_context['act_number'])} {word_context['declarant'].replace('"', '')} '
                       f'{stick_place.board_name} {date_filename}.docx')
             save_path = os.path.join(settings.MEDIA_ROOT, 'acts', docx_file_name)
