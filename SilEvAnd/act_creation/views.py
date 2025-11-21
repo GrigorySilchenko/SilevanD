@@ -163,6 +163,7 @@ def s_m_data_input(request, pk):
             if formset.is_valid():
                 if 'save_draft' in request.POST.keys():
                     cleaned_data_list = [form.cleaned_data for form in formset if form.cleaned_data]
+                    cleaned_data_list = [form for form in cleaned_data_list if not form['is_deleted']]
                     for form in cleaned_data_list:
                         pattern = r'^\d{6}$'
                         form_stickers = form['control_sticks_number']
@@ -188,11 +189,8 @@ def s_m_data_input(request, pk):
                         for form in formset:
                             if form.cleaned_data:
                                 num_SK = form.cleaned_data.get('control_sticks_number').split()
-                                if len(num_SK) == 4:
-                                    control_sticks_number_corrected = [f'ИА {num}' for num in num_SK]
-                                    control_sticks_number_cleaned = ' '.join(control_sticks_number_corrected)
-                                else:
-                                    control_sticks_number_cleaned = form.cleaned_data.get('control_sticks_number')
+                                control_sticks_number_corrected = [f'ИА {num}' for num in num_SK]
+                                control_sticks_number_cleaned = ' '.join(control_sticks_number_corrected)
                                 slot_machines_data_new = Act(
                                     act_number=act_number,
                                     distribution=users_application,

@@ -3,6 +3,12 @@ from .models import Act, Conformity, Boss, StickPlace
 
 
 class ActInput(forms.ModelForm):
+    is_deleted = forms.BooleanField(
+        required=False,
+        initial=False,
+        label="Удалить",
+        help_text="Поставьте галочку если эту строку нужно удалить из формы. Затем нажмите 'Сохранить черновик'"
+    )
     class Meta:
         model = Act
         fields = ['act_number',
