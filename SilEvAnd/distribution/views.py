@@ -93,7 +93,7 @@ def application_distribution(request, pk):
     return render(request, 'application_distribution.html', context)
 
 
-@permission_required('distribution.change_distribution_change')
+@permission_required('distribution.change_controljournal')
 def distribution_change(request, pk):
     distributions = ControlJournal.objects.all().order_by('-application')
     distr_change = ControlJournal.objects.get(pk=pk)

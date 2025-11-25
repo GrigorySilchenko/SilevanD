@@ -1,3 +1,4 @@
+import copy
 import os.path
 import re
 from django.conf import settings
@@ -12,6 +13,7 @@ from .forms import ActInput, ActDataInput, ActDataInput
 from django.forms import formset_factory
 import time
 from datetime import date
+from urllib.parse import urlencode
 
 @permission_required('act_creation.view_registry')
 def registry(request):
@@ -122,7 +124,8 @@ def s_m_data_input(request, pk):
     number_stickers = '1'
 
     if request.method == 'GET':
-        data = request.session.get('act_formset_data')
+        data_old = request.session.get('act_formset_data')
+        data = copy.deepcopy(data_old)
         number_stickers = request.session.get('number_stickers', '1')
         if data:
             initial_session_data = data
@@ -133,7 +136,16 @@ def s_m_data_input(request, pk):
             initial_session_data = None
         formset = ActFormSet(initial=initial_session_data)
 
+        list_keys = [
+            'act_number', 'application', 'control_sticks_number',
+            'declarant', 'result', 'model', 'version', 'slot_number',
+            'reg_number', 'board_number'
+        ]
+        param_dict = {_: request.GET.get(_, '') for _ in list_keys}
+        request.session['filters'] = param_dict
+
     elif request.method == 'POST':
+        param_dict = request.session.get('filters', '')
         formset = ActFormSet(request.POST)
         if 'get_data_to_formset' in request.POST.keys():
             pk_data = request.POST.get('get_data_to_formset')
@@ -206,18 +218,14 @@ def s_m_data_input(request, pk):
                                 request.session.pop('number_stickers', None)
                                 success_message = 'Акт успешно добавлен в журнал'
 
-    list_keys = [
-        'act_number', 'application', 'control_sticks_number',
-        'declarant', 'result', 'model', 'version', 'slot_number',
-        'reg_number', 'board_number'
-    ]
-    param_dict = {_: request.GET.get(_) for _ in list_keys}
     for key, value in param_dict.items():
         if value:
             if key == 'application':
                 filter_name = f'distribution__application__application_number__icontains'
             elif key == 'declarant':
                 filter_name = f'distribution__application__declarant__name__icontains'
+            elif key == 'result':
+                filter_name = f'conformity__conformity__icontains'
             elif key == 'model' or key == 'version':
                 filter_name = f'model_registry__{key}__icontains'
             elif key == 'reg_number':
