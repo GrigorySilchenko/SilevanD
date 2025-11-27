@@ -165,8 +165,7 @@ def s_m_data_input(request, pk):
                 data = list()
                 data.append(new_data_dict)
             request.session['act_formset_data'] = data
-            if request.session['number_stickers']:
-                number_stickers = request.session['number_stickers']
+            number_stickers = request.session.get('number_stickers', '1')
             formset = ActFormSet(initial=data)
             success_message = f'Данные ИА с номером {data_to_formset.slot_number} добавлены в форму и сохранены в сессии.'
         else:
@@ -259,15 +258,11 @@ def s_m_data_input(request, pk):
 @permission_required('act_creation.view_act')
 def act_creation(request):
     user_now = request.user
-    slot_machines_data = Act.objects.all().order_by('act_number')
     users_applications = ControlJournal.objects.filter(user=user_now).filter(application__status__in=['4']).order_by('-id')
-    context = (
-        {
-            'slot_machines_data': slot_machines_data,
+    context = {
             'users_applications': users_applications,
             'user_now': user_now
         }
-    )
     return render(request, 'act_creation.html', context)
 
 @permission_required('act_creation.add_act')

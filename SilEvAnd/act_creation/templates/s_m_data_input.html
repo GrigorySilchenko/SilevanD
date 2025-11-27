@@ -18,7 +18,6 @@
 <div class="container">
     <div class="d-flex justify-content-center align-items-center py-3 mb-4 border-bottom border-success">
         <div class="col">
-            <br>
             <dl class="row">
                 <dt class="col-sm-3">Заявка</dt>
                 <dd class="col-sm-9">№ {{ users_application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</dd>
@@ -43,15 +42,12 @@
             </dl>
         </div>
     </div>
-
     <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
-
         <div class="row">
             <h4>
                 <b>Внесите данные ИА в журнал актов ТО:</b>
             </h4>
             <div class="col">
-                <br>
                 <form action="{% url 's_m_data_input' users_application.pk %}" method="post">
                     {% csrf_token %}
                     <div>
@@ -62,7 +58,6 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <br>
                     {{ formset.management_form }}
                         <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
                             <thead class="table table-success table-bordered border-success align-middle">
