@@ -1,5 +1,5 @@
 from django import forms
-from .models import Act, Conformity, Boss, StickPlace
+from .models import Act, Conformity, Boss, StickPlace, Manufacturer
 
 
 class ActInput(forms.ModelForm):
@@ -30,5 +30,10 @@ class ActInput(forms.ModelForm):
 
 class ActDataInput(forms.Form):
     act_number = forms.ModelChoiceField(queryset=Act.objects.all().order_by('-act_number'), label='№ Акта')
-    boss = forms.ModelChoiceField(queryset=Boss.objects.all(), label='Лицо утверждающее акт')
-    stick_place = forms.ModelChoiceField(queryset=StickPlace.objects.all(), label='Платформа ИА')
+    boss = forms.ModelChoiceField(queryset=Boss.objects.all(), label='лицо, утверждающее акт')
+    stick_place = forms.ModelChoiceField(queryset=StickPlace.objects.all(), label='платформу ИА')
+    manufacturer = forms.ModelChoiceField(queryset=Manufacturer.objects.all(), blank=True, label='производителя, если Novomatic')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        default_manufacturer = Manufacturer.objects.get(name='Из реестра')
+        self.fields['manufacturer'].initial = default_manufacturer.pk

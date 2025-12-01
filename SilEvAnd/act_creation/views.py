@@ -6,7 +6,7 @@ from django.http import FileResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import Registry, Act, Conformity, Boss, StickPlace
+from .models import Registry, Act, Conformity, Boss, StickPlace, Manufacturer
 import openpyxl
 from docxtpl import DocxTemplate
 from django.contrib.auth.decorators import permission_required
@@ -274,6 +274,7 @@ def docx_create(request):
     slot_machines_data = Act.objects.all().order_by('-act_number')
     bosses = Boss.objects.all()
     stick_places = StickPlace.objects.all()
+    manufacturers = Manufacturer.objects.all()
     success_message, danger_message = '', ''
     monthes = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
                7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
@@ -294,6 +295,11 @@ def docx_create(request):
             boss = bosses.get(name=str(form.cleaned_data['boss']))
             executor = f'{act_first.distribution.user.last_name} {act_first.distribution.user.first_name}'
             stick_place = stick_places.get(board_name=str(form.cleaned_data['stick_place']))
+            manufacturer_form = manufacturers.get(name=str(form.cleaned_data['manufacturer']))
+            if str(manufacturer_form) == 'Из реестра':
+                manufacturer = act_first.model_registry.manufacturer
+            else:
+                manufacturer = manufacturer_form
             word_context = {
                 'act_number': act_first.act_number,
                 'boss': boss.name,
@@ -306,7 +312,7 @@ def docx_create(request):
                 'declarant_address': act_first.distribution.application.declarant.address,
                 'executor': executor,
                 'sticker': stick_place.stick_place,
-                'manufacturer': act_first.model_registry.manufacturer,
+                'manufacturer': manufacturer,
                 'acts': acts
             }
             docx_file_name = (f'{str(word_context['act_number'])} {word_context['declarant'].replace('"', '')} '
