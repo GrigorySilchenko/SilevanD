@@ -34,7 +34,13 @@
                 <dt class="col-sm-3">Юр. адрес заявителя</dt>
                 <dd class="col-sm-9">{{ users_application.application.declarant.address }}</dd>
                 <dt class="col-sm-3">Счет</dt>
-                <dd class="col-sm-9">№ {{ users_application.application.bill_number }} от {{ users_application.application.bill_date|date:"d.m.Y" }}</dd>
+                <dd class="col-sm-9">
+                    {% if users_application.application.bill_number %}
+                        № {{ users_application.application.bill_number }} от {{ users_application.application.bill_date|date:"d.m.Y" }}
+                    {% else %}
+                        <span class="text-danger">Отсутствуют данные о номере счета!</span>
+                    {% endif %}
+                </dd>
                 <dt class="col-sm-3">Количество ИА в заявке</dt>
                 <dd class="col-sm-9">{{ users_application.application.num_of_mach }} шт.</dd>
                 <dt class="col-sm-3">Количество отработанных ИА</dt>

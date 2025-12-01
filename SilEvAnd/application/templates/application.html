@@ -77,14 +77,14 @@
               {% if app.application_number_belgiss %}
                   {{ app.application_number_belgiss }}
               {% else %}
-                   ---
+                   <span class="text-danger">---</span>
               {% endif %}
           </td>
           <td>
               {% if app.date_belgiss|date:"d.m.Y" %}
                   {{ app.date_belgiss|date:"d.m.Y" }}
               {% else %}
-                   ---
+                   <span class="text-danger">---</span>
               {% endif %}
           </td>
           <td>{{ app.num_of_mach }}</td>
@@ -92,14 +92,14 @@
               {% if app.bill_number %}
                   {{ app.bill_number }}
               {% else %}
-                   ---
+                   <span class="text-danger">---</span>
               {% endif %}
           </td>
           <td>
               {% if app.bill_date|date:"d.m.Y" %}
                   {{ app.bill_date|date:"d.m.Y" }}
               {% else %}
-                   ---
+                   <span class="text-danger">---</span>
               {% endif %}
           </td>
           <td><a href="{% url 'application_change' app.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
