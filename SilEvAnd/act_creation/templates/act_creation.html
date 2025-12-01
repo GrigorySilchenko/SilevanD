@@ -14,6 +14,7 @@
             <div class="col-md-2 mb-3 d-flex align-items-stretch">
                 <div class="card h-100 border border-success">
                     <div class="card-body">
+                        <a href="{% url 's_m_data_input' users_application.pk %}" class="btn">
                         <dl class="row">
                             <dd >
                                 <h5 class="card-title"><b>{{ users_application.application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</b></h5>
@@ -21,9 +22,15 @@
                             <dd>{{ users_application.application.declarant }}</dd>
                             <dd><b>{{ users_application.application.num_of_mach }} шт.</b></dd>
                         </dl>
-                        <a href="{% url 's_m_data_input' users_application.pk %}"
-                           class="stretched-link">
                         </a>
+                    </div>
+                    <div class="card-footer p-2">
+                        <form action="{% url 'application_status_change' users_application.application.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm w-100">
+                                Закрыть заявку
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -4,16 +4,18 @@ import re
 from django.conf import settings
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
+
 from .models import Registry, Act, Conformity, Boss, StickPlace
 import openpyxl
 from docxtpl import DocxTemplate
 from django.contrib.auth.decorators import permission_required
 from distribution.models import ControlJournal
-from .forms import ActInput, ActDataInput, ActDataInput
+from application.models import Status, Application
+from .forms import ActInput, ActDataInput
 from django.forms import formset_factory
-import time
 from datetime import date
-from urllib.parse import urlencode
+
 
 @permission_required('act_creation.view_registry')
 def registry(request):
@@ -284,7 +286,6 @@ def docx_create(request):
         form = ActDataInput(request.POST)
         if form.is_valid():
             acts = slot_machines_data.filter(act_number=int(str(form.cleaned_data['act_number'])))
-            print(len(acts))
             act_first = acts.first()
             bill_date = act_first.distribution.application.bill_date.strftime("%d.%m.%Y")
             bill_num = f'{act_first.distribution.application.bill_number} от {bill_date}'
@@ -368,3 +369,11 @@ def download_act_docx(request, file_name):
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     else:
         return HttpResponse('Файл не найден', status=404)
+
+def application_status_change(request, pk):
+    status = Status.objects.get(pk=5)
+    application = Application.objects.get(pk=pk)
+    if request.method == 'POST':
+        application.status = status
+        application.save()
+    return redirect(reverse('act_creation'))
