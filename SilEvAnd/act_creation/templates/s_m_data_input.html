@@ -33,12 +33,12 @@
                 <dd class="col-sm-9">{{ users_application.application.declarant }}</dd>
                 <dt class="col-sm-3">Юр. адрес заявителя</dt>
                 <dd class="col-sm-9">{{ users_application.application.declarant.address }}</dd>
-                <dt class="col-sm-3">Количество ИА</dt>
-                <dd class="col-sm-9">{{ users_application.application.num_of_mach }} шт.</dd>
                 <dt class="col-sm-3">Счет</dt>
                 <dd class="col-sm-9">№ {{ users_application.application.bill_number }} от {{ users_application.application.bill_date|date:"d.m.Y" }}</dd>
-                <dt class="col-sm-3">Вход.№ БелГИСС</dt>
-                <dd class="col-sm-9">№ {{ users_application.application.application_number_belgiss }} от {{ users_application.application.date_belgiss|date:"d.m.Y" }}</dd>
+                <dt class="col-sm-3">Количество ИА в заявке</dt>
+                <dd class="col-sm-9">{{ users_application.application.num_of_mach }} шт.</dd>
+                <dt class="col-sm-3">Количество отработанных ИА</dt>
+                <dd class="col-sm-9">{{ slot_machines_count }} шт.</dd>
             </dl>
         </div>
     </div>

@@ -117,6 +117,7 @@ def slot_machine_data_change(request, pk):
 def s_m_data_input(request, pk):
     users_application = ControlJournal.objects.get(pk=pk)
     slot_machines_data = Act.objects.all().order_by('-act_number')
+    slot_machines_count = slot_machines_data.filter(distribution__application__application_number=str(users_application)).count()
     conformity = Conformity.objects.all()
     registry = Registry.objects.all()
     ActFormSet = formset_factory(ActInput,extra=1)
@@ -236,6 +237,7 @@ def s_m_data_input(request, pk):
     context = (
         {
             'slot_machines_data': slot_machines_data,
+            'slot_machines_count': slot_machines_count,
             'users_application': users_application,
             'formset': formset,
             'success_message': success_message,
@@ -289,7 +291,7 @@ def docx_create(request):
             app_date = act_first.distribution.application.created_on.strftime("%d.%m.%Y")
             app_num = f'{act_first.distribution.application.application_number} от {app_date}'
             boss = bosses.get(name=str(form.cleaned_data['boss']))
-            executor = f'{act_first.distribution.user.first_name}{act_first.distribution.user.last_name}'
+            executor = f'{act_first.distribution.user.last_name} {act_first.distribution.user.first_name}'
             stick_place = stick_places.get(board_name=str(form.cleaned_data['stick_place']))
             word_context = {
                 'act_number': act_first.act_number,
