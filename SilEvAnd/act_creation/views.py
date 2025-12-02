@@ -5,7 +5,6 @@ from django.conf import settings
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
 from .models import Registry, Act, Conformity, Boss, StickPlace, Manufacturer
 import openpyxl
 from docxtpl import DocxTemplate
@@ -323,8 +322,6 @@ def docx_create(request):
             doc.render(word_context)
             try:
                 doc.save(save_path)
-                print(
-                    f'Акт технического освидетельствования с именем "{docx_file_name}" добавится в папку media после завершения его работы.')
             except PermissionError:
                 print('!!!ОШИБКА!!!')
                 print(
@@ -376,6 +373,7 @@ def download_act_docx(request, file_name):
     else:
         return HttpResponse('Файл не найден', status=404)
 
+@permission_required('act_creation.add_act')
 def application_status_change(request, pk):
     status = Status.objects.get(pk=5)
     application = Application.objects.get(pk=pk)

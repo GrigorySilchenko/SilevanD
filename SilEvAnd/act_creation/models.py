@@ -42,4 +42,4 @@ class Act(models.Model):
     slot_number = models.CharField(max_length=100, verbose_name='Серийный номер ИА')
     board_number = models.CharField(max_length=50, verbose_name='Номер платы')
     def __str__(self):
-        return str(self.act_number)
+        return f'{str(self.act_number)} s/n:{self.slot_number}'
