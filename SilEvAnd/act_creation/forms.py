@@ -3,10 +3,12 @@ from .models import Act, Conformity, Boss, StickPlace, Manufacturer
 
 
 class ActInput(forms.ModelForm):
+    model = forms.CharField(max_length=200, required=False, label='Модель')
+    version = forms.CharField(max_length=200, required=False, label='Версия')
     is_deleted = forms.BooleanField(
         required=False,
         initial=False,
-        label="Удалить",
+        label='Удл.',
         help_text="Поставьте галочку если эту строку нужно удалить из формы. Затем нажмите 'Сохранить черновик'"
     )
     class Meta:
@@ -19,7 +21,9 @@ class ActInput(forms.ModelForm):
                   'board_number']
         widgets = {
             'control_sticks_number': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
-            'act_number': forms.NumberInput(attrs={'size': '10', 'maxlength': '10'})
+            'model': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
+            'version': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
+            'act_number': forms.NumberInput(attrs={'size': '10', 'maxlength': '10'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +33,9 @@ class ActInput(forms.ModelForm):
         self.fields['conformity'].initial = default_conformity.pk
 
 class ActDataInput(forms.Form):
-    act_number = forms.ModelChoiceField(queryset=Act.objects.all().order_by('-act_number'), label='№ Акта')
+    unique_act_numbers = (Act.objects.all().order_by('-act_number').values_list('act_number', flat=True).distinct())
+    act_number_choices = [(act_number, act_number) for act_number in unique_act_numbers]
+    act_number = forms.ChoiceField(choices=act_number_choices, label='№ Акта')
     boss = forms.ModelChoiceField(queryset=Boss.objects.all(), label='лицо, утверждающее акт')
     stick_place = forms.ModelChoiceField(queryset=StickPlace.objects.all(), label='платформу ИА')
     manufacturer = forms.ModelChoiceField(queryset=Manufacturer.objects.all(), blank=True, label='производителя, если Novomatic')
