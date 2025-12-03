@@ -32,7 +32,7 @@ def registry(request):
         'version_get': param_dict['version'],
         'manufacturer_get': param_dict['manufacturer']
          }
-    return render(request, 'registry.html', context)
+    return render(request, 'registry_modify.html', context)
 
 @permission_required('act_creation.add_registry')
 def registry_input(request):
@@ -51,6 +51,24 @@ def registry_input(request):
     context = {
             'registries': registries
         }
+    return render(request, 'registry.html', context)
+
+@permission_required('act_creation.view_registry')
+def registry_modify(request):
+    registries = RegistryModify.objects.all()
+    list_keys = ['number', 'model', 'version', 'manufacturer']
+    param_dict = {key : request.GET.get(key) for key in list_keys}
+    for param, value in param_dict.items():
+        if value:
+            filter_name = f'{param}__icontains'
+            registries = registries.filter(**{filter_name: value})
+    context = {
+        'registries': registries,
+        'number_get': param_dict['number'],
+        'model_get': param_dict['model'],
+        'version_get': param_dict['version'],
+        'manufacturer_get': param_dict['manufacturer']
+         }
     return render(request, 'registry.html', context)
 
 

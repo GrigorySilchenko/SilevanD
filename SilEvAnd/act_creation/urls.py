@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('registry/', views.registry, name='registry'),
+    path('registry_modify/', views.registry_modify, name='registry_modify'),
     path('registry_input/', views.registry_input, name='registry_input'),
     path('slot_machine_data/', views.slot_machine_data, name='slot_machine_data'),
     path('slot_machine_data_change/<int:pk>', views.slot_machine_data_change, name='slot_machine_data_change'),
