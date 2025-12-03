@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Registry, Act, Conformity, Boss, StickPlace, Manufacturer
+from .models import Registry, Act, Conformity, Boss, StickPlace, Manufacturer, RegistryModify
 import openpyxl
 from docxtpl import DocxTemplate
 from django.contrib.auth.decorators import permission_required
@@ -48,6 +48,25 @@ def registry_input(request):
         )
         registry_new.save()
     registries = Registry.objects.all()
+    context = {
+            'registries': registries
+        }
+    return render(request, 'registry.html', context)
+
+
+def registry_modify_input(request):
+    wb = openpyxl.load_workbook(
+        'D:\PythonCreateActTOProject\Reestr\Реестр ИА по версиям 2025_12_02.xlsx')
+    ws = wb.active
+    for row in ws.iter_rows(min_row=2):
+        registry_new = RegistryModify(
+            number=row[0].value,
+            model=row[1].value,
+            version=row[2].value,
+            manufacturer=row[3].value
+        )
+        registry_new.save()
+    registries = RegistryModify.objects.all()
     context = {
             'registries': registries
         }

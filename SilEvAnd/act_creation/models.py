@@ -9,6 +9,14 @@ class Registry(models.Model):
     def __str__(self):
         return self.number
 
+class RegistryModify(models.Model):
+    number = models.CharField(max_length=10)
+    model = models.CharField(max_length=200)
+    version = models.CharField(max_length=200)
+    manufacturer = models.CharField(max_length=500)
+    def __str__(self):
+        return self.number
+
 class Manufacturer(models.Model):
     name = models.CharField(max_length=200)
     stick_place = models.ForeignKey('StickPlace', on_delete=models.CASCADE, related_name='manufacturer', blank=True, null=True)
