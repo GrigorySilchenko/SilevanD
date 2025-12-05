@@ -34,7 +34,7 @@ def registry(request):
          }
     return render(request, 'registry_modify.html', context)
 
-@permission_required('act_creation.add_registry')
+
 def registry_input(request):
     wb = openpyxl.load_workbook(
         'D:\PythonCreateActTOProject\Reestr\Реестр ИА.xlsx')
@@ -157,7 +157,7 @@ def s_m_data_input(request, pk):
     slot_machines_data = Act.objects.all().order_by('-act_number')
     slot_machines_count = slot_machines_data.filter(distribution__application__application_number=str(users_application)).count()
     conformity = Conformity.objects.all()
-    registry = Registry.objects.all()
+    registry = RegistryModify.objects.all()
     ActFormSet = formset_factory(ActInput,extra=1)
     success_message = ''
     number_stickers = '1'

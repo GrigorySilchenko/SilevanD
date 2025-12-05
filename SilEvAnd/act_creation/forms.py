@@ -3,8 +3,6 @@ from .models import Act, Conformity, Boss, StickPlace, Manufacturer
 
 
 class ActInput(forms.ModelForm):
-    model = forms.CharField(max_length=200, required=False, label='Модель')
-    version = forms.CharField(max_length=200, required=False, label='Версия')
     is_deleted = forms.BooleanField(
         required=False,
         initial=False,
@@ -21,8 +19,7 @@ class ActInput(forms.ModelForm):
                   'board_number']
         widgets = {
             'control_sticks_number': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
-            'model': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
-            'version': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
+            'slot_number': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
             'act_number': forms.NumberInput(attrs={'size': '10', 'maxlength': '10'}),
         }
 
@@ -33,13 +30,14 @@ class ActInput(forms.ModelForm):
         self.fields['conformity'].initial = default_conformity.pk
 
 class ActDataInput(forms.Form):
-    unique_act_numbers = (Act.objects.all().order_by('-act_number').values_list('act_number', flat=True).distinct())
-    act_number_choices = [(act_number, act_number) for act_number in unique_act_numbers]
-    act_number = forms.ChoiceField(choices=act_number_choices, label='№ Акта')
+    act_number = forms.ChoiceField(choices=[], label='№ Акта')
     boss = forms.ModelChoiceField(queryset=Boss.objects.all(), label='лицо, утверждающее акт')
     stick_place = forms.ModelChoiceField(queryset=StickPlace.objects.all(), label='платформу ИА')
     manufacturer = forms.ModelChoiceField(queryset=Manufacturer.objects.all(), blank=True, label='производителя, если Novomatic')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        unique_act_numbers = (Act.objects.all().order_by('-act_number').values_list('act_number', flat=True).distinct())
+        self.fields['act_number'].choices = [(act_number, act_number) for act_number in unique_act_numbers]
+
         default_manufacturer = Manufacturer.objects.get(name='Из реестра')
         self.fields['manufacturer'].initial = default_manufacturer.pk

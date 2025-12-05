@@ -46,7 +46,7 @@ class Act(models.Model):
     control_sticks_number = models.TextField(max_length=500, blank=True, null=True, verbose_name='Номера средств контроля')
     conformity = models.ForeignKey('Conformity', on_delete=models.CASCADE, related_name='manufacturer',
                                    blank=True, null=True, verbose_name='Результат')
-    model_registry = models.ForeignKey('Registry', on_delete=models.CASCADE, verbose_name='Номер по реестру')
+    model_registry = models.ForeignKey('RegistryModify', on_delete=models.CASCADE, verbose_name='Номер по реестру')
     slot_number = models.CharField(max_length=100, verbose_name='Серийный номер ИА')
     board_number = models.CharField(max_length=50, verbose_name='Номер платы')
     def __str__(self):
