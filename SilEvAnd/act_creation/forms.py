@@ -19,7 +19,6 @@ class ActInput(forms.ModelForm):
                   'board_number']
         widgets = {
             'control_sticks_number': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
-            'slot_number': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
             'act_number': forms.NumberInput(attrs={'size': '10', 'maxlength': '10'}),
         }
 
@@ -32,7 +31,7 @@ class ActInput(forms.ModelForm):
 class ActDataInput(forms.Form):
     act_number = forms.ChoiceField(choices=[], label='№ Акта')
     boss = forms.ModelChoiceField(queryset=Boss.objects.all(), label='лицо, утверждающее акт')
-    stick_place = forms.ModelChoiceField(queryset=StickPlace.objects.all(), label='платформу ИА')
+    stick_place = forms.ModelChoiceField(queryset=StickPlace.objects.all().order_by('board_name'), label='платформу ИА')
     manufacturer = forms.ModelChoiceField(queryset=Manufacturer.objects.all(), blank=True, label='производителя, если Novomatic')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
