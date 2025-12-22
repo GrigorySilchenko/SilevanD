@@ -307,6 +307,7 @@ def act_creation(request):
 
 @permission_required('act_creation.add_act')
 def docx_create(request):
+    """Страница для создания акта ТО"""
     slot_machines_data = Act.objects.all().order_by('-act_number')
     bosses = Boss.objects.all()
     stick_places = StickPlace.objects.all()
@@ -336,6 +337,8 @@ def docx_create(request):
                 manufacturer = act_first.model_registry.manufacturer
             else:
                 manufacturer = manufacturer_form
+
+
             word_context = {
                 'act_number': act_first.act_number,
                 'boss': boss.name,
@@ -354,7 +357,41 @@ def docx_create(request):
             docx_file_name = (f'{str(word_context['act_number'])} {word_context['declarant'].replace('"', '')} '
                       f'{stick_place.board_name} {date_filename}.docx')
             save_path = os.path.join(settings.MEDIA_ROOT, 'acts', docx_file_name)
-            template_path = os.path.join(settings.BASE_DIR, 'templates', 'temp_tab_1.docx')
+            if stick_place == stick_places.get(pk=3) and 12 < len(acts) <= 24: # разбиение контекста на страницы
+                template_name = 'temp_tab_2.docx'
+                word_context['acts_1'] = acts[:12]
+                word_context['acts_2'] = acts[12:]
+            elif stick_place == stick_places.get(pk=3) and 24 < len(acts) <= 36: # CF1 pk=3
+                template_name = 'temp_tab_3.docx'
+                word_context['acts_1'] = acts[:12]
+                word_context['acts_2'] = acts[12:24]
+                word_context['acts_3'] = acts[24:]
+            elif stick_place == stick_places.get(pk=3) and 36 < len(acts) <= 48:
+                template_name = 'temp_tab_4.docx'
+                word_context['acts_1'] = acts[:12]
+                word_context['acts_2'] = acts[12:24]
+                word_context['acts_3'] = acts[24:36]
+                word_context['acts_4'] = acts[36:]
+            elif stick_place == stick_places.get(pk=4) and 24 < len(acts) <= 48: # CF2 pk=4
+                template_name = 'temp_tab_2.docx'
+                word_context['acts_1'] = acts[:24]
+                word_context['acts_2'] = acts[24:]
+            elif stick_place == stick_places.get(pk=6) and 10 < len(acts) <= 20: # EGT E3 pk=6
+                template_name = 'temp_tab_2.docx'
+                word_context['acts_1'] = acts[:10]
+                word_context['acts_2'] = acts[10:]
+            elif stick_place == stick_places.get(pk=7) and 8 < len(acts) <= 16: # EGT E4 pk=7
+                template_name = 'temp_tab_2.docx'
+                word_context['acts_1'] = acts[:8]
+                word_context['acts_2'] = acts[8:]
+            elif stick_place == stick_places.get(pk=7) and 16 < len(acts) <= 24: # EGT E4 pk=7
+                template_name = 'temp_tab_3.docx'
+                word_context['acts_1'] = acts[:8]
+                word_context['acts_2'] = acts[8:16]
+                word_context['acts_3'] = acts[16:]
+            else:
+                template_name = 'temp_tab_1.docx'
+            template_path = os.path.join(settings.BASE_DIR, 'templates', template_name)
             doc = DocxTemplate(template_path)
             doc.render(word_context)
             try:
