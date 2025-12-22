@@ -5,7 +5,7 @@
 <div class="container">
     <div class="border-bottom border-success">
         <div class="container">
-            <h2>Внесите изменения в заявку №{{ applications }}:</h2>
+            <h2>Внесите изменения в данные о {{ declarant }}:</h2>
             <form action="{% url 'declarant_change' declarant.pk %}" method="post">
                 {% csrf_token %}
                 <dl class="row">
