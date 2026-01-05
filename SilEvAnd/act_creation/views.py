@@ -357,38 +357,52 @@ def docx_create(request):
             docx_file_name = (f'{str(word_context['act_number'])} {word_context['declarant'].replace('"', '')} '
                       f'{stick_place.board_name} {date_filename}.docx')
             save_path = os.path.join(settings.MEDIA_ROOT, 'acts', docx_file_name)
-            if stick_place == stick_places.get(pk=3) and 12 < len(acts) <= 24: # разбиение контекста на страницы
+            acts_len = len(acts)
+            if stick_place == stick_places.get(pk=3) and 12 < acts_len <= 24: # разбиение контекста на страницы
                 template_name = 'temp_tab_2.docx'
                 word_context['acts_1'] = acts[:12]
                 word_context['acts_2'] = acts[12:]
-            elif stick_place == stick_places.get(pk=3) and 24 < len(acts) <= 36: # CF1 pk=3
+            elif stick_place == stick_places.get(pk=3) and 24 < acts_len <= 36: # CF1 pk=3
                 template_name = 'temp_tab_3.docx'
                 word_context['acts_1'] = acts[:12]
                 word_context['acts_2'] = acts[12:24]
                 word_context['acts_3'] = acts[24:]
-            elif stick_place == stick_places.get(pk=3) and 36 < len(acts) <= 48:
+            elif stick_place == stick_places.get(pk=3) and 36 < acts_len:
                 template_name = 'temp_tab_4.docx'
                 word_context['acts_1'] = acts[:12]
                 word_context['acts_2'] = acts[12:24]
                 word_context['acts_3'] = acts[24:36]
                 word_context['acts_4'] = acts[36:]
-            elif stick_place == stick_places.get(pk=4) and 24 < len(acts) <= 48: # CF2 pk=4
+            elif stick_place == stick_places.get(pk=4) and 24 < acts_len: # CF2 pk=4
                 template_name = 'temp_tab_2.docx'
                 word_context['acts_1'] = acts[:24]
                 word_context['acts_2'] = acts[24:]
-            elif stick_place == stick_places.get(pk=6) and 10 < len(acts) <= 20: # EGT E3 pk=6
+            elif stick_place == stick_places.get(pk=6) and 10 < acts_len: # EGT E3 pk=6
                 template_name = 'temp_tab_2.docx'
                 word_context['acts_1'] = acts[:10]
                 word_context['acts_2'] = acts[10:]
-            elif stick_place == stick_places.get(pk=7) and 8 < len(acts) <= 16: # EGT E4 pk=7
+            elif stick_place == stick_places.get(pk=7) and 8 < acts_len <= 16: # EGT E4 pk=7
                 template_name = 'temp_tab_2.docx'
                 word_context['acts_1'] = acts[:8]
                 word_context['acts_2'] = acts[8:]
-            elif stick_place == stick_places.get(pk=7) and 16 < len(acts) <= 24: # EGT E4 pk=7
+            elif stick_place == stick_places.get(pk=7) and 16 < acts_len: # EGT E4 pk=7
                 template_name = 'temp_tab_3.docx'
                 word_context['acts_1'] = acts[:8]
                 word_context['acts_2'] = acts[8:16]
                 word_context['acts_3'] = acts[16:]
+            elif (stick_place == stick_places.get(pk=14) or stick_place == stick_places.get(pk=17)) and 6 < acts_len <= 12: # Promatic H2 и T3 pk=14,17
+                template_name = 'temp_tab_2.docx'
+                word_context['acts_1'] = acts[:6]
+                word_context['acts_2'] = acts[6:]
+            elif stick_place == stick_places.get(pk=10): #SET 5.7+ pk=10
+                template_name = 'temp_SET.docx'
+                acts_stickers = word_context['acts'].first()
+                stickers = acts_stickers.control_sticks_number
+                stickers_list = ['ИА ' + num for num in stickers.split() if num.isnumeric()]
+                word_context['sticker_cupola'] = stickers_list[-1]
+                word_context['sticker_terminal'] = stickers_list[-2]
+                stickers_list_new = [' '.join(stickers_list[i:i+2]) for i in range(0,len(stickers_list) - 2,2)]
+                word_context['stickers'] = stickers_list_new
             else:
                 template_name = 'temp_tab_1.docx'
             template_path = os.path.join(settings.BASE_DIR, 'templates', template_name)
