@@ -12,10 +12,14 @@ class ApplicationInput(forms.ModelForm):
                   'num_of_mach',
                   'bill_number',
                   'bill_date',
+                  'payment',
+                  'payment_document',
+                  'payment_date',
                   'pdf']
         widgets = {
             'date_belgiss': forms.DateInput(attrs={'type': 'date'}),
             'bill_date': forms.DateInput(attrs={'type': 'date'}),
+            'payment_date': forms.DateInput(attrs={'type': 'date'}),
             'pdf': forms.ClearableFileInput()
         }
 
