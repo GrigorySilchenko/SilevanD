@@ -46,6 +46,9 @@ def application(request):
                     num_of_mach=form.cleaned_data['num_of_mach'],
                     bill_number=form.cleaned_data['bill_number'],
                     bill_date=form.cleaned_data['bill_date'],
+                    payment=form.cleaned_data['payment'],
+                    payment_document=form.cleaned_data['payment_document'],
+                    payment_date=form.cleaned_data['payment_date'],
                     pdf=form.cleaned_data['pdf'],
                     declarant=form.cleaned_data['declarant'],
                     status=status

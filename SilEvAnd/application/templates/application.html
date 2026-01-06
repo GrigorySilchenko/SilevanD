@@ -10,22 +10,22 @@
     <br>
         <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
             <div>
-                    <form action="{% url 'application' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <dl class="row">
-                        {% for field in form %}
-                            <dt class="col-sm-4">{{ field.label_tag }}</dt>
-                            <dd class="col-sm-8">{{ field }}</dd>
-                                {% if field.errors %}
-                                    <div class="text-danger">
-                                        {{ field.errors }}
-                                    </div>
-                                {% endif %}
-                        {% endfor %}
-                        </dl>
-                        <button type="submit" class="btn btn-success">Зарегистрировать заявку</button>
-                        <a href="{% url 'declarant' %}" class="btn btn-success">Добавить нового заявителя</a>
-                    </form>
+                <form action="{% url 'application' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <dl class="row">
+                    {% for field in form %}
+                        <dt class="col-sm-4">{{ field.label_tag }}</dt>
+                        <dd class="col-sm-8">{{ field }}</dd>
+                            {% if field.errors %}
+                                <div class="text-danger">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                    {% endfor %}
+                    </dl>
+                    <button type="submit" class="btn btn-success">Зарегистрировать заявку</button>
+                    <a href="{% url 'declarant' %}" class="btn btn-success">Добавить нового заявителя</a>
+                </form>
                 {% if success_message %}
                     <div class="alert alert-success mt-3 text-center">
                         {{ success_message }}
@@ -44,10 +44,13 @@
           <th scope="col" colspan="3">Заявка</th>
           <th scope="col" rowspan="2">Наименование заявителя</th>
           <th scope="col" colspan="2">Входящий номер БелГИСС</th>
-          <th scope="col" rowspan="2" style="width: 100px;">Количество игровых автоматов</th>
+          <th scope="col" rowspan="2" style="width: 80px;">Кол-во ИА</th>
           <th scope="col" colspan="2">Номер счета</th>
-          <th scope="col" rowspan="2"style="width: 100px;">Изм.</th>
+          <th scope="col" rowspan="2">Сумма</th>
+          <th scope="col" colspan="2">Оплата</th>
+          <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
         </tr>
+      </thead>
       <tbody>
         <tr class="table table-success table-bordered border-success align-middle">
           <td scope="col">№</td>
@@ -60,6 +63,9 @@
           <td scope="col">№ счета</td>
           <td scope="col">Дата</td>
           <td scope="col"></td>
+          <td scope="col" style="width: 80px;">№ п/п</td>
+          <td scope="col">Дата</td>
+          <td scope="col"></td>
         </tr>
       {% for app in page_obj %}
         <tr>
@@ -67,7 +73,7 @@
           <td>{{ app.created_on|date:"d.m.Y" }}</td>
           <td>
               {% if app.pdf %}
-                <a href="{{ app.pdf.url }}" class="text text-success" target="_blank">Просмотр</a>
+                <a href="{{ app.pdf.url }}" class="text text-success" target="_blank">PDF</a>
               {% else %}
                 <a class="text text-danger">Пусто</a>
               {% endif %}
@@ -98,6 +104,27 @@
           <td>
               {% if app.bill_date|date:"d.m.Y" %}
                   {{ app.bill_date|date:"d.m.Y" }}
+              {% else %}
+                   <span class="text-danger">---</span>
+              {% endif %}
+          </td>
+          <td>
+              {% if app.payment %}
+                  {{ app.payment }}
+              {% else %}
+                   <span class="text-danger">---</span>
+              {% endif %}
+          </td>
+          <td>
+              {% if app.payment_document %}
+                  {{ app.payment_document }}
+              {% else %}
+                   <span class="text-danger">---</span>
+              {% endif %}
+          </td>
+          <td>
+              {% if app.payment_date|date:"d.m.Y" %}
+                  {{ app.payment_date|date:"d.m.Y" }}
               {% else %}
                    <span class="text-danger">---</span>
               {% endif %}
