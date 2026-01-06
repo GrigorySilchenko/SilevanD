@@ -1,5 +1,3 @@
-from platform import machine
-
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Sum
 from django.shortcuts import render

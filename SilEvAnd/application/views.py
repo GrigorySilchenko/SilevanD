@@ -1,3 +1,4 @@
+import openpyxl
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect
 from .models import Application, Status, Declarant
@@ -84,11 +85,15 @@ def application_del(request, pk):
 def application_change(request, pk):
     app_change = Application.objects.get(pk=pk)
     success_message = ''
+    status = app_change.status.id
+    print(status)
+    print(type(status))
     if request.method == 'POST':
         form = ApplicationInput(request.POST, request.FILES, instance=app_change)
         if form.is_valid():
-            status = status_giving(form.cleaned_data)
-            form.instance.status = status
+            if status == 1 or status == 2 or status == 7:
+                status = status_giving(form.cleaned_data)
+                form.instance.status = status
             form.save()
             success_message = 'Заявка успешно изменена!'
     else:
@@ -158,3 +163,15 @@ def declarant_del(request, pk):
         }
     )
     return render(request, 'declarant.html', context)
+
+def declarant_input():
+    wb = openpyxl.load_workbook(
+        'D:\PythonCreateActTOProject\ActTO\База заявителей с адресами 23.12.2025.xlsx')
+    ws = wb.active
+    for row in ws.iter_rows(min_row=2):
+        declarant_new = Declarant(
+            name=row[0].value,
+            address=row[1].value,
+            unp=row[2].value
+        )
+        declarant_new.save()

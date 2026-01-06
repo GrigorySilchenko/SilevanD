@@ -32,7 +32,7 @@ def registry(request):
         'version_get': param_dict['version'],
         'manufacturer_get': param_dict['manufacturer']
          }
-    return render(request, 'registry_modify.html', context)
+    return render(request, 'registry.html', context)
 
 
 def registry_input(request):
@@ -69,7 +69,7 @@ def registry_modify(request):
         'version_get': param_dict['version'],
         'manufacturer_get': param_dict['manufacturer']
          }
-    return render(request, 'registry.html', context)
+    return render(request, 'registry_modify.html', context)
 
 
 def registry_modify_input(request):
@@ -88,7 +88,7 @@ def registry_modify_input(request):
     context = {
             'registries': registries
         }
-    return render(request, 'registry.html', context)
+    return render(request, 'registry_modify.html', context)
 
 @permission_required('act_creation.view_act')
 def slot_machine_data(request):
