@@ -9,7 +9,7 @@ from datetime import date
 @permission_required('distribution.view_controljournal')
 def distribution(request):
     distributions = ControlJournal.objects.all().order_by('-application')
-    applications = Application.objects.filter(status__in=['2', '1', '7']).order_by('-id')
+    applications = Application.objects.filter(status__in=['2', '1', '7', '8']).order_by('-id')
 
     app_get = request.GET.get('app')
     if app_get:

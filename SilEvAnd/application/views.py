@@ -11,7 +11,9 @@ def home(request):
     return render(request, 'home.html')
 
 def status_giving(cleaned_data):
-    if cleaned_data['application_number_belgiss'] and cleaned_data['bill_number']:
+    if cleaned_data['payment_document']:
+        status = Status.objects.get(pk=8)
+    elif cleaned_data['application_number_belgiss'] and cleaned_data['bill_number']:
         status = Status.objects.get(pk=2)
     elif cleaned_data['application_number_belgiss'] and not cleaned_data['bill_number']:
         status = Status.objects.get(pk=1)
