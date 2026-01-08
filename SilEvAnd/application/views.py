@@ -21,7 +21,7 @@ def status_giving(cleaned_data):
 
 @permission_required('application.view_application')
 def application(request):
-    applications = Application.objects.all().order_by('-id')
+    applications = Application.objects.all().order_by('-application_number')
     paginator = Paginator(applications, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -69,7 +69,7 @@ def application(request):
     return render(request, 'application.html', context)
 
 def application_del(request, pk):
-    applications = Application.objects.all().order_by('-id')
+    applications = Application.objects.all().order_by('-application_number')
     app_del = Application.objects.get(pk=pk)
     app_del.delete()
     paginator = Paginator(applications, 20)
@@ -89,8 +89,6 @@ def application_change(request, pk):
     app_change = Application.objects.get(pk=pk)
     success_message = ''
     status = app_change.status.id
-    print(status)
-    print(type(status))
     if request.method == 'POST':
         form = ApplicationInput(request.POST, request.FILES, instance=app_change)
         if form.is_valid():
