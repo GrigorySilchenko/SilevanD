@@ -403,8 +403,44 @@ def docx_create(request):
                 word_context['sticker_terminal'] = stickers_list[-2]
                 stickers_list_new = [' '.join(stickers_list[i:i+2]) for i in range(0,len(stickers_list) - 2,2)]
                 word_context['stickers'] = stickers_list_new
+            elif stick_place == stick_places.get(pk=15):  # SET 6.4+ pk=15
+                template_name = 'temp_SET.docx'
+                acts_stickers = word_context['acts'].first()
+                stickers = acts_stickers.control_sticks_number
+                stickers_list = ['ИА ' + num for num in stickers.split() if num.isnumeric()]
+                word_context['sticker_cupola'] = stickers_list[-1]
+                word_context['sticker_terminal'] = stickers_list[-2]
+                stickers_list_new = [' '.join(stickers_list[i:i + 3]) for i in range(0, len(stickers_list) - 3, 3)]
+                word_context['stickers'] = stickers_list_new
+            elif stick_place == stick_places.get(pk=13): #EGT BELL LINK pk=13
+                template_name = 'temp_BELL_tab_1.docx'
+                models_new = [act.model_registry.model for act in word_context.get('acts')]
+                versions_new = [act.model_registry.version for act in word_context.get('acts')]
+                model_reg_new = [act.model_registry.number for act in word_context.get('acts')]
+                slot_nums = [act.slot_number for act in word_context.get('acts')]
+                board_nums = [act.board_number for act in word_context.get('acts')]
+                acts_stickers = [act.control_sticks_number for act in word_context.get('acts')]
+                acts_stickers_mod = []
+                jackpot_stickers = ''
+                if acts_stickers:
+                    for stickers in acts_stickers:
+                        stickers_list = ['ИА ' + num for num in stickers.split() if num.isnumeric()]
+                        stickers_list[-1] += '*'
+                        stickers_list[-2] += '*'
+                        jackpot_stickers = ', '.join(stickers_list[-2:])
+                        stickers = ' '.join(stickers_list)
+                        acts_stickers_mod.append(stickers)
+                keys = ['model', 'version', 'model_registry', 'slot_number', 'board_number', 'sticks_number']
+                lists = [models_new, versions_new, model_reg_new, slot_nums, board_nums, acts_stickers_mod]
+                acts_new = []
+                for values in zip(*lists):
+                    act = dict(zip(keys, values))
+                    acts_new.append(act)
+                word_context['acts'] = acts_new
+                word_context['jackpot_stickers'] = jackpot_stickers
             else:
                 template_name = 'temp_tab_1.docx'
+
             template_path = os.path.join(settings.BASE_DIR, 'templates', template_name)
             doc = DocxTemplate(template_path)
             doc.render(word_context)
