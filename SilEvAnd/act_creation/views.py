@@ -153,6 +153,7 @@ def slot_machine_data_change(request, pk):
 
 @permission_required('act_creation.add_act')
 def s_m_data_input(request, pk):
+    """Представление для занесения данных об игровом автомате в журнал актов ИА"""
     users_application = ControlJournal.objects.get(pk=pk)
     slot_machines_data = Act.objects.all().order_by('-act_number')
     slot_machines_count = slot_machines_data.filter(distribution__application__application_number=str(users_application)).count()
@@ -297,6 +298,7 @@ def s_m_data_input(request, pk):
 
 @permission_required('act_creation.view_act')
 def act_creation(request):
+    """Страница с заявками конкретного исполнителя"""
     user_now = request.user
     users_applications = ControlJournal.objects.filter(user=user_now).filter(application__status__in=['4']).order_by('-id')
     context = {
@@ -324,6 +326,10 @@ def docx_create(request):
         form = ActDataInput(request.POST)
         if form.is_valid():
             acts = slot_machines_data.filter(act_number=int(str(form.cleaned_data['act_number'])))
+
+
+
+
             act_first = acts.first()
             bill_date = act_first.distribution.application.bill_date.strftime("%d.%m.%Y")
             bill_num = f'{act_first.distribution.application.bill_number} от {bill_date}'
@@ -337,7 +343,6 @@ def docx_create(request):
                 manufacturer = act_first.model_registry.manufacturer
             else:
                 manufacturer = manufacturer_form
-
 
             word_context = {
                 'act_number': act_first.act_number,
