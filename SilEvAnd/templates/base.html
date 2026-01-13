@@ -27,6 +27,12 @@
         .table-bordered td {
             border: 1px solid #198754 !important;
         }
+        .dropdown .dropdown-toggle:hover,
+        .dropdown .dropdown-toggle:focus,
+        .dropdown .dropdown-toggle:active {
+          background-color: #176e35;
+          color: #fff !important;
+        }
         .dropdown-menu .dropdown-item:hover,
         .dropdown-menu .dropdown-item:focus,
         .dropdown-menu .dropdown-item:active {
@@ -62,7 +68,17 @@
         </a>
         <ul class="nav nav-pills">
           <li class="nav-item"><a href="{% url 'home' %}" class="nav-link" aria-current="page">Главная</a></li>
-          <li class="nav-item"><a href="{% url 'application' %}" class="nav-link">Регистрация заявки</a></li>
+        </ul>
+        <div class="dropdown">
+          <button class="btn text-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Офис
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="text-success dropdown-item" href="{% url 'application' %}">Регистрация заявки</a></li>
+            <li><a class="text-success dropdown-item" href="#">Сетевой график</a></li>
+          </ul>
+        </div>
+        <ul class="nav nav-pills">
           <li class="nav-item"><a href="{% url 'distribution' %}" class="nav-link">Распределение работ</a></li>
           <li class="nav-item"><a href="{% url 'act_creation' %}" class="nav-link">Кабинет исполнителя</a></li>
         </ul>
