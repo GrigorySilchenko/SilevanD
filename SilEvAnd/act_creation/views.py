@@ -325,12 +325,8 @@ def docx_create(request):
     if request.method == 'POST':
         form = ActDataInput(request.POST)
         if form.is_valid():
-            acts = slot_machines_data.filter(act_number=int(str(form.cleaned_data['act_number'])))
-
-
-
-
-            act_first = acts.first()
+            acts_query = slot_machines_data.filter(act_number=int(str(form.cleaned_data['act_number'])))
+            act_first = acts_query.first()
             bill_date = act_first.distribution.application.bill_date.strftime("%d.%m.%Y")
             bill_num = f'{act_first.distribution.application.bill_number} от {bill_date}'
             app_date = act_first.distribution.application.created_on.strftime("%d.%m.%Y")
@@ -343,6 +339,19 @@ def docx_create(request):
                 manufacturer = act_first.model_registry.manufacturer
             else:
                 manufacturer = manufacturer_form
+
+            acts = []
+            models_new = [act.model_registry.model for act in acts_query]
+            versions_new = [act.model_registry.version for act in acts_query]
+            model_reg_new = [act.model_registry.number.split()[0] for act in acts_query]
+            slot_nums = [act.slot_number for act in acts_query]
+            board_nums = [act.board_number for act in acts_query]
+            acts_stickers = [act.control_sticks_number for act in acts_query]
+            keys = ['model', 'version', 'model_registry', 'slot_number', 'board_number', 'sticks_number']
+            lists = [models_new, versions_new, model_reg_new, slot_nums, board_nums, acts_stickers]
+            for values in zip(*lists):
+                act = dict(zip(keys, values))
+                acts.append(act)
 
             word_context = {
                 'act_number': act_first.act_number,
@@ -419,12 +428,7 @@ def docx_create(request):
                 word_context['stickers'] = stickers_list_new
             elif stick_place == stick_places.get(pk=13): #EGT BELL LINK pk=13
                 template_name = 'temp_BELL_tab_1.docx'
-                models_new = [act.model_registry.model for act in word_context.get('acts')]
-                versions_new = [act.model_registry.version for act in word_context.get('acts')]
-                model_reg_new = [act.model_registry.number for act in word_context.get('acts')]
-                slot_nums = [act.slot_number for act in word_context.get('acts')]
-                board_nums = [act.board_number for act in word_context.get('acts')]
-                acts_stickers = [act.control_sticks_number for act in word_context.get('acts')]
+                acts_stickers = [act.get('sticks_number') for act in acts]
                 acts_stickers_mod = []
                 jackpot_stickers = ''
                 if acts_stickers:
@@ -435,13 +439,8 @@ def docx_create(request):
                         jackpot_stickers = ', '.join(stickers_list[-2:])
                         stickers = ' '.join(stickers_list)
                         acts_stickers_mod.append(stickers)
-                keys = ['model', 'version', 'model_registry', 'slot_number', 'board_number', 'sticks_number']
-                lists = [models_new, versions_new, model_reg_new, slot_nums, board_nums, acts_stickers_mod]
-                acts_new = []
-                for values in zip(*lists):
-                    act = dict(zip(keys, values))
-                    acts_new.append(act)
-                word_context['acts'] = acts_new
+                for key, value in enumerate(acts_stickers_mod):
+                    acts[key]['sticks_number'] = value
                 word_context['jackpot_stickers'] = jackpot_stickers
             else:
                 template_name = 'temp_tab_1.docx'
