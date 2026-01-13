@@ -410,8 +410,7 @@ def docx_create(request):
                 word_context['acts_2'] = acts[6:]
             elif stick_place == stick_places.get(pk=10): #SET 5.7+ pk=10
                 template_name = 'temp_SET.docx'
-                acts_stickers = word_context['acts'].first()
-                stickers = acts_stickers.control_sticks_number
+                stickers = [act.get('sticks_number') for act in acts][0]
                 stickers_list = ['ИА ' + num for num in stickers.split() if num.isnumeric()]
                 word_context['sticker_cupola'] = stickers_list[-1]
                 word_context['sticker_terminal'] = stickers_list[-2]
@@ -419,8 +418,7 @@ def docx_create(request):
                 word_context['stickers'] = stickers_list_new
             elif stick_place == stick_places.get(pk=15):  # SET 6.4+ pk=15
                 template_name = 'temp_SET.docx'
-                acts_stickers = word_context['acts'].first()
-                stickers = acts_stickers.control_sticks_number
+                stickers = [act.get('sticks_number') for act in acts][0]
                 stickers_list = ['ИА ' + num for num in stickers.split() if num.isnumeric()]
                 word_context['sticker_cupola'] = stickers_list[-1]
                 word_context['sticker_terminal'] = stickers_list[-2]
