@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class ControlJournal(models.Model):
     short_slot_name = models.TextField(max_length=200, blank=True, null=True, verbose_name='Модели ИА')
-    place = models.CharField(max_length=50, blank=True, null=True, verbose_name='Место проведения ТО')
+    # place = models.CharField(max_length=50, blank=True, null=True, verbose_name='Место проведения ТО')
     application = models.ForeignKey('application.Application', on_delete=models.CASCADE, related_name='control_journal')
     act = models.TextField(max_length=200, blank=True, null=True, verbose_name='Акт ТО')
     notice = models.TextField(max_length=200, blank=True, null=True, verbose_name='Примечание')
