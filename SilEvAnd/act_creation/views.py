@@ -372,7 +372,10 @@ def docx_create(request):
                       f'{stick_place.board_name} {date_filename}.docx')
             save_path = os.path.join(settings.MEDIA_ROOT, 'acts', docx_file_name)
             acts_len = len(acts)
-            if stick_place == stick_places.get(pk=3) and 12 < acts_len <= 24: # разбиение контекста на страницы
+            conformity = acts_query.first().conformity.id
+            if conformity == 2:
+                template_name = 'temp_negative.docx'
+            elif stick_place == stick_places.get(pk=3) and 12 < acts_len <= 24: # разбиение контекста на страницы
                 template_name = 'temp_tab_2.docx'
                 word_context['acts_1'] = acts[:12]
                 word_context['acts_2'] = acts[12:]
