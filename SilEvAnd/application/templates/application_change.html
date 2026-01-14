@@ -35,28 +35,32 @@
       <thead class="table table-success table-bordered border-success align-middle">
         <tr>
           <th scope="col" colspan="3">Заявка</th>
-          <th scope="col" rowspan="2">Наименование заявителя</th>
-          <th scope="col" colspan="2">Входящий номер БелГИСС</th>
-          <th scope="col" rowspan="2" style="width: 80px;">Кол-во ИА</th>
-          <th scope="col" colspan="2">Номер счета</th>
-          <th scope="col" rowspan="2">Сумма</th>
-          <th scope="col" colspan="2">Оплата</th>
+            <th scope="col" rowspan="2" style="width: 200px;">Наименование заявителя</th>
+            <th scope="col" colspan="2">Входящий номер БелГИСС</th>
+            <th scope="col" rowspan="2">Место проведения</th>
+            <th scope="col" rowspan="2" style="width: 80px;">Кол-во ИА</th>
+            <th scope="col" colspan="2">Номер счета</th>
+            <th scope="col" rowspan="2">Сумма</th>
+            <th scope="col" colspan="2">Оплата</th>
+            <th scope="col" rowspan="2" style="width: 100px;">Прим-е</th>
         </tr>
       </thead>
       <tbody>
         <tr class="table table-success table-bordered border-success align-middle">
           <td scope="col">№</td>
-          <td scope="col">Дата</td>
-          <td scope="col">PDF</td>
-          <td scope="col"></td>
-          <td scope="col">Вход.№</td>
-          <td scope="col">Дата</td>
-          <td scope="col"></td>
-          <td scope="col">№ счета</td>
-          <td scope="col">Дата</td>
-          <td scope="col"></td>
-          <td scope="col" style="width: 80px;">№ п/п</td>
-          <td scope="col">Дата</td>
+            <td scope="col">Дата</td>
+            <td scope="col">PDF</td>
+            <td scope="col"></td>
+            <td scope="col">Вход.№</td>
+            <td scope="col">Дата</td>
+            <td scope="col"></td>
+            <td scope="col"></td>
+            <td scope="col">№ счета</td>
+            <td scope="col">Дата</td>
+            <td scope="col"></td>
+            <td scope="col" style="width: 80px;">№ п/п</td>
+            <td scope="col">Дата</td>
+            <td scope="col"></td>
         </tr>
         <tr>
           <td>{{ applications.application_number }}</td>
@@ -83,6 +87,7 @@
                    <span class="text-danger">---</span>
               {% endif %}
           </td>
+          <td>{{ applications.place }}</td>
           <td>{{ applications.num_of_mach }}</td>
           <td>
               {% if applications.bill_number %}
@@ -119,6 +124,7 @@
                    <span class="text-danger">---</span>
               {% endif %}
           </td>
+          <td>{{ applications.notice }}</td>
         </tr>
       </tbody>
     </table>

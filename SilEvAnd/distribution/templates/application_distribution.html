@@ -101,8 +101,8 @@
           <td>{{ distribution.short_slot_name }}</td>
           <td>{{ distribution.application.num_of_mach }}</td>
           <td>
-              {% if distribution.place %}
-                {{ distribution.place }}
+              {% if distribution.application.place %}
+                {{ distribution.application.place }}
               {% else %}
                 <span class="text-danger">---</span>
               {% endif %}

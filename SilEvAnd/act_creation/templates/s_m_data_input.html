@@ -13,6 +13,11 @@
         border-color: #198754 !important;
         box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25) !important;
     }
+    .search-form .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+
 
 </style>
 
@@ -98,7 +103,7 @@
                         const textareas = document.querySelectorAll('.auto-resize-textarea');
                         textareas.forEach(textarea => {
                             textarea.style.height = 'auto'; // Сначала сбрасываем высоту
-                            textarea.style.width = '80px'
+                            textarea.style.width = '100px'
                             textarea.style.height = (textarea.scrollHeight) + 'px'; // Устанавливаем высоту по контенту
                             textarea.addEventListener('input', function() {
                                 textarea.style.height = 'auto';
@@ -181,10 +186,10 @@
                                 <input type="search" name="application" class="form-control me-2" value="{{ application|default:'' }}" aria-label="Search">
                             </td>
                             <td>
-                                <input type="search" name="control_sticks_number" class="form-control me-2" value="{{ control_sticks_number|default:'' }}" aria-label="Search">
+                                <input type="search" name="control_sticks_number" class="form-control me-0 my-width" value="{{ control_sticks_number|default:'' }}" aria-label="Search" style="width: 80px;">
                             </td>
                             <td>
-                                <input type="search" name="declarant" class="form-control me-2" value="{{ declarant|default:'' }}" aria-label="Search">
+                                <input type="search" name="declarant" class="form-control me-0 w-auto" value="{{ declarant|default:'' }}" aria-label="Search">
                             </td>
                             <td>
                                 <input type="search" name="result" class="form-control me-2" value="{{ result|default:'' }}" aria-label="Search">

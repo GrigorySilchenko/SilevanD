@@ -15,8 +15,8 @@ class Application(models.Model):
     payment_date = models.DateField(blank=True, null=True, verbose_name='Дата п/п')
     pdf = models.FileField(verbose_name='PDF', upload_to='PDF/', blank=True, null=True)
     declarant = models.ForeignKey('Declarant', on_delete=models.CASCADE, related_name='applications', verbose_name='Заявитель')
-    place = models.CharField(max_length=50, blank=True, null=True, verbose_name='Место проведения ТО')
-    notice = models.TextField(max_length=200, blank=True, null=True, verbose_name='Примечание')
+    place = models.CharField(max_length=50, default='Минск', blank=True, null=True, verbose_name='Место проведения ТО')
+    notice = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Примечание')
     status = models.ForeignKey('Status', on_delete=models.CASCADE, related_name='applications')
     def __str__(self):
         return str(self.application_number)

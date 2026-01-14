@@ -41,7 +41,7 @@
           <th scope="col">Модели ИА</th>
           <th scope="col" style="width: 70px;">Кол-во ИА</th>
           <th scope="col" style="width: 100px;">Место проведения ТО</th>
-          <th scope="col" style="width: 100px;">Акт ТО</th>
+          <th scope="col" style="width: 150px;">Акт ТО</th>
           <th scope="col" style="width: 80px;">Исп-ль</th>
           <th scope="col">Примечания</th>
           <th scope="col" style="width: 50px;">Изм.</th>
@@ -96,8 +96,8 @@
           <td>{{ distribution.short_slot_name }}</td>
           <td>{{ distribution.application.num_of_mach }}</td>
           <td>
-              {% if distribution.place %}
-                {{ distribution.place }}
+              {% if distribution.application.place %}
+                {{ distribution.application.place }}
               {% else %}
                 <span class="text-danger">---</span>
               {% endif %}

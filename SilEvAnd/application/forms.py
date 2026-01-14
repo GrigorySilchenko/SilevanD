@@ -7,6 +7,7 @@ class ApplicationInput(forms.ModelForm):
     class Meta:
         model = Application
         fields = ['declarant',
+                  'place',
                   'application_number_belgiss',
                   'date_belgiss',
                   'num_of_mach',
@@ -15,11 +16,13 @@ class ApplicationInput(forms.ModelForm):
                   'payment',
                   'payment_document',
                   'payment_date',
-                  'pdf']
+                  'pdf',
+                  'notice']
         widgets = {
             'date_belgiss': forms.DateInput(attrs={'type': 'date'}),
             'bill_date': forms.DateInput(attrs={'type': 'date'}),
             'payment_date': forms.DateInput(attrs={'type': 'date'}),
+            'notice': forms.Textarea(attrs={'cols': 30, 'rows': 2}),
             'pdf': forms.ClearableFileInput()
         }
 
