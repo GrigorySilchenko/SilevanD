@@ -44,11 +44,11 @@
             <th scope="col" colspan="3">Заявка</th>
             <th scope="col" rowspan="2" style="width: 200px;">Наименование заявителя</th>
             <th scope="col" colspan="2">Входящий номер БелГИСС</th>
-            <th scope="col" rowspan="2">Место проведения</th>
             <th scope="col" rowspan="2" style="width: 80px;">Кол-во ИА</th>
             <th scope="col" colspan="2">Номер счета</th>
             <th scope="col" rowspan="2">Сумма</th>
             <th scope="col" colspan="2">Оплата</th>
+            <th scope="col" rowspan="2">Место проведения</th>
             <th scope="col" rowspan="2" style="width: 100px;">Прим-е</th>
             <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
         </tr>
@@ -59,15 +59,15 @@
             <td scope="col">Дата</td>
             <td scope="col">PDF</td>
             <td scope="col"></td>
-            <td scope="col">Вход.№</td>
+            <td scope="col" style="width: 80px;">Вход.№</td>
             <td scope="col">Дата</td>
-            <td scope="col"></td>
             <td scope="col"></td>
             <td scope="col">№ счета</td>
             <td scope="col">Дата</td>
             <td scope="col"></td>
             <td scope="col" style="width: 80px;">№ п/п</td>
             <td scope="col">Дата</td>
+            <td scope="col"></td>
             <td scope="col"></td>
             <td scope="col"></td>
         </tr>
@@ -97,7 +97,6 @@
                    <span class="text-danger">---</span>
               {% endif %}
           </td>
-          <td>{{ app.place }}</td>
           <td>{{ app.num_of_mach }}</td>
           <td>
               {% if app.bill_number %}
@@ -134,6 +133,7 @@
                    <span class="text-danger">---</span>
               {% endif %}
           </td>
+          <td>{{ app.place }}</td>
           <td>{{ app.notice }}</td>
           <td><a href="{% url 'application_change' app.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
           </td>

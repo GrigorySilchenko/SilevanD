@@ -39,7 +39,7 @@
                     <br>
                     <dl class="row">
                         <dt class="col-sm-3">Заявка</dt>
-                        <dd class="col-sm-9">№ {{ application }} от {{ application.created_on|date:"d.m.Y" }}</dd>
+                        <dd class="col-sm-9"><b>№ {{ application }} от {{ application.created_on|date:"d.m.Y" }}</b></dd>
                         <dt class="col-sm-3">PDF</dt>
                         <dd class="col-sm-9">
                             {% if application.pdf %}
@@ -50,8 +50,10 @@
                         </dd>
                         <dt class="col-sm-3">Заявитель</dt>
                         <dd class="col-sm-9">{{ application.declarant }}</dd>
-                        <dt class="col-sm-3">Юр. адрес заявителя</dt>
+                        <dt class="col-sm-3">Юр. адрес</dt>
                         <dd class="col-sm-9">{{ application.declarant.address }}</dd>
+                        <dt class="col-sm-3">Город</dt>
+                        <dd class="col-sm-9">{{ application.place }}</dd>
                         <dt class="col-sm-3">Количество ИА</dt>
                         <dd class="col-sm-9">{{ application.num_of_mach }} шт.</dd>
                         <dt class="col-sm-3">Счет</dt>

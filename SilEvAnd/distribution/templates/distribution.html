@@ -16,11 +16,12 @@
                 {% for application in applications %}
                 <div class="col-md-3 mb-3 d-flex align-items-stretch">
                     <div class="card h-100 border border-success">
-                        <div class="card-body">
+                        <div class="card-body text-center">
                             <h5 class="card-title"><b>{{ application }} от {{ application.created_on|date:"d.m.Y" }}</b></h5>
-                            <p class="card-text">{{ application.declarant }}</p>
-                            <p class="card-text"><b>{{ application.num_of_mach }} шт.</b></p>
-                            <p class="card-text">Статус заявки: {{ application.status }}</p>
+                            <div class="card-text">{{ application.declarant }}</div>
+                            <div class="card-text">{{ application.place }}</div>
+                            <div class="card-text"><b>{{ application.num_of_mach }} шт.</b></div>
+                            <div class="card-text">Статус заявки: {{ application.status }}</div>
                             <a href="{% url 'application_distribution' application.pk %}"
                                class="stretched-link">
                             </a>
