@@ -2,7 +2,7 @@ import openpyxl
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect
 from .models import Application, Status, Declarant, NetworkGraph
-from .forms import ApplicationInput, DeclarantInput
+from .forms import ApplicationInput, DeclarantInput, NetworkGraphInput
 from datetime import date
 from django.core.paginator import Paginator
 
@@ -165,6 +165,27 @@ def network_graph(request):
         }
     )
     return render(request, 'network_graph.html', context)
+
+def network_graph_change(request,pk):
+    network_graph_data = NetworkGraph.objects.get(pk=pk)
+    success_message, danger_message = '', ''
+    form = NetworkGraphInput()
+    if request.method == 'POST':
+        form = NetworkGraphInput(request.POST, instance=network_graph_data)
+        if form.is_valid():
+            form.save()
+            form = NetworkGraphInput()
+            success_message = 'Изменения в сетевой график внесены успешно'
+    else:
+        form = NetworkGraphInput(instance=network_graph_data)
+    context = (
+        {
+            'form': form,
+            'network_graph_data': network_graph_data,
+            'success_message': success_message
+        }
+    )
+    return render(request, 'network_graph_change.html', context)
 
 
 def declarant_del(request, pk):

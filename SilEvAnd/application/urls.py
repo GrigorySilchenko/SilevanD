@@ -11,4 +11,5 @@ urlpatterns = [
     path('declarant_change/<int:pk>', views.declarant_change, name='declarant_change'),
     path('declarant_del/<int:pk>', views.declarant_del, name='declarant_del'),
     path('network_graph/', views.network_graph, name='network_graph'),
+    path('network_graph_change/<int:pk>', views.network_graph_change, name='network_graph_change'),
 ]

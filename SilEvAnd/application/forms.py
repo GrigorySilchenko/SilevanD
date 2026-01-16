@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Application, Declarant
+from .models import Application, Declarant, NetworkGraph
 
 
 class ApplicationInput(forms.ModelForm):
@@ -49,4 +49,20 @@ class DeclarantInput(forms.ModelForm):
         widgets = {
             'name': forms.Textarea(attrs={'cols':30, 'rows': 2}),
             'address': forms.Textarea(attrs={'cols': 30, 'rows': 3})
+        }
+
+class NetworkGraphInput(forms.ModelForm):
+    class Meta:
+        model = NetworkGraph
+        fields = ['recalculation',
+                  'notice_recalculation',
+                  'num_exclude_mach',
+                  'act_send_date',
+                  'final_notice',
+                  'app_closed']
+        widgets = {
+            'notice_recalculation': forms.Textarea(attrs={'cols':30, 'rows': 2}),
+            'act_send_date': forms.Textarea(attrs={'cols': 30, 'rows': 2}),
+            'final_notice': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
+            'app_closed': forms.RadioSelect(choices=[(True, 'Да'), (False, 'Нет')])
         }

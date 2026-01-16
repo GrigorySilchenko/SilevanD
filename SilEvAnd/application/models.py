@@ -38,9 +38,10 @@ class NetworkGraph(models.Model):
     control_journal = models.ForeignKey('distribution.ControlJournal', on_delete=models.CASCADE, related_name='network_graph', blank=True, null=True, verbose_name='Акт по заявке')
     recalculation = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, verbose_name='Перерасчет')
     notice_recalculation = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Основание для перерасчета')
+    num_exclude_mach = models.IntegerField(default=0, blank=True, null=True, verbose_name='Кол. искл. ИА')
     act_send_date = models.TextField(max_length=50, default='', blank=True, null=True, verbose_name='Дата направления акта')
     final_notice = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Примечание')
-    app_closed = models.BooleanField(default=False, blank=True, null=True, verbose_name='')
+    app_closed = models.BooleanField(default=False, blank=True, verbose_name='Можно закрывать заявку?')
     def __str__(self):
         return str(self.application)
 

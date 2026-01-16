@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block page_content %}
+
+
+<div class="container">
+    <div class="border-bottom border-success">
+        <div class="container">
+            <h2>Внесите изменения в данные по заявке {{ network_graph_data }}:</h2>
+            <form action="{% url 'network_graph_change' network_graph_data.pk %}" method="post">
+                {% csrf_token %}
+                <dl class="row">
+                {% for field in form %}
+                    <dt class="col-sm-4">{{ field.label_tag }}</dt>
+                    <dd class="col-sm-8">{{ field }}</dd>
+                        {% if field.errors %}
+                            <div class="text-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                {% endfor %}
+                </dl>
+                <button type="submit" class="btn btn-success">Сохранить изменения</button>
+                <a href="{% url 'network_graph' %}" class="btn btn-success">Вернуться к сетевому графику</a>
+            </form>
+            {% if success_message %}
+                <div class="text-success">
+                    {{ success_message }}
+                </div>
+            {% endif %}
+            <br>
+        </div>
+    </div>
+    <br>
+    <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+      <thead class="table table-success table-bordered border-success align-middle">
+        <tr>
+            <th scope="col">Заявитель</th>
+            <th scope="col">Счет</th>
+            <th scope="col">Заявка</th>
+            <th scope="col">Кол. ИА</th>
+            <th scope="col">Сумма</th>
+            <th scope="col">Перерасчёт</th>
+            <th scope="col">Оплата</th>
+            <th scope="col">Кол. искл. ИА</th>
+            <th scope="col">Письма об отказе</th>
+            <th scope="col">Дата направления акта</th>
+            <th scope="col">Номер акта</th>
+            <th scope="col">Примечания</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td class="text-start ps-2">{{ network_graph_data.application.declarant }}</td>
+            <td>{{ network_graph_data.application.bill_number }} от {{ network_graph_data.application.bill_date|date:"d.m.Y" }}</td>
+            <td>{{ network_graph_data.application.application_number }} от {{ network_graph_data.application.created_on|date:"d.m.Y" }}</td>
+            <td>{{ network_graph_data.application.num_of_mach }}</td>
+            <td>{{ network_graph_data.application.payment }}</td>
+            <td>
+                {% if network_graph_data.recalculation %}
+                  {{ network_graph_data.recalculation }}
+                {% else %}
+                   <span class="text-success">---</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if network_graph_data.application.payment_document %}
+                  п/п {{ network_graph_data.application.payment_document }} от {{ network_graph_data.application.payment_date|date:"d.m.Y" }}
+                {% else %}
+                   <span class="text-danger">---</span>
+                {% endif %}
+            </td>
+            <td>{{ network_graph_data.num_exclude_mach }}</td>
+            <td>{{ network_graph_data.notice_recalculation }}</td>
+            <td>{{ network_graph_data.act_send_date }}</td>
+            <td>{{ network_graph_data.control_journal.act }}</td>
+            <td>{{ network_graph_data.final_notice }}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+
+{% endblock %}

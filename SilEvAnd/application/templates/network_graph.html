@@ -22,10 +22,12 @@
             <th scope="col">Сумма</th>
             <th scope="col">Перерасчёт</th>
             <th scope="col">Оплата</th>
+            <th scope="col">Кол. искл. ИА</th>
             <th scope="col">Письма об отказе</th>
             <th scope="col">Дата направления акта</th>
             <th scope="col">Номер акта</th>
             <th scope="col">Примечания</th>
+            <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
         </tr>
       </thead>
       <tbody>
@@ -53,6 +55,12 @@
             </td>
             <td>
                 <input type="search" name="version" class="form-control me-2" value="{{ version|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="slot_number" class="form-control me-2" value="{{ slot_number|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="slot_number" class="form-control me-2" value="{{ slot_number|default:'' }}" aria-label="Search">
             </td>
             <td>
                 <input type="search" name="slot_number" class="form-control me-2" value="{{ slot_number|default:'' }}" aria-label="Search">
@@ -87,10 +95,13 @@
                    <span class="text-danger">---</span>
                 {% endif %}
             </td>
+            <td>{{ data.num_exclude_mach }}</td>
             <td>{{ data.notice_recalculation }}</td>
             <td>{{ data.act_send_date }}</td>
             <td>{{ data.control_journal.act }}</td>
             <td>{{ data.final_notice }}</td>
+            <td><a href="{% url 'network_graph_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
+            </td>
         </tr>
       {% endfor %}
       </tbody>
