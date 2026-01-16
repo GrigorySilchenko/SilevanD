@@ -2,14 +2,16 @@ from django.contrib.auth.decorators import permission_required
 from django.db.models import Sum
 from django.shortcuts import render
 from .models import ControlJournal
-from application.models import Application, Status
+from application.models import Application, Status, NetworkGraph
 from .forms import ControlJournalInput
 from datetime import date
+
+
 
 @permission_required('distribution.view_controljournal')
 def distribution(request):
     distributions = ControlJournal.objects.all().order_by('-application')
-    applications = Application.objects.filter(status__in=['2', '1', '7', '8']).order_by('-id')
+    applications = Application.objects.filter(status__in=['2', '1', '7', '8']).order_by('id')
 
     app_get = request.GET.get('app')
     if app_get:
@@ -25,10 +27,6 @@ def distribution(request):
     declarant_get = request.GET.get('declarant')
     if declarant_get:
         distributions = distributions.filter(application__declarant__name__icontains=declarant_get)
-
-    place_get = request.GET.get('place')
-    if place_get:
-        distributions = distributions.filter(place__icontains=place_get)
 
     act_get = request.GET.get('act')
     if act_get:
@@ -47,7 +45,6 @@ def distribution(request):
             'date_get_start': date_get_start,
             'date_get_end': date_get_end,
             'declarant_get': declarant_get,
-            'place_get': place_get,
             'act_get': act_get,
             'user_get': user_get,
             'applications': applications,
@@ -59,6 +56,7 @@ def distribution(request):
 @permission_required('distribution.view_controljournal')
 def application_distribution(request, pk):
     application = Application.objects.get(pk=pk)
+    net_graph = NetworkGraph.objects.get(application_id=pk)
     form = ControlJournalInput()
     success_message = ''
     distributions = ControlJournal.objects.all().order_by('-application')
@@ -70,13 +68,14 @@ def application_distribution(request, pk):
             application.save()
             distribution_new = ControlJournal(
                 short_slot_name=form.cleaned_data['short_slot_name'],
-                place=form.cleaned_data['place'],
                 user=form.cleaned_data['user'],
                 application=application,
                 act=form.cleaned_data['act'],
                 notice=form.cleaned_data['notice']
             )
             distribution_new.save()
+            net_graph.control_journal = distribution_new
+            net_graph.save()
             form = ControlJournalInput()
             success_message = 'Заявка добавлена в журнал и отправлена исполнителю'
     context = (

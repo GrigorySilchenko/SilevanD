@@ -1,7 +1,7 @@
 import openpyxl
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect
-from .models import Application, Status, Declarant
+from .models import Application, Status, Declarant, NetworkGraph
 from .forms import ApplicationInput, DeclarantInput
 from datetime import date
 from django.core.paginator import Paginator
@@ -52,10 +52,13 @@ def application(request):
                     payment_document=form.cleaned_data['payment_document'],
                     payment_date=form.cleaned_data['payment_date'],
                     pdf=form.cleaned_data['pdf'],
+                    place=form.cleaned_data['place'],
+                    notice=form.cleaned_data['notice'],
                     declarant=form.cleaned_data['declarant'],
                     status=status
                 )
                 application_new.save()
+                network_graph_new = NetworkGraph.objects.create(application=application_new)
                 form = ApplicationInput()
                 success_message: 'Заявка успешно зарегистрирована!'
         else:
@@ -153,6 +156,16 @@ def declarant_change(request, pk):
         }
     )
     return render(request, 'declarant_change.html', context)
+
+def network_graph(request):
+    network_graph_data = NetworkGraph.objects.all()
+    context = (
+        {
+            'network_graph': network_graph_data
+        }
+    )
+    return render(request, 'network_graph.html', context)
+
 
 def declarant_del(request, pk):
     declarants = Declarant.objects.all().order_by('name')

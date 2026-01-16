@@ -12,16 +12,15 @@
         <h5 class="d-flex justify-content-center">
             <b>Заявки ожидающие исполнения:</b>
         </h5>
-        <div class="row d-flex justify-content-center py-3 mb-4 border-bottom border-success">
+        <div class="row d-flex justify-content-center py-2 mb-2 border-bottom border-success">
                 {% for application in applications %}
-                <div class="col-md-3 mb-3 d-flex align-items-stretch">
+                <div class="col-md-2 mb-2 d-flex align-items-stretch">
                     <div class="card h-100 border border-success">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><b>{{ application }} от {{ application.created_on|date:"d.m.Y" }}</b></h5>
+                            <div class="card-text"><b>{{ application }} от {{ application.created_on|date:"d.m.Y" }}</b></div>
                             <div class="card-text">{{ application.declarant }}</div>
-                            <div class="card-text">{{ application.place }}</div>
-                            <div class="card-text"><b>{{ application.num_of_mach }} шт.</b></div>
-                            <div class="card-text">Статус заявки: {{ application.status }}</div>
+                            <div class="card-text">{{ application.place }}, <b>{{ application.num_of_mach }} шт.</b></div>
+                            <div class="card-text">{{ application.status }}</div>
                             <a href="{% url 'application_distribution' application.pk %}"
                                class="stretched-link">
                             </a>

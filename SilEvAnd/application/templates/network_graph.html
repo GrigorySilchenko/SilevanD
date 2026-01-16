@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block page_content %}
+<style>
+    .search-form .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+</style>
+
+<div class="container">
+    <h3>
+        <b>Сетевой график</b>
+    </h3>
+    <form class="search-form d-flex" role="search">
+    <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+      <thead class="table table-success table-bordered border-success align-middle">
+        <tr>
+            <th scope="col">Заявитель</th>
+            <th scope="col">Счет</th>
+            <th scope="col">Заявка</th>
+            <th scope="col">Кол. ИА</th>
+            <th scope="col">Сумма</th>
+            <th scope="col">Перерасчёт</th>
+            <th scope="col">Оплата</th>
+            <th scope="col">Письма об отказе</th>
+            <th scope="col">Дата направления акта</th>
+            <th scope="col">Номер акта</th>
+            <th scope="col">Примечания</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+            <td>
+                <input type="search" name="act_number" class="form-control me-2" value="{{ act_number|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="application" class="form-control me-2" value="{{ application|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="control_sticks_number" class="form-control me-2" value="{{ control_sticks_number|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="declarant" class="form-control me-2" value="{{ declarant|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="result" class="form-control me-2" value="{{ result|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="model" class="form-control me-2" value="{{ model|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="version" class="form-control me-2" value="{{ version|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="version" class="form-control me-2" value="{{ version|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="slot_number" class="form-control me-2" value="{{ slot_number|default:'' }}" aria-label="Search">
+            </td>
+            <td>
+                <input type="search" name="board_number" class="form-control me-2" value="{{ board_number|default:'' }}" aria-label="Search">
+                <button type="submit" class="btn btn-outline-success" style="display: none;">
+                        <i class="bi bi-search"></i>
+                </button>
+            </td>
+            <td></td>
+        </tr>
+      {% for data in network_graph %}
+        <tr>
+            <td class="text-start ps-2">{{ data.application.declarant }}</td>
+            <td>{{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}</td>
+            <td>{{ data.application.application_number }} от {{ data.application.created_on|date:"d.m.Y" }}</td>
+            <td>{{ data.application.num_of_mach }}</td>
+            <td>{{ data.application.payment }}</td>
+            <td>
+                {% if data.recalculation %}
+                  {{ data.recalculation }}
+                {% else %}
+                   <span class="text-success">---</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if data.application.payment_document %}
+                  п/п {{ data.application.payment_document }} от {{ data.application.payment_date|date:"d.m.Y" }}
+                {% else %}
+                   <span class="text-danger">---</span>
+                {% endif %}
+            </td>
+            <td>{{ data.notice_recalculation }}</td>
+            <td>{{ data.act_send_date }}</td>
+            <td>{{ data.control_journal.act }}</td>
+            <td>{{ data.final_notice }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </form>
+</div>
+
+{% endblock %}

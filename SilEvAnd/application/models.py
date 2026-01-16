@@ -32,3 +32,15 @@ class Status(models.Model):
     status = models.CharField(max_length=200)
     def __str__(self):
         return self.status
+
+class NetworkGraph(models.Model):
+    application = models.ForeignKey('Application', on_delete=models.CASCADE, related_name='network_graph', verbose_name='Заявка')
+    control_journal = models.ForeignKey('distribution.ControlJournal', on_delete=models.CASCADE, related_name='network_graph', blank=True, null=True, verbose_name='Акт по заявке')
+    recalculation = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, verbose_name='Перерасчет')
+    notice_recalculation = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Основание для перерасчета')
+    act_send_date = models.TextField(max_length=50, default='', blank=True, null=True, verbose_name='Дата направления акта')
+    final_notice = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Примечание')
+    app_closed = models.BooleanField(default=False, blank=True, null=True, verbose_name='')
+    def __str__(self):
+        return str(self.application)
+

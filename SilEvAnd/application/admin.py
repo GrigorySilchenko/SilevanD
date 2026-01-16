@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Application, Declarant, Status
+from .models import Application, Declarant, Status, NetworkGraph
 
 class StatusAdmin(admin.ModelAdmin):
     readonly_fields = ['id']
@@ -7,3 +7,4 @@ class StatusAdmin(admin.ModelAdmin):
 admin.site.register(Application)
 admin.site.register(Declarant)
 admin.site.register(Status, StatusAdmin)
+admin.site.register(NetworkGraph)
