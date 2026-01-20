@@ -94,12 +94,17 @@ def application_distribution(request, pk):
 def distribution_change(request, pk):
     distributions = ControlJournal.objects.all().order_by('-application')
     distr_change = ControlJournal.objects.get(pk=pk)
+    app_id = distr_change.application.id
+    print(app_id)
+    net_graph = NetworkGraph.objects.get(application_id=app_id)
     form = ControlJournalInput()
     success_message = ''
     if request.method == 'POST':
         form = ControlJournalInput(request.POST, instance=distr_change)
         if form.is_valid():
-            form.save()
+            control_journal_new = form.save()
+            net_graph.control_journal = control_journal_new
+            net_graph.save()
             success_message = 'Журнал "Контроль ИА" успешно изменен.'
     else:
         form = ControlJournalInput(instance=distr_change)

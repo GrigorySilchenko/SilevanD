@@ -15,6 +15,13 @@ from .forms import ActInput, ActDataInput
 from django.forms import formset_factory
 from datetime import date
 
+color_mapp = {
+        'ЕАН': 'table-success',
+        'СГА': 'table-info',
+        'МАА': 'table-warning',
+        'АВВ': 'table-danger'
+    }
+
 
 @permission_required('act_creation.view_registry')
 def registry(request):
@@ -113,7 +120,6 @@ def slot_machine_data(request):
                 filter_name = f'{key}__icontains'
             slot_machines_data = slot_machines_data.filter(**{filter_name: str(value)})
 
-
     context = {
             'slot_machines_data': slot_machines_data,
             'act_number': param_dict['act_number'],
@@ -125,7 +131,8 @@ def slot_machine_data(request):
             'version': param_dict['version'],
             'slot_number': param_dict['slot_number'],
             'reg_number': param_dict['reg_number'],
-            'board_number': param_dict['board_number']
+            'board_number': param_dict['board_number'],
+            'color_mapp': color_mapp
         }
 
     return render(request, 'slot_machine_data.html', context)
@@ -291,7 +298,8 @@ def s_m_data_input(request, pk):
             'reg_number': param_dict['reg_number'],
             'board_number': param_dict['board_number'],
             'empty_form': formset.empty_form,
-            'number_stickers': number_stickers
+            'number_stickers': number_stickers,
+            'color_mapp': color_mapp
         }
     )
     return render(request, 's_m_data_input.html', context)
@@ -501,6 +509,15 @@ def download_act_docx(request, file_name):
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     else:
         return HttpResponse('Файл не найден', status=404)
+
+# def color_mapping():
+#     color_mapp = {
+#         'ЕАН': 'table-success',
+#         'СГА': 'table-info',
+#         'МАА': 'table-warning',
+#         'АВВ': 'table-danger',
+#     }
+#     return color_mapp
 
 @permission_required('act_creation.add_act')
 def application_status_change(request, pk):
