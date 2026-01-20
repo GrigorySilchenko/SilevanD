@@ -218,7 +218,12 @@
                     </form>
                     {% for data in slot_machines_data %}
                         <tr>
-                            <td>{{ data.act_number }}</td>
+                            <td class="
+                                {% for key, value in color_mapp.items %}
+                                {% if data.distribution.user.username == key %}
+                                {{ value }}
+                                {% endif %}
+                                {% endfor %}">{{ data.act_number }}</td>
                             <td>{{ data.distribution.application }}</td>
                             <td>{{ data.control_sticks_number }}</td>
                             <td>{{ data.distribution.application.declarant }}</td>
