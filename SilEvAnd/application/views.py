@@ -24,7 +24,7 @@ def status_giving(cleaned_data):
 @permission_required('application.view_application')
 def application(request):
     applications = Application.objects.all().order_by('-application_number')
-    paginator = Paginator(applications, 20)
+    paginator = Paginator(applications, 50)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     last_app = applications.first().application_number
@@ -159,6 +159,17 @@ def declarant_change(request, pk):
 
 def network_graph(request):
     network_graph_data = NetworkGraph.objects.all()
+    for key, value in request.GET.items():
+        if value:
+            if key == 'application_number' or key == 'bill_number' or key == 'payment' or key == 'payment_document' or key == 'num_of_mach':
+                filter_name = f'application__{key}__icontains'
+            elif key == 'declarant':
+                filter_name = f'application__declarant__name__icontains'
+            elif key == 'act':
+                filter_name = f'control_journal__{key}__icontains'
+            else:
+                filter_name = f'{key}__icontains'
+            network_graph_data = network_graph_data.filter(**{filter_name: str(value)})
     context = (
         {
             'network_graph': network_graph_data

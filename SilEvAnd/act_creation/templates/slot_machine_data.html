@@ -80,7 +80,7 @@
                 {{ value }}
                 {% endif %}
                 {% endfor %}">{{ data.act_number }}</td>
-            <td>{{ data.distribution.application }}</td>
+            <td>{{ data.distribution.application }} от {{ data.distribution.application.created_on|date:"d.m.Y" }}</td>
             <td>{{ data.control_sticks_number }}</td>
             <td>{{ data.distribution.application.declarant }}</td>
             <td>{{ data.conformity }}</td>
