@@ -5,13 +5,52 @@
         border-color: #198754;
         box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
     }
+    .form-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
 </style>
 
 <div class="container">
     <h3>
         <b>Сетевой график</b>
     </h3>
-    <form class="search-form d-flex" role="search">
+    <div>
+        <form class="search-form d-flex row g-3 mb-4" role="search">
+          <!-- Поиск по названию -->
+<!--          <div class="col-md-4">-->
+<!--            <label for="search" class="form-label">Поиск</label>-->
+<!--            <input type="text" class="form-control" id="search" name="search" placeholder="Введите название" value="{{ request.GET.search }}">-->
+<!--          </div>-->
+
+          <!-- Фильтр по статусу -->
+          <div class="col-md-2">
+            <label for="app_closed" class="form-label">Статус</label>
+            <select class="form-select" id="app_closed" name="app_closed">
+              <option value="">Все</option>
+              <option value="False" {% if request.GET.app_closed == 'False' %}selected{% endif %}>В работе</option>
+              <option value="True" {% if request.GET.app_closed == 'True' %}selected{% endif %}>Можно закрывать</option>
+            </select>
+          </div>
+
+          <!-- Диапазон дат -->
+          <div class="col-md-2">
+            <label for="date_from" class="form-label">Заявки с</label>
+            <input type="date" class="form-control" id="date_from" name="date_from" value="{{ request.GET.date_from }}">
+          </div>
+          <div class="col-md-2">
+            <label for="date_to" class="form-label">по</label>
+            <input type="date" class="form-control" id="date_to" name="date_to" value="{{ request.GET.date_to }}">
+          </div>
+
+          <!-- Кнопки -->
+          <div class="col-12 d-flex align-items-end">
+            <button type="submit" class="btn btn-success me-2">Фильтровать</button>
+            <a href="{% url 'network_graph' %}" class="btn btn-secondary">Сбросить</a>
+          </div>
+
+    </div>
+
     <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
       <thead class="table table-success table-bordered border-success align-middle">
         <tr>
@@ -66,7 +105,7 @@
                 <input type="search" name="act" class="form-control me-2" value="{{ act|default:'' }}" aria-label="Search">
             </td>
             <td>
-                <input type="search" name="final_notice" class="form-control me-2" value="{{ board_number|default:'' }}" aria-label="Search">
+                <input type="search" name="final_notice" class="form-control me-2" value="{{ final_notice|default:'' }}" aria-label="Search">
                 <button type="submit" class="btn btn-outline-success" style="display: none;">
                         <i class="bi bi-search"></i>
                 </button>

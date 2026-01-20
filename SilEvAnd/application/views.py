@@ -157,26 +157,55 @@ def declarant_change(request, pk):
     )
     return render(request, 'declarant_change.html', context)
 
+@permission_required('application.view_networkgraph')
 def network_graph(request):
     network_graph_data = NetworkGraph.objects.all()
+
+    date_get_start = request.GET.get('date_from')
+    date_get_end = request.GET.get('date_to')
+    if date_get_start:
+        start = date.fromisoformat(date_get_start)
+        if date_get_end:
+            end = date.fromisoformat(date_get_end)
+        else:
+            end = date.today().isoformat()
+        network_graph_data = network_graph_data.filter(application__created_on__range=(start, end))
     for key, value in request.GET.items():
-        if value:
+        if key == 'date_from' or key == 'date_to':
+            pass
+        elif value:
             if key == 'application_number' or key == 'bill_number' or key == 'payment' or key == 'payment_document' or key == 'num_of_mach':
                 filter_name = f'application__{key}__icontains'
             elif key == 'declarant':
                 filter_name = f'application__declarant__name__icontains'
             elif key == 'act':
                 filter_name = f'control_journal__{key}__icontains'
+            elif key == 'app_closed':
+                filter_name = key
             else:
                 filter_name = f'{key}__icontains'
             network_graph_data = network_graph_data.filter(**{filter_name: str(value)})
+
     context = (
         {
-            'network_graph': network_graph_data
+            'network_graph': network_graph_data,
+            'declarant':request.GET.get('declarant'),
+            'application_number':request.GET.get('application_number'),
+            'bill_number':request.GET.get('bill_number'),
+            'payment':request.GET.get('payment'),
+            'payment_document':request.GET.get('payment_document'),
+            'num_of_mach':request.GET.get('num_of_mach'),
+            'act':request.GET.get('act'),
+            'recalculation': request.GET.get('recalculation'),
+            'num_exclude_mach': request.GET.get('num_exclude_mach'),
+            'notice_recalculation': request.GET.get('notice_recalculation'),
+            'act_send_date': request.GET.get('act_send_date'),
+            'final_notice': request.GET.get('final_notice')
         }
     )
     return render(request, 'network_graph.html', context)
 
+@permission_required('application.change_networkgraph')
 def network_graph_change(request,pk):
     network_graph_data = NetworkGraph.objects.get(pk=pk)
     success_message, danger_message = '', ''
