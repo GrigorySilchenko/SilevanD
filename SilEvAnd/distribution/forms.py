@@ -7,7 +7,7 @@ class ControlJournalInput(forms.ModelForm):
     class Meta:
         model = ControlJournal
         fields = ['short_slot_name',
-                  'user',
+                  'user_many',
                   'act',
                   'notice']
         widgets = {

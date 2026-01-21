@@ -220,7 +220,7 @@
                         <tr>
                             <td class="
                                 {% for key, value in color_mapp.items %}
-                                {% if data.distribution.user.username == key %}
+                                {% if data.user.username == key %}
                                 {{ value }}
                                 {% endif %}
                                 {% endfor %}">{{ data.act_number }}</td>

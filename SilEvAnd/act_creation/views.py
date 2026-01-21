@@ -308,7 +308,7 @@ def s_m_data_input(request, pk):
 def act_creation(request):
     """Страница с заявками конкретного исполнителя"""
     user_now = request.user
-    users_applications = ControlJournal.objects.filter(user=user_now).filter(application__status__in=['4']).order_by('-id')
+    users_applications = ControlJournal.objects.filter(user_many__in=[user_now], application__status='4').order_by('-id')
     context = {
             'users_applications': users_applications,
             'user_now': user_now
@@ -340,7 +340,7 @@ def docx_create(request):
             app_date = act_first.distribution.application.created_on.strftime("%d.%m.%Y")
             app_num = f'{act_first.distribution.application.application_number} от {app_date}'
             boss = bosses.get(name=str(form.cleaned_data['boss']))
-            executor = f'{act_first.distribution.user.last_name} {act_first.distribution.user.first_name}'
+            executor = f'{act_first.user.last_name} {act_first.user.first_name}'
             stick_place = stick_places.get(board_name=str(form.cleaned_data['stick_place']))
             manufacturer_form = manufacturers.get(name=str(form.cleaned_data['manufacturer']))
             if str(manufacturer_form) == 'Из реестра':
@@ -499,7 +499,8 @@ def docx_create(request):
         'slot_number': param_dict['slot_number'],
         'reg_number': param_dict['reg_number'],
         'board_number': param_dict['board_number'],
-        'success_message': success_message
+        'success_message': success_message,
+        'color_mapp': color_mapp
     }
     return render(request, 'docx_create.html', context)
 

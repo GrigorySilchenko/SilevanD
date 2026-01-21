@@ -63,7 +63,7 @@
           <td>{{ distribution.application.num_of_mach }}</td>
           <td>{{ distribution.application.place }}</td>
           <td>{{ distribution.act }}</td>
-          <td>{{ distribution.user }}</td>
+          <td>{% for user in distribution.user_many.all %} {{ user.username }} {% endfor %}</td>
           <td>{{ distribution.notice }}</td>
         </tr>
       {% endfor %}

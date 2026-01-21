@@ -110,7 +110,7 @@
               {% endif %}
           </td>
           <td>{{ distribution.act }}</td>
-          <td>{{ distribution.user }}</td>
+          <td>{% for user in distribution.user_many.all %} {{ user.username }} {% endfor %}</td>
           <td>{{ distribution.notice }}</td>
           <td><a href="{% url 'distribution_change' distribution.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
           </td>

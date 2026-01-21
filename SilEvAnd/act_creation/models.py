@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Registry(models.Model):
@@ -49,5 +50,7 @@ class Act(models.Model):
     model_registry = models.ForeignKey('RegistryModify', on_delete=models.CASCADE, verbose_name='Номер по реестру')
     slot_number = models.CharField(max_length=100, verbose_name='Серийный номер ИА')
     board_number = models.CharField(max_length=50, verbose_name='Номер платы')
+    user = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name='act_as_user',
+                             verbose_name='Исполнитель')
     def __str__(self):
         return f'{str(self.act_number)} s/n:{self.slot_number}'
