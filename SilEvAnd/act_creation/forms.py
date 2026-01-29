@@ -9,7 +9,7 @@ class ActInput(forms.ModelForm):
         label='Удл.',
         help_text="Поставьте галочку если эту строку нужно удалить из формы. Затем нажмите 'Сохранить черновик'"
     )
-    class Meta:
+    class Meta: #форма для s_m_data_input
         model = Act
         fields = ['act_number',
                   'control_sticks_number',
@@ -28,7 +28,7 @@ class ActInput(forms.ModelForm):
         default_conformity, created = Conformity.objects.get_or_create(conformity='Соотв.')
         self.fields['conformity'].initial = default_conformity.pk
 
-class ActDataInput(forms.Form):
+class ActDataInput(forms.Form): # форма для docx_create
     act_number = forms.ChoiceField(choices=[], label='№ Акта')
     boss = forms.ModelChoiceField(queryset=Boss.objects.all(), label='лицо, утверждающее акт')
     stick_place = forms.ModelChoiceField(queryset=StickPlace.objects.all().order_by('board_name'), label='платформу ИА')

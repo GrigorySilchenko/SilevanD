@@ -69,12 +69,12 @@ def application_distribution(request, pk):
             application.save()
             distribution_new = ControlJournal(
                 short_slot_name=form.cleaned_data['short_slot_name'],
-                user=form.cleaned_data['user'],
                 application=application,
                 act=form.cleaned_data['act'],
                 notice=form.cleaned_data['notice']
             )
             distribution_new.save()
+            distribution_new.user_many.set(form.cleaned_data['user_many'])
             net_graph.control_journal = distribution_new
             net_graph.save()
             form = ControlJournalInput()

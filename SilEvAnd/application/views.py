@@ -159,7 +159,7 @@ def declarant_change(request, pk):
 
 @permission_required('application.view_networkgraph')
 def network_graph(request):
-    network_graph_data = NetworkGraph.objects.all()
+    network_graph_data = NetworkGraph.objects.all().order_by('-application__application_number')
 
     date_get_start = request.GET.get('date_from')
     date_get_end = request.GET.get('date_to')
@@ -170,6 +170,12 @@ def network_graph(request):
         else:
             end = date.today().isoformat()
         network_graph_data = network_graph_data.filter(application__created_on__range=(start, end))
+    else:
+        if date_get_end:
+            end = date.fromisoformat(date_get_end)
+        else:
+            end = date.today().isoformat()
+        network_graph_data = network_graph_data.filter(application__created_on__lte=end)
     for key, value in request.GET.items():
         if key == 'date_from' or key == 'date_to':
             pass

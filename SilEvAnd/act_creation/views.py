@@ -163,7 +163,6 @@ def s_m_data_input(request, pk):
     """Представление для занесения данных об игровом автомате в журнал актов ИА"""
     users_application = ControlJournal.objects.get(pk=pk)
     slot_machines_data = Act.objects.all().order_by('-act_number')
-    slot_machines_count = slot_machines_data.filter(distribution__application__application_number=str(users_application)).count()
     conformity = Conformity.objects.all()
     registry = RegistryModify.objects.all()
     ActFormSet = formset_factory(ActInput,extra=1)
@@ -219,7 +218,7 @@ def s_m_data_input(request, pk):
             number_stickers = request.POST['amount_numbers']
             request.session['number_stickers'] = number_stickers
             if formset.is_valid():
-                if 'save_draft' in request.POST.keys():
+                if 'save_draft' in request.POST.keys(): # сохранение черновика
                     cleaned_data_list = [form.cleaned_data for form in formset if form.cleaned_data]
                     cleaned_data_list = [form for form in cleaned_data_list if not form['is_deleted']]
                     for form in cleaned_data_list:
@@ -234,7 +233,7 @@ def s_m_data_input(request, pk):
                     request.session['act_formset_data'] = cleaned_data_list
                     formset = ActFormSet(initial=cleaned_data_list)
                     success_message = 'Черновик успешно сохранен в сессии.'
-                elif 'save_form' in request.POST.keys():
+                elif 'save_form' in request.POST.keys(): # отправка данных об ИА в журнал актов ('Act')
                     last_act = slot_machines_data.first().act_number
                     formset = ActFormSet(request.POST)
                     if formset.is_valid():
@@ -247,8 +246,9 @@ def s_m_data_input(request, pk):
                         for form in formset:
                             if form.cleaned_data:
                                 num_SK = form.cleaned_data.get('control_sticks_number').split()
-                                control_sticks_number_corrected = [f'ИА {num}' for num in num_SK]
+                                control_sticks_number_corrected = [f'ИА {num}' for num in num_SK if num.isdigit()]
                                 control_sticks_number_cleaned = ' '.join(control_sticks_number_corrected)
+                                user_now = request.user
                                 slot_machines_data_new = Act(
                                     act_number=act_number,
                                     distribution=users_application,
@@ -256,7 +256,8 @@ def s_m_data_input(request, pk):
                                     conformity=form.cleaned_data['conformity'],
                                     model_registry=form.cleaned_data['model_registry'],
                                     slot_number=form.cleaned_data['slot_number'],
-                                    board_number=form.cleaned_data['board_number']
+                                    board_number=form.cleaned_data['board_number'],
+                                    user=user_now
                                 )
                                 slot_machines_data_new.save()
                                 formset = ActFormSet()
@@ -279,7 +280,8 @@ def s_m_data_input(request, pk):
             else:
                 filter_name = f'{key}__icontains'
             slot_machines_data = slot_machines_data.filter(**{filter_name: str(value)})
-
+    slot_machines_count = slot_machines_data.filter(
+        distribution__application__application_number=str(users_application)).count()
     context = (
         {
             'slot_machines_data': slot_machines_data,
@@ -435,6 +437,13 @@ def docx_create(request):
                 word_context['sticker_terminal'] = stickers_list[-2]
                 stickers_list_new = [' '.join(stickers_list[i:i + 3]) for i in range(0, len(stickers_list) - 3, 3)]
                 word_context['stickers'] = stickers_list_new
+            elif stick_place == stick_places.get(pk=9): #ODREX pk=9
+                template_name = 'temp_ODREX.docx'
+                stickers = [act.get('sticks_number') for act in acts][0]
+                stickers_list = ['ИА ' + num for num in stickers.split() if num.isnumeric()]
+                word_context['sticker_cupola'] = stickers_list[-1]
+                stickers_list_new = [' '.join(stickers_list[i:i+2]) for i in range(0,len(stickers_list) - 2,2)]
+                word_context['stickers'] = stickers_list_new
             elif stick_place == stick_places.get(pk=13): #EGT BELL LINK pk=13
                 template_name = 'temp_BELL_tab_1.docx'
                 acts_stickers = [act.get('sticks_number') for act in acts]
@@ -510,15 +519,6 @@ def download_act_docx(request, file_name):
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     else:
         return HttpResponse('Файл не найден', status=404)
-
-# def color_mapping():
-#     color_mapp = {
-#         'ЕАН': 'table-success',
-#         'СГА': 'table-info',
-#         'МАА': 'table-warning',
-#         'АВВ': 'table-danger',
-#     }
-#     return color_mapp
 
 @permission_required('act_creation.add_act')
 def application_status_change(request, pk):

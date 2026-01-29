@@ -9,19 +9,23 @@
 
 <div class="container">
         <div class="row d-flex justify-content-center py-3 mb-4">
-            <h3><b>{{ user_now.get_full_name }} ниже представлены заявки, которые Вам необходимо отработать:</b></h3>
+            <h3>
+
+                    {% if users_applications %}
+                    <b>{{ user_now.get_full_name }}, ниже представлены заявки, которые Вам необходимо отработать:</b>
+                    {% else %}
+                    На данный момент у Вас отсутствуют неотработанные заявки
+                    {% endif %}
+            </h3>
             {% for users_application in users_applications %}
-            <div class="col-md-2 mb-3 d-flex align-items-stretch">
+            <div class="col-md-2 mb-2 d-flex align-items-stretch">
                 <div class="card h-100 border border-success">
-                    <div class="card-body">
+                    <div class="card-body text-center">
                         <a href="{% url 's_m_data_input' users_application.pk %}" class="btn">
-                        <dl class="row">
-                            <dd >
-                                <h5 class="card-title"><b>{{ users_application.application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</b></h5>
-                            </dd>
-                            <dd>{{ users_application.application.declarant }}</dd>
-                            <dd><b>{{ users_application.application.num_of_mach }} шт.</b></dd>
-                        </dl>
+                        <div><b>{{ users_application.application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</b></div>
+                        <div>{{ users_application.application.declarant }}</div>
+                        <div>г. {{ users_application.application.place }}</div>
+                        <div><b>{{ users_application.application.num_of_mach }} шт.</b></div>
                         </a>
                     </div>
                     <div class="card-footer p-2">
