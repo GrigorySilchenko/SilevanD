@@ -161,8 +161,32 @@ def declarant_change(request, pk):
 def network_graph(request):
     network_graph_data = NetworkGraph.objects.all().order_by('-application__application_number')
 
-    date_get_start = request.GET.get('date_from')
-    date_get_end = request.GET.get('date_to')
+    if 'reset' in request.GET:
+        request.session.pop('net_graph_filters', None)
+        return redirect('network_graph')
+
+    filter_data = request.session.get('net_graph_filters')
+    list_keys = [
+        'app_closed', 'date_from', 'date_to', 'declarant', 'bill_number', 'num_of_mach',
+        'application_number', 'payment', 'recalculation', 'payment_document', 'num_exclude_mach',
+        'notice_recalculation', 'act_send_date', 'act', 'final_notice'
+    ]
+    filter_dict = {_: request.GET.get(_, '') for _ in list_keys}
+    if not filter_data:
+        if request.GET:
+            param_dict = filter_dict
+            request.session['net_graph_filters'] = param_dict
+        else:
+            param_dict = dict()
+    else:
+        if request.GET and filter_data != filter_dict:
+            param_dict = filter_dict
+            request.session['net_graph_filters'] = param_dict
+        else:
+            param_dict = filter_data
+
+    date_get_start = param_dict.get('date_from')
+    date_get_end = param_dict.get('date_to')
     if date_get_start:
         start = date.fromisoformat(date_get_start)
         if date_get_end:
@@ -176,7 +200,8 @@ def network_graph(request):
         else:
             end = date.today().isoformat()
         network_graph_data = network_graph_data.filter(application__created_on__lte=end)
-    for key, value in request.GET.items():
+
+    for key, value in param_dict.items():
         if key == 'date_from' or key == 'date_to':
             pass
         elif value:
@@ -195,18 +220,21 @@ def network_graph(request):
     context = (
         {
             'network_graph': network_graph_data,
-            'declarant':request.GET.get('declarant'),
-            'application_number':request.GET.get('application_number'),
-            'bill_number':request.GET.get('bill_number'),
-            'payment':request.GET.get('payment'),
-            'payment_document':request.GET.get('payment_document'),
-            'num_of_mach':request.GET.get('num_of_mach'),
-            'act':request.GET.get('act'),
-            'recalculation': request.GET.get('recalculation'),
-            'num_exclude_mach': request.GET.get('num_exclude_mach'),
-            'notice_recalculation': request.GET.get('notice_recalculation'),
-            'act_send_date': request.GET.get('act_send_date'),
-            'final_notice': request.GET.get('final_notice')
+            'app_closed': param_dict.get('app_closed'),
+            'date_from': param_dict.get('date_from'),
+            'date_to': param_dict.get('date_to'),
+            'declarant':param_dict.get('declarant'),
+            'application_number':param_dict.get('application_number'),
+            'bill_number':param_dict.get('bill_number'),
+            'payment':param_dict.get('payment'),
+            'payment_document':param_dict.get('payment_document'),
+            'num_of_mach':param_dict.get('num_of_mach'),
+            'act':param_dict.get('act'),
+            'recalculation': param_dict.get('recalculation'),
+            'num_exclude_mach': param_dict.get('num_exclude_mach'),
+            'notice_recalculation': param_dict.get('notice_recalculation'),
+            'act_send_date': param_dict.get('act_send_date'),
+            'final_notice': param_dict.get('final_notice')
         }
     )
     return render(request, 'network_graph.html', context)
@@ -220,7 +248,7 @@ def network_graph_change(request,pk):
         form = NetworkGraphInput(request.POST, instance=network_graph_data)
         if form.is_valid():
             form.save()
-            form = NetworkGraphInput()
+            # form = NetworkGraphInput()
             success_message = 'Изменения в сетевой график внесены успешно'
     else:
         form = NetworkGraphInput(instance=network_graph_data)

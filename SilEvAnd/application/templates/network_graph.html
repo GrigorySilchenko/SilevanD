@@ -15,137 +15,126 @@
     <h3>
         <b>Сетевой график</b>
     </h3>
-    <div>
-        <form class="search-form d-flex row g-3 mb-4" role="search">
-          <!-- Поиск по названию -->
-<!--          <div class="col-md-4">-->
-<!--            <label for="search" class="form-label">Поиск</label>-->
-<!--            <input type="text" class="form-control" id="search" name="search" placeholder="Введите название" value="{{ request.GET.search }}">-->
-<!--          </div>-->
 
-          <!-- Фильтр по статусу -->
-          <div class="col-md-2">
-            <label for="app_closed" class="form-label">Статус</label>
-            <select class="form-select" id="app_closed" name="app_closed">
-              <option value="">Все</option>
-              <option value="False" {% if request.GET.app_closed == 'False' %}selected{% endif %}>В работе</option>
-              <option value="True" {% if request.GET.app_closed == 'True' %}selected{% endif %}>Можно закрывать</option>
-            </select>
-          </div>
+        <form method="get" action="" role="search">
+            <div class="row d-flex py-3 mb-4 border-bottom border-success">
+                <div class="col-md-2">
+                    <label for="app_closed" class="form-label">Статус</label>
+                    <select class="form-select" id="app_closed" name="app_closed">
+                        <option value="">Все</option>
+                        <option value="False" {% if app_closed == 'False' %}selected{% endif %}>В работе</option>
+                        <option value="True" {% if app_closed == 'True' %}selected{% endif %}>Можно закрывать</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="date_from" class="form-label">Заявки с</label>
+                    <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from|default:'' }}">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="date_to" class="form-label">по</label>
+                    <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to|default:'' }}">
+                </div>
+                <div class="col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success me-2">Фильтровать</button>
+                    <button type="submit" name="reset" value="1" class="btn btn-success me-2">Сбросить фильтры</button>
+                </div>
+            </div>
 
-          <!-- Диапазон дат -->
-          <div class="col-md-2">
-            <label for="date_from" class="form-label">Заявки с</label>
-            <input type="date" class="form-control" id="date_from" name="date_from" value="{{ request.GET.date_from }}">
-          </div>
-          <div class="col-md-2">
-            <label for="date_to" class="form-label">по</label>
-            <input type="date" class="form-control" id="date_to" name="date_to" value="{{ request.GET.date_to }}">
-          </div>
+            <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+                <thead class="table table-success table-bordered border-success align-middle">
+                    <tr>
+                        <th scope="col">Заявитель</th>
+                        <th scope="col">Счет</th>
+                        <th scope="col">Заявка</th>
+                        <th scope="col">Кол. ИА</th>
+                        <th scope="col">Сумма</th>
+                        <th scope="col">Перерасчёт</th>
+                        <th scope="col">Оплата</th>
+                        <th scope="col">Кол. искл. ИА</th>
+                        <th scope="col">Письма об отказе</th>
+                        <th scope="col">Дата направления акта</th>
+                        <th scope="col">Номер акта</th>
+                        <th scope="col">Примечания</th>
+                        <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="search" name="declarant" class="form-control me-2" value="{{ declarant|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="bill_number" class="form-control me-2" value="{{ bill_number|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="num_of_mach" class="form-control me-2" value="{{ num_of_mach|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="application_number" class="form-control me-2" value="{{ application_number|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="payment" class="form-control me-2" value="{{ payment|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="recalculation" class="form-control me-2" value="{{ recalculation|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="payment_document" class="form-control me-2" value="{{ payment_document|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="num_exclude_mach" class="form-control me-2" value="{{ num_exclude_mach|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="notice_recalculation" class="form-control me-2" value="{{ notice_recalculation|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="act_send_date" class="form-control me-2" value="{{ act_send_date|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="act" class="form-control me-2" value="{{ act|default:'' }}" aria-label="Search">
+                        </td>
+                        <td>
+                            <input type="search" name="final_notice" class="form-control me-2" value="{{ final_notice|default:'' }}" aria-label="Search">
+                            <button type="submit" class="btn btn-outline-success" style="display: none;">
+                                    <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                        <td></td>
+                    </tr>
+                    {% for data in network_graph %}
+                    <tr class="{% if data.app_closed %} table-warning {% endif %}">
+                        <td class="text-start ps-2">{{ data.application.declarant }}</td>
+                        <td>{{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}</td>
+                        <td>{{ data.application.application_number }} от {{ data.application.created_on|date:"d.m.Y" }}</td>
+                        <td>{{ data.application.num_of_mach }}</td>
+                        <td>{{ data.application.payment }}</td>
+                        <td>
+                            {% if data.recalculation %}
+                              {{ data.recalculation }}
+                            {% else %}
+                               <span class="text-success">---</span>
+                            {% endif %}
+                        </td>
 
-          <!-- Кнопки -->
-          <div class="col-12 d-flex align-items-end">
-            <button type="submit" class="btn btn-success me-2">Фильтровать</button>
-            <a href="{% url 'network_graph' %}" class="btn btn-secondary">Сбросить</a>
-          </div>
-
-    </div>
-
-    <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
-      <thead class="table table-success table-bordered border-success align-middle">
-        <tr>
-            <th scope="col">Заявитель</th>
-            <th scope="col">Счет</th>
-            <th scope="col">Заявка</th>
-            <th scope="col">Кол. ИА</th>
-            <th scope="col">Сумма</th>
-            <th scope="col">Перерасчёт</th>
-            <th scope="col">Оплата</th>
-            <th scope="col">Кол. искл. ИА</th>
-            <th scope="col">Письма об отказе</th>
-            <th scope="col">Дата направления акта</th>
-            <th scope="col">Номер акта</th>
-            <th scope="col">Примечания</th>
-            <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
-        </tr>
-      </thead>
-      <tbody>
-      <tr>
-            <td>
-                <input type="search" name="declarant" class="form-control me-2" value="{{ declarant|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="bill_number" class="form-control me-2" value="{{ bill_number|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="num_of_mach" class="form-control me-2" value="{{ num_of_mach|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="application_number" class="form-control me-2" value="{{ application_number|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="payment" class="form-control me-2" value="{{ payment|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="recalculation" class="form-control me-2" value="{{ recalculation|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="payment_document" class="form-control me-2" value="{{ payment_document|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="num_exclude_mach" class="form-control me-2" value="{{ num_exclude_mach|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="notice_recalculation" class="form-control me-2" value="{{ notice_recalculation|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="act_send_date" class="form-control me-2" value="{{ act_send_date|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="act" class="form-control me-2" value="{{ act|default:'' }}" aria-label="Search">
-            </td>
-            <td>
-                <input type="search" name="final_notice" class="form-control me-2" value="{{ final_notice|default:'' }}" aria-label="Search">
-                <button type="submit" class="btn btn-outline-success" style="display: none;">
-                        <i class="bi bi-search"></i>
-                </button>
-            </td>
-            <td></td>
-        </tr>
-      {% for data in network_graph %}
-        <tr class="{% if data.app_closed %} table-warning {% endif %}">
-            <td class="text-start ps-2">{{ data.application.declarant }}</td>
-            <td>{{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}</td>
-            <td>{{ data.application.application_number }} от {{ data.application.created_on|date:"d.m.Y" }}</td>
-            <td>{{ data.application.num_of_mach }}</td>
-            <td>{{ data.application.payment }}</td>
-            <td>
-                {% if data.recalculation %}
-                  {{ data.recalculation }}
-                {% else %}
-                   <span class="text-success">---</span>
-                {% endif %}
-            </td>
-
-            <td>
-                {% if data.application.payment_document %}
-                  п/п {{ data.application.payment_document }} от {{ data.application.payment_date|date:"d.m.Y" }}
-                {% else %}
-                   <span class="text-danger">---</span>
-                {% endif %}
-            </td>
-            <td>{{ data.num_exclude_mach }}</td>
-            <td>{{ data.notice_recalculation }}</td>
-            <td>{{ data.act_send_date }}</td>
-            <td>{{ data.control_journal.act }}</td>
-            <td>{{ data.final_notice }}</td>
-            <td><a href="{% url 'network_graph_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
-            </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-    </form>
+                        <td>
+                            {% if data.application.payment_document %}
+                              п/п {{ data.application.payment_document }} от {{ data.application.payment_date|date:"d.m.Y" }}
+                            {% else %}
+                               <span class="text-danger">---</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ data.num_exclude_mach }}</td>
+                        <td>{{ data.notice_recalculation }}</td>
+                        <td>{{ data.act_send_date }}</td>
+                        <td>{{ data.control_journal.act }}</td>
+                        <td>{{ data.final_notice }}</td>
+                        <td><a href="{% url 'network_graph_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+              </tbody>
+            </table>
+        </form>
 </div>
 
 {% endblock %}
