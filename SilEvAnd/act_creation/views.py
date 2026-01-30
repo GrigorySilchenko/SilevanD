@@ -411,6 +411,23 @@ def docx_create(request):
                 template_name = 'temp_tab_2.docx'
                 word_context['acts_1'] = acts[:24]
                 word_context['acts_2'] = acts[24:]
+            elif stick_place == stick_places.get(pk=8) and acts_len <= 8: # F2 pk=8
+                template_name = 'temp_F2_tab_1.docx'
+            elif stick_place == stick_places.get(pk=8) and 8 < acts_len <= 16: # F2 pk=8
+                template_name = 'temp_F2_tab_2.docx'
+                word_context['acts_1'] = acts[:8]
+                word_context['acts_2'] = acts[8:]
+            elif stick_place == stick_places.get(pk=8) and 16 < acts_len: # F2 pk=8
+                template_name = 'temp_F2_tab_3.docx'
+                word_context['acts_1'] = acts[:8]
+                word_context['acts_2'] = acts[8:16]
+                word_context['acts_3'] = acts[16:]
+            elif stick_place == stick_places.get(pk=8) and 16 < acts_len: # F2 pk=8
+                template_name = 'temp_F2_tab_3.docx'
+                word_context['acts_1'] = acts[:8]
+                word_context['acts_2'] = acts[8:16]
+                word_context['acts_3'] = acts[16:24]
+                word_context['acts_4'] = acts[24:]
             elif stick_place == stick_places.get(pk=6) and 10 < acts_len: # EGT E3 pk=6
                 template_name = 'temp_tab_2.docx'
                 word_context['acts_1'] = acts[:10]
