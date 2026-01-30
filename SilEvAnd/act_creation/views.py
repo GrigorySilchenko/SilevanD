@@ -311,6 +311,13 @@ def act_creation(request):
     """Страница с заявками конкретного исполнителя"""
     user_now = request.user
     users_applications = ControlJournal.objects.filter(user_many__in=[user_now], application__status='4').order_by('-id')
+    slot_machines_data = Act.objects.all()
+    for app in users_applications:
+        slot_machines_count = slot_machines_data.filter(
+            distribution__application__application_number=str(app)).count()
+        app.slot_machines_count = slot_machines_count
+
+
     context = {
             'users_applications': users_applications,
             'user_now': user_now

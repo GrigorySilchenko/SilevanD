@@ -25,7 +25,8 @@
                         <div><b>{{ users_application.application }} от {{ users_application.application.created_on|date:"d.m.Y" }}</b></div>
                         <div>{{ users_application.application.declarant }}</div>
                         <div>г. {{ users_application.application.place }}</div>
-                        <div><b>{{ users_application.application.num_of_mach }} шт.</b></div>
+                        <div>По заявке: <b>{{ users_application.application.num_of_mach }} шт.</b></div>
+                        <div>Отраб-но: <b>{{ users_application.slot_machines_count }} шт.</b></div>
                         </a>
                     </div>
                     <div class="card-footer p-2">

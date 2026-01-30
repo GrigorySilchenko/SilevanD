@@ -18,13 +18,6 @@ def distribution(request):
     if app_get:
         distributions = distributions.filter(application__application_number__contains=str(app_get))
 
-    # date_get_start = request.GET.get('date_start')
-    # date_get_end = request.GET.get('date_end')
-    # if date_get_start and date_get_end:
-    #     start = date.fromisoformat(date_get_start)
-    #     end = date.fromisoformat(date_get_end)
-    #     distributions = distributions.filter(application__created_on__range=(start, end))
-
     date_get_start = request.GET.get('date_start')
     date_get_end = request.GET.get('date_end')
     if date_get_start:
