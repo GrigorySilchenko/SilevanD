@@ -24,10 +24,8 @@ def status_giving(cleaned_data):
 @permission_required('application.view_application')
 def application(request):
     applications = Application.objects.all().order_by('-application_number')
-    paginator = Paginator(applications, 50)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     last_app = applications.first().application_number
+
     if last_app:
         application_number_new = last_app + 1
     else:
@@ -35,6 +33,7 @@ def application(request):
     created_on_new = date.today()
     form = ApplicationInput()
     success_message, danger_message = '', ''
+
     if request.method == 'POST':
         if request.user.has_perm('application.add_application'):
             form = ApplicationInput(request.POST, request.FILES)
@@ -60,17 +59,34 @@ def application(request):
                 application_new.save()
                 network_graph_new = NetworkGraph.objects.create(application=application_new)
                 form = ApplicationInput()
-                success_message: 'Заявка успешно зарегистрирована!'
+                success_message = 'Заявка успешно зарегистрирована!'
         else:
             danger_message = 'У вас недостаточно прав для регистрации заявки'
-    context = (
-        {'applications': applications,
-         'page_obj': page_obj,
-         'form': form,
-         'success_message': success_message,
-         'danger_message': danger_message
-         }
-    )
+
+    if request.GET:
+        filter_dict = request.GET
+        for key, value in filter_dict.items():
+            if value:
+                if key == 'declarant':
+                    filter_name = f'declarant__name__icontains'
+                else:
+                    filter_name = f'{key}__icontains'
+                applications = applications.filter(**{filter_name: str(value)})
+    else:
+        filter_dict = dict()
+
+    paginator = Paginator(applications, 50)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'form': form,
+        'success_message': success_message,
+        'danger_message': danger_message,
+        'filter_dict': filter_dict
+        }
+
     return render(request, 'application.html', context)
 
 def application_del(request, pk):
@@ -81,12 +97,13 @@ def application_del(request, pk):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     form = ApplicationInput()
-    context = (
-        {'applications': applications,
-         'form': form,
-         'page_obj': page_obj
-         }
-    )
+
+    context = {
+        'applications': applications,
+        'form': form,
+        'page_obj': page_obj
+        }
+
     return render(request, 'application.html', context)
 
 @permission_required('application.change_application')
@@ -104,13 +121,13 @@ def application_change(request, pk):
             success_message = 'Заявка успешно изменена!'
     else:
         form = ApplicationInput(instance=app_change)
-    context = (
-        {
+
+    context = {
         'form': form,
         'applications': app_change,
         'success_message': success_message
          }
-    )
+
     return render(request, 'application_change.html', context)
 
 @permission_required('application.view_declarant')
@@ -127,14 +144,12 @@ def declarant(request):
                 success_message = 'Заявитель успешно добавлен в базу'
         else:
             danger_message = 'У вас недостаточно прав для добавления нового заявителя'
-    context = (
-        {
-            'form': form,
-            'declarants': declarants,
-            'success_message': success_message,
-            'danger_message': danger_message
+    context = {
+        'form': form,
+        'declarants': declarants,
+        'success_message': success_message,
+        'danger_message': danger_message
         }
-    )
     return render(request, 'declarant.html', context)
 
 @permission_required('application.change_declarant')
@@ -148,13 +163,13 @@ def declarant_change(request, pk):
             success_message = 'Данные заявителя успешно изменены!'
     else:
         form = DeclarantInput(instance=declarant_change)
-    context = (
-        {
-            'form': form,
-            'declarant': declarant_change,
-            'success_message': success_message
+
+    context = {
+        'form': form,
+        'declarant': declarant_change,
+        'success_message': success_message
         }
-    )
+
     return render(request, 'declarant_change.html', context)
 
 @permission_required('application.view_networkgraph')
@@ -166,12 +181,13 @@ def network_graph(request):
         return redirect('network_graph')
 
     filter_data = request.session.get('net_graph_filters')
-    list_keys = [
-        'app_closed', 'date_from', 'date_to', 'declarant', 'bill_number', 'num_of_mach',
-        'application_number', 'payment', 'recalculation', 'payment_document', 'num_exclude_mach',
-        'notice_recalculation', 'act_send_date', 'act', 'final_notice'
-    ]
-    filter_dict = {_: request.GET.get(_, '') for _ in list_keys}
+    # list_keys = [
+    #     'app_closed', 'date_from', 'date_to', 'declarant', 'bill_number', 'num_of_mach',
+    #     'application_number', 'payment', 'recalculation', 'payment_document', 'num_exclude_mach',
+    #     'notice_recalculation', 'act_send_date', 'act', 'final_notice'
+    # ]
+    # filter_dict = {_: request.GET.get(_, '') for _ in list_keys}
+    filter_dict = request.GET
     if not filter_data:
         if request.GET:
             param_dict = filter_dict
@@ -206,6 +222,7 @@ def network_graph(request):
             pass
         elif value:
             if key == 'application_number' or key == 'bill_number' or key == 'payment' or key == 'payment_document' or key == 'num_of_mach':
+                print(key, value)
                 filter_name = f'application__{key}__icontains'
             elif key == 'declarant':
                 filter_name = f'application__declarant__name__icontains'
@@ -215,28 +232,28 @@ def network_graph(request):
                 filter_name = key
             else:
                 filter_name = f'{key}__icontains'
+            print(filter_name)
             network_graph_data = network_graph_data.filter(**{filter_name: str(value)})
 
-    context = (
-        {
-            'network_graph': network_graph_data,
-            'app_closed': param_dict.get('app_closed'),
-            'date_from': param_dict.get('date_from'),
-            'date_to': param_dict.get('date_to'),
-            'declarant':param_dict.get('declarant'),
-            'application_number':param_dict.get('application_number'),
-            'bill_number':param_dict.get('bill_number'),
-            'payment':param_dict.get('payment'),
-            'payment_document':param_dict.get('payment_document'),
-            'num_of_mach':param_dict.get('num_of_mach'),
-            'act':param_dict.get('act'),
-            'recalculation': param_dict.get('recalculation'),
-            'num_exclude_mach': param_dict.get('num_exclude_mach'),
-            'notice_recalculation': param_dict.get('notice_recalculation'),
-            'act_send_date': param_dict.get('act_send_date'),
-            'final_notice': param_dict.get('final_notice')
+    context = {
+        'network_graph': network_graph_data,
+        'app_closed': param_dict.get('app_closed'),
+        'date_from': param_dict.get('date_from'),
+        'date_to': param_dict.get('date_to'),
+        'declarant':param_dict.get('declarant'),
+        'application_number':param_dict.get('application_number'),
+        'bill_number':param_dict.get('bill_number'),
+        'payment':param_dict.get('payment'),
+        'payment_document':param_dict.get('payment_document'),
+        'num_of_mach':param_dict.get('num_of_mach'),
+        'act':param_dict.get('act'),
+        'recalculation': param_dict.get('recalculation'),
+        'num_exclude_mach': param_dict.get('num_exclude_mach'),
+        'notice_recalculation': param_dict.get('notice_recalculation'),
+        'act_send_date': param_dict.get('act_send_date'),
+        'final_notice': param_dict.get('final_notice')
         }
-    )
+
     return render(request, 'network_graph.html', context)
 
 @permission_required('application.change_networkgraph')
@@ -252,13 +269,12 @@ def network_graph_change(request,pk):
             success_message = 'Изменения в сетевой график внесены успешно'
     else:
         form = NetworkGraphInput(instance=network_graph_data)
-    context = (
-        {
-            'form': form,
-            'network_graph_data': network_graph_data,
-            'success_message': success_message
+    context = {
+        'form': form,
+        'network_graph_data': network_graph_data,
+        'success_message': success_message
         }
-    )
+
     return render(request, 'network_graph_change.html', context)
 
 
@@ -267,12 +283,12 @@ def declarant_del(request, pk):
     decl_del = Declarant.objects.get(pk=pk)
     decl_del.delete()
     form = DeclarantInput()
-    context = (
-        {
-            'form': form,
-            'declarants': declarants
+
+    context = {
+        'form': form,
+        'declarants': declarants
         }
-    )
+
     return render(request, 'declarant.html', context)
 
 def declarant_input():

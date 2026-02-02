@@ -16,7 +16,7 @@
         <b>Сетевой график</b>
     </h3>
 
-        <form method="get" action="" role="search">
+        <form class="search-form" method="get" action="" role="search">
             <div class="row d-flex py-3 mb-4 border-bottom border-success">
                 <div class="col-md-2">
                     <label for="app_closed" class="form-label">Статус</label>
@@ -67,10 +67,10 @@
                             <input type="search" name="bill_number" class="form-control me-2" value="{{ bill_number|default:'' }}" aria-label="Search">
                         </td>
                         <td>
-                            <input type="search" name="num_of_mach" class="form-control me-2" value="{{ num_of_mach|default:'' }}" aria-label="Search">
+                            <input type="search" name="application_number" class="form-control me-2" value="{{ application_number|default:'' }}" aria-label="Search">
                         </td>
                         <td>
-                            <input type="search" name="application_number" class="form-control me-2" value="{{ application_number|default:'' }}" aria-label="Search">
+                            <input type="search" name="num_of_mach" class="form-control me-2" value="{{ num_of_mach|default:'' }}" aria-label="Search">
                         </td>
                         <td>
                             <input type="search" name="payment" class="form-control me-2" value="{{ payment|default:'' }}" aria-label="Search">

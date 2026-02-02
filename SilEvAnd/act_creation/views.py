@@ -148,13 +148,13 @@ def slot_machine_data_change(request, pk):
             success_message = 'Данные по ИА успешно изменены!'
     else:
         form = ActInput(instance=slot_machine_data_change)
-    context = (
-        {
-            'form': form,
-            'slot_machine_data': slot_machine_data_change,
-            'success_message': success_message
+
+    context = {
+        'form': form,
+        'slot_machine_data': slot_machine_data_change,
+        'success_message': success_message
         }
-    )
+
     return render(request, 'slot_machine_data_change.html', context)
 
 
@@ -282,28 +282,28 @@ def s_m_data_input(request, pk):
             slot_machines_data = slot_machines_data.filter(**{filter_name: str(value)})
     slot_machines_count = slot_machines_data.filter(
         distribution__application__application_number=str(users_application)).count()
-    context = (
-        {
-            'slot_machines_data': slot_machines_data,
-            'slot_machines_count': slot_machines_count,
-            'users_application': users_application,
-            'formset': formset,
-            'success_message': success_message,
-            'act_number': param_dict['act_number'],
-            'application': param_dict['application'],
-            'control_sticks_number': param_dict['control_sticks_number'],
-            'declarant': param_dict['declarant'],
-            'result': param_dict['result'],
-            'model': param_dict['model'],
-            'version': param_dict['version'],
-            'slot_number': param_dict['slot_number'],
-            'reg_number': param_dict['reg_number'],
-            'board_number': param_dict['board_number'],
-            'empty_form': formset.empty_form,
-            'number_stickers': number_stickers,
-            'color_mapp': color_mapp
+
+    context = {
+        'slot_machines_data': slot_machines_data,
+        'slot_machines_count': slot_machines_count,
+        'users_application': users_application,
+        'formset': formset,
+        'success_message': success_message,
+        'act_number': param_dict['act_number'],
+        'application': param_dict['application'],
+        'control_sticks_number': param_dict['control_sticks_number'],
+        'declarant': param_dict['declarant'],
+        'result': param_dict['result'],
+        'model': param_dict['model'],
+        'version': param_dict['version'],
+        'slot_number': param_dict['slot_number'],
+        'reg_number': param_dict['reg_number'],
+        'board_number': param_dict['board_number'],
+        'empty_form': formset.empty_form,
+        'number_stickers': number_stickers,
+        'color_mapp': color_mapp
         }
-    )
+
     return render(request, 's_m_data_input.html', context)
 
 @permission_required('act_creation.view_act')
@@ -319,8 +319,8 @@ def act_creation(request):
 
 
     context = {
-            'users_applications': users_applications,
-            'user_now': user_now
+        'users_applications': users_applications,
+        'user_now': user_now
         }
     return render(request, 'act_creation.html', context)
 
@@ -384,7 +384,7 @@ def docx_create(request):
                 'sticker': stick_place.stick_place,
                 'manufacturer': manufacturer,
                 'acts': acts
-            }
+                }
             docx_file_name = (f'{str(word_context['act_number'])} {word_context['declarant'].replace('"', '')} '
                       f'{stick_place.board_name} {date_filename}.docx')
             save_path = os.path.join(settings.MEDIA_ROOT, 'acts', docx_file_name)

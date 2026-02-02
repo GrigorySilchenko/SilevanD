@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% block page_content %}
 
+<style>
+    .search-form .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+    .form-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+</style>
 
 <div class="container">
     <br>
@@ -8,139 +18,185 @@
             <b>Журнал заявок на техническое освидетельствование игровых автоматов.</b>
         </h3>
     <br>
-        <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
-            <div>
-                <form action="{% url 'application' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <dl class="row">
-                    {% for field in form %}
-                        <dt class="col-sm-4">{{ field.label_tag }}</dt>
-                        <dd class="col-sm-8">{{ field }}</dd>
-                            {% if field.errors %}
-                                <div class="text-danger">
-                                    {{ field.errors }}
-                                </div>
-                            {% endif %}
-                    {% endfor %}
-                    </dl>
-                    <button type="submit" class="btn btn-success">Зарегистрировать заявку</button>
-                    <a href="{% url 'declarant' %}" class="btn btn-success">Добавить нового заявителя</a>
-                </form>
-                {% if success_message %}
-                    <div class="alert alert-success mt-3 text-center">
-                        {{ success_message }}
-                    </div>
-                {% endif %}
-                {% if danger_message %}
-                    <div class="alert alert-danger mt-3 text-center">
-                        {{ danger_message }}
-                    </div>
-                {% endif %}
-            </div>
+    <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
+        <div>
+            <form action="{% url 'application' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <dl class="row">
+                {% for field in form %}
+                    <dt class="col-sm-4">{{ field.label_tag }}</dt>
+                    <dd class="col-sm-8">{{ field }}</dd>
+                        {% if field.errors %}
+                            <div class="text-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                {% endfor %}
+                </dl>
+                <button type="submit" class="btn btn-success">Зарегистрировать заявку</button>
+                <a href="{% url 'declarant' %}" class="btn btn-success">Добавить нового заявителя</a>
+            </form>
+            {% if success_message %}
+                <div class="alert alert-success mt-3 text-center">
+                    {{ success_message }}
+                </div>
+            {% endif %}
+            {% if danger_message %}
+                <div class="alert alert-danger mt-3 text-center">
+                    {{ danger_message }}
+                </div>
+            {% endif %}
         </div>
-    <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
-      <thead class="table table-success table-bordered border-success align-middle">
-        <tr>
-            <th scope="col" colspan="3">Заявка</th>
-            <th scope="col" rowspan="2" style="width: 210px;">Наименование заявителя</th>
-            <th scope="col" colspan="2">Входящий номер БелГИСС</th>
-            <th scope="col" rowspan="2" style="width: 80px;">Кол-во ИА</th>
-            <th scope="col" colspan="2">Номер счета</th>
-            <th scope="col" rowspan="2">Сумма</th>
-            <th scope="col" colspan="2">Оплата</th>
-            <th scope="col" rowspan="2">Место проведения</th>
-            <th scope="col" rowspan="2" style="width: 100px;">Прим-е</th>
-            <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="table table-success table-bordered border-success align-middle">
-            <td scope="col">№</td>
-            <td scope="col">Дата</td>
-            <td scope="col">PDF</td>
-            <td scope="col"></td>
-            <td scope="col" style="width: 80px;">Вход.№</td>
-            <td scope="col">Дата</td>
-            <td scope="col"></td>
-            <td scope="col">№ счета</td>
-            <td scope="col">Дата</td>
-            <td scope="col"></td>
-            <td scope="col" style="width: 80px;">№ п/п</td>
-            <td scope="col">Дата</td>
-            <td scope="col"></td>
-            <td scope="col"></td>
-            <td scope="col"></td>
-        </tr>
-      {% for app in page_obj %}
-        <tr>
-          <td>{{ app.application_number }}</td>
-          <td>{{ app.created_on|date:"d.m.Y" }}</td>
-          <td>
-              {% if app.pdf %}
-                <a href="{{ app.pdf.url }}" class="text text-success" target="_blank">PDF</a>
-              {% else %}
-                <a class="text text-danger">Пусто</a>
-              {% endif %}
-          </td>
-          <td class="text-start ps-4">{{ app.declarant }}</td>
-          <td>
-              {% if app.application_number_belgiss %}
-                  {{ app.application_number_belgiss }}
-              {% else %}
-                   <span class="text-danger">---</span>
-              {% endif %}
-          </td>
-          <td>
-              {% if app.date_belgiss|date:"d.m.Y" %}
-                  {{ app.date_belgiss|date:"d.m.Y" }}
-              {% else %}
-                   <span class="text-danger">---</span>
-              {% endif %}
-          </td>
-          <td>{{ app.num_of_mach }}</td>
-          <td>
-              {% if app.bill_number %}
-                  {{ app.bill_number }}
-              {% else %}
-                   <span class="text-danger">---</span>
-              {% endif %}
-          </td>
-          <td>
-              {% if app.bill_date|date:"d.m.Y" %}
-                  {{ app.bill_date|date:"d.m.Y" }}
-              {% else %}
-                   <span class="text-danger">---</span>
-              {% endif %}
-          </td>
-          <td>
-              {% if app.payment %}
-                  {{ app.payment }}
-              {% else %}
-                   <span class="text-danger">---</span>
-              {% endif %}
-          </td>
-          <td>
-              {% if app.payment_document %}
-                  {{ app.payment_document }}
-              {% else %}
-                   <span class="text-danger">---</span>
-              {% endif %}
-          </td>
-          <td>
-              {% if app.payment_date|date:"d.m.Y" %}
-                  {{ app.payment_date|date:"d.m.Y" }}
-              {% else %}
-                   <span class="text-danger">---</span>
-              {% endif %}
-          </td>
-          <td>{{ app.place }}</td>
-          <td>{{ app.notice }}</td>
-          <td><a href="{% url 'application_change' app.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
-          </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+    </div>
+    <form class="search-form" method="get" action="" role="search">
+        <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+            <thead class="table table-success table-bordered border-success align-middle">
+                <tr>
+                    <th scope="col" colspan="3">Заявка</th>
+                    <th scope="col" rowspan="2" style="width: 210px;">Наименование заявителя</th>
+                    <th scope="col" colspan="2">Входящий номер БелГИСС</th>
+                    <th scope="col" rowspan="2" style="width: 50px;">Кол. ИА</th>
+                    <th scope="col" colspan="2">Номер счета</th>
+                    <th scope="col" rowspan="2">Сумма</th>
+                    <th scope="col" colspan="2">Оплата</th>
+                    <th scope="col" rowspan="2">Город</th>
+                    <th scope="col" rowspan="2" style="width: 100px;">Прим-е</th>
+                    <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table table-success table-bordered border-success align-middle">
+                    <td scope="col" style="width: 90px;">№</td>
+                    <td scope="col">Дата</td>
+                    <td scope="col">PDF</td>
+                    <td scope="col"></td>
+                    <td scope="col" style="width: 90px;">Вход.№</td>
+                    <td scope="col">Дата</td>
+                    <td scope="col"></td>
+                    <td scope="col">№ счета</td>
+                    <td scope="col">Дата</td>
+                    <td scope="col"></td>
+                    <td scope="col" style="width: 90px;">№ п/п</td>
+                    <td scope="col">Дата</td>
+                    <td scope="col"></td>
+                    <td scope="col"></td>
+                    <td scope="col"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="search" name="application_number" class="form-control me-2" value="{{ filter_dict.application_number|default:'' }}" aria-label="Search">
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <input type="search" name="declarant" class="form-control me-2" value="{{ filter_dict.declarant|default:'' }}" aria-label="Search">
+                    </td>
+                    <td>
+                        <input type="search" name="application_number_belgiss" class="form-control me-2" value="{{ filter_dict.application_number_belgiss|default:'' }}" aria-label="Search">
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <input type="search" name="num_of_mach" class="form-control me-2" value="{{ filter_dict.num_of_mach|default:'' }}" aria-label="Search">
+                    </td>
+                    <td>
+                        <input type="search" name="bill_number" class="form-control me-2" value="{{ filter_dict.bill_number|default:'' }}" aria-label="Search">
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <input type="search" name="payment" class="form-control me-2" value="{{ filter_dict.payment|default:'' }}" aria-label="Search">
+                    </td>
+                    <td>
+                        <input type="search" name="payment_document" class="form-control me-2" value="{{ filter_dict.payment_document|default:'' }}" aria-label="Search">
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <input type="search" name="place" class="form-control me-2" value="{{ filter_dict.place|default:'' }}" aria-label="Search">
+                    </td>
+                    <td>
+                        <input type="search" name="notice" class="form-control me-2" value="{{ filter_dict.notice|default:'' }}" aria-label="Search">
+                        <button type="submit" class="btn btn-outline-success" style="display: none;">
+                                <i class="bi bi-search"></i>
+                        </button>
+                    </td>
+                    <td></td>
+                </tr>
+                {% for app in page_obj %}
+                <tr>
+
+                    <td>{{ app.application_number }}</td>
+                    <td>{{ app.created_on|date:"d.m.Y" }}</td>
+                    <td>
+                        {% if app.pdf %}
+                            <a href="{{ app.pdf.url }}" class="text text-success" target="_blank">PDF</a>
+                        {% else %}
+                            <a class="text text-danger">Пусто</a>
+                        {% endif %}
+                    </td>
+                    <td class="text-start ps-4">{{ app.declarant }}</td>
+                    <td>
+                        {% if app.application_number_belgiss %}
+                            {{ app.application_number_belgiss }}
+                        {% else %}
+                            <span class="text-danger">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if app.date_belgiss|date:"d.m.Y" %}
+                            {{ app.date_belgiss|date:"d.m.Y" }}
+                        {% else %}
+                            <span class="text-danger">---</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ app.num_of_mach }}</td>
+                    <td>
+                        {% if app.bill_number %}
+                            {{ app.bill_number }}
+                        {% else %}
+                            <span class="text-danger">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if app.bill_date|date:"d.m.Y" %}
+                            {{ app.bill_date|date:"d.m.Y" }}
+                        {% else %}
+                            <span class="text-danger">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if app.payment %}
+                            {{ app.payment }}
+                        {% else %}
+                             <span class="text-danger">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if app.payment_document %}
+                            {{ app.payment_document }}
+                        {% else %}
+                            <span class="text-danger">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if app.payment_date|date:"d.m.Y" %}
+                            {{ app.payment_date|date:"d.m.Y" }}
+                        {% else %}
+                            <span class="text-danger">---</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ app.place }}</td>
+                    <td>{{ app.notice }}</td>
+                    <td><a href="{% url 'application_change' app.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
+                    </td>
+                </tr>
+                {% endfor %}
+          </tbody>
+        </table>
+    </form>
 </div>
 
 {% if page_obj.has_other_pages %}

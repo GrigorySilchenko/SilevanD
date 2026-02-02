@@ -48,19 +48,18 @@ def distribution(request):
 
     mach_total = distributions.aggregate(total=Sum('application__num_of_mach')).get('total')
 
-    context = (
-        {
-            'distributions': distributions,
-            'app_get': app_get,
-            'date_get_start': date_get_start,
-            'date_get_end': date_get_end,
-            'declarant_get': declarant_get,
-            'act_get': act_get,
-            'user_get': user_get,
-            'applications': applications,
-            'mach_total': mach_total
+    context = {
+        'distributions': distributions,
+        'app_get': app_get,
+        'date_get_start': date_get_start,
+        'date_get_end': date_get_end,
+        'declarant_get': declarant_get,
+        'act_get': act_get,
+        'user_get': user_get,
+        'applications': applications,
+        'mach_total': mach_total
          }
-    )
+
     return render(request, 'distribution.html', context)
 
 @permission_required('distribution.view_controljournal')
@@ -88,14 +87,13 @@ def application_distribution(request, pk):
             net_graph.save()
             form = ControlJournalInput()
             success_message = 'Заявка добавлена в журнал и отправлена исполнителю'
-    context = (
-        {
+
+    context = {
         'form': form,
         'application': application,
         'success_message': success_message,
         'distributions': distributions
          }
-    )
 
     return render(request, 'application_distribution.html', context)
 
@@ -119,12 +117,11 @@ def distribution_change(request, pk):
     else:
         form = ControlJournalInput(instance=distr_change)
 
-    context = (
-        {
+    context = {
         'form': form,
         'distributions': distributions,
         'distribution': distr_change,
         'success_message': success_message
          }
-    )
+
     return render(request, 'distribution_change.html', context)
