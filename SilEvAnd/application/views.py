@@ -227,6 +227,8 @@ def network_graph(request):
                 filter_name = f'control_journal__{key}__icontains'
             elif key == 'app_closed':
                 filter_name = key
+                if value == 'True':
+                    network_graph_data = network_graph_data.filter(final_notice='')
             else:
                 filter_name = f'{key}__icontains'
             network_graph_data = network_graph_data.filter(**{filter_name: value})

@@ -1,4 +1,5 @@
 from django import forms
+from dal import autocomplete
 from django.core.exceptions import ValidationError
 from .models import Application, Declarant, NetworkGraph
 
@@ -19,6 +20,7 @@ class ApplicationInput(forms.ModelForm):
                   'pdf',
                   'notice']
         widgets = {
+            'declarant': autocomplete.ModelSelect2(url='declarant-autocomplete'),
             'date_belgiss': forms.DateInput(attrs={'type': 'date'}),
             'bill_date': forms.DateInput(attrs={'type': 'date'}),
             'payment_date': forms.DateInput(attrs={'type': 'date'}),
