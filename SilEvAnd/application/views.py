@@ -181,12 +181,6 @@ def network_graph(request):
         return redirect('network_graph')
 
     filter_data = request.session.get('net_graph_filters')
-    # list_keys = [
-    #     'app_closed', 'date_from', 'date_to', 'declarant', 'bill_number', 'num_of_mach',
-    #     'application_number', 'payment', 'recalculation', 'payment_document', 'num_exclude_mach',
-    #     'notice_recalculation', 'act_send_date', 'act', 'final_notice'
-    # ]
-    # filter_dict = {_: request.GET.get(_, '') for _ in list_keys}
     filter_dict = request.GET
     if not filter_data:
         if request.GET:
@@ -217,12 +211,15 @@ def network_graph(request):
             end = date.today().isoformat()
         network_graph_data = network_graph_data.filter(application__created_on__lte=end)
 
+    is_final_notice = param_dict.get('is_final_notice')
+    if is_final_notice:
+        network_graph_data = network_graph_data.exclude(final_notice='')
+
     for key, value in param_dict.items():
-        if key == 'date_from' or key == 'date_to':
+        if key == 'date_from' or key == 'date_to' or key == 'is_final_notice':
             pass
         elif value:
             if key == 'application_number' or key == 'bill_number' or key == 'payment' or key == 'payment_document' or key == 'num_of_mach':
-                print(key, value)
                 filter_name = f'application__{key}__icontains'
             elif key == 'declarant':
                 filter_name = f'application__declarant__name__icontains'
@@ -232,14 +229,14 @@ def network_graph(request):
                 filter_name = key
             else:
                 filter_name = f'{key}__icontains'
-            print(filter_name)
-            network_graph_data = network_graph_data.filter(**{filter_name: str(value)})
+            network_graph_data = network_graph_data.filter(**{filter_name: value})
 
     context = {
         'network_graph': network_graph_data,
         'app_closed': param_dict.get('app_closed'),
         'date_from': param_dict.get('date_from'),
         'date_to': param_dict.get('date_to'),
+        'is_final_notice': param_dict.get('is_final_notice'),
         'declarant':param_dict.get('declarant'),
         'application_number':param_dict.get('application_number'),
         'bill_number':param_dict.get('bill_number'),

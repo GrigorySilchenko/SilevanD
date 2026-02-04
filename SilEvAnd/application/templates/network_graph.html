@@ -9,13 +9,24 @@
         border-color: #198754;
         box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
     }
+    .form-check-input:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+    .checkbox-success {
+    accent-color: #198754 !important; /* Принудительно задаем цвет */
+    }
+    .checkbox-success:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
 </style>
 
 <div class="container">
     <h3>
         <b>Сетевой график</b>
     </h3>
-
         <form class="search-form" method="get" action="" role="search">
             <div class="row d-flex py-3 mb-4 border-bottom border-success">
                 <div class="col-md-2">
@@ -34,6 +45,12 @@
                     <label for="date_to" class="form-label">по</label>
                     <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to|default:'' }}">
                 </div>
+                <div class="col-12 d-flex align-items-center mb-3">
+                    <label for="is_final_notice" class="form-check-label me-2">Показать только закрытые</label>
+                    <input type="checkbox" id="is_final_notice" name="is_final_notice"
+                           class="form-check-input checkbox-success" value="True"
+                           {% if is_final_notice == 'True' %}checked{% endif %}>
+                </div>
                 <div class="col-12 d-flex align-items-end">
                     <button type="submit" class="btn btn-success me-2">Фильтровать</button>
                     <button type="submit" name="reset" value="1" class="btn btn-success me-2">Сбросить фильтры</button>
@@ -44,16 +61,16 @@
                 <thead class="table table-success table-bordered border-success align-middle">
                     <tr>
                         <th scope="col">Заявитель</th>
-                        <th scope="col">Счет</th>
+                        <th scope="col" style="width: 120px;">Счет</th>
                         <th scope="col">Заявка</th>
                         <th scope="col">Кол. ИА</th>
                         <th scope="col">Сумма</th>
-                        <th scope="col">Перерасчёт</th>
+                        <th scope="col">Пере-расчёт</th>
                         <th scope="col">Оплата</th>
                         <th scope="col">Кол. искл. ИА</th>
                         <th scope="col">Письма об отказе</th>
                         <th scope="col">Дата направления акта</th>
-                        <th scope="col">Номер акта</th>
+                        <th scope="col" style="width: 120px;">Номер акта</th>
                         <th scope="col">Примечания</th>
                         <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
                     </tr>
@@ -102,7 +119,7 @@
                         <td></td>
                     </tr>
                     {% for data in network_graph %}
-                    <tr class="{% if data.app_closed %} table-warning {% endif %}">
+                    <tr class="{% if data.final_notice %} table-success {% elif data.app_closed %} table-warning {% endif %}">
                         <td class="text-start ps-2">{{ data.application.declarant }}</td>
                         <td>{{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}</td>
                         <td>{{ data.application.application_number }} от {{ data.application.created_on|date:"d.m.Y" }}</td>
@@ -115,7 +132,6 @@
                                <span class="text-success">---</span>
                             {% endif %}
                         </td>
-
                         <td>
                             {% if data.application.payment_document %}
                               п/п {{ data.application.payment_document }} от {{ data.application.payment_date|date:"d.m.Y" }}
