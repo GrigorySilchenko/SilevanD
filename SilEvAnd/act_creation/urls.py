@@ -1,12 +1,15 @@
 from django.urls import path
 from . import views
+from .autocomplete import RegistryAutocomplete
 
 urlpatterns = [
     path('registry/', views.registry, name='registry'),
     path('registry_modify/', views.registry_modify, name='registry_modify'),
+
     path('slot_machine_data/', views.slot_machine_data, name='slot_machine_data'),
     path('slot_machine_data_change/<int:pk>', views.slot_machine_data_change, name='slot_machine_data_change'),
     path('s_m_data_input/<int:pk>', views.s_m_data_input, name='s_m_data_input'),
+    path('registry-autocomplete/', RegistryAutocomplete.as_view(), name='registry-autocomplete'),
     path('application_status_change/<int:pk>', views.application_status_change, name='application_status_change'),
     path('', views.act_creation, name='act_creation'),
     path('docx_create/', views.docx_create, name='docx_create'),

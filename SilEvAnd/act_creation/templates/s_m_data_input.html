@@ -1,5 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
+
+
 {% block page_content %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <style>
 
     #formset-tbody td {
@@ -7,7 +14,7 @@
         padding-bottom: 0.1rem;
     }
     .auto-resize-textarea {
-    overflow-y: hidden;  /* Скрывает вертикальный скроллбар */
+    overflow-y: hidden;
     }
     .form-control:focus {
         border-color: #198754 !important;
@@ -17,7 +24,12 @@
         border-color: #198754;
         box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
     }
-
+    .select2-container {
+        min-width: 120px !important;
+    }
+    .select2-container--default {
+        --select2-highlighted-bg: #176e35 !important;
+    }
 
 </style>
 
@@ -85,7 +97,10 @@
                                     {% if form %}
                                         <tr>
                                             {% for field in form %}
-                                                <td>{{ field }}</td>
+                                                <td>
+                                                    {{ form.media }}
+                                                    {{ field }}
+                                                </td>
                                                 {% if field.errors %}
                                                     <div class="text-danger">
                                                         {{ field.errors }}

@@ -1,4 +1,5 @@
 from django import forms
+from dal import autocomplete
 from .models import Act, Conformity, Boss, StickPlace, Manufacturer
 
 
@@ -18,13 +19,13 @@ class ActInput(forms.ModelForm):
                   'slot_number',
                   'board_number']
         widgets = {
+            'model_registry': autocomplete.ModelSelect2(url='registry-autocomplete', attrs={'class': 'autocomplete'}),
             'control_sticks_number': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
             'act_number': forms.NumberInput(attrs={'size': '10', 'maxlength': '10'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Получить объект Conformity с названием 'Cоотв.' или создать его, если не существует
         default_conformity, created = Conformity.objects.get_or_create(conformity='Соотв.')
         self.fields['conformity'].initial = default_conformity.pk
 
