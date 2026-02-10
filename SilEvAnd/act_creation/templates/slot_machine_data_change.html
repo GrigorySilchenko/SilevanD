@@ -5,6 +5,12 @@
         border-color: #198754;
         box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
     }
+    .select2-container {
+        min-width: 120px !important;
+    }
+    .select2-container--default {
+        --select2-highlighted-bg: #176e35 !important;
+    }
 </style>
 
 <div class="container">
@@ -16,7 +22,10 @@
                 <dl class="row">
                 {% for field in form %}
                     <dt class="col-sm-4">{{ field.label_tag }}</dt>
-                    <dd class="col-sm-8">{{ field }}</dd>
+                    <dd class="col-sm-8">
+                        {{ form.media }}
+                        {{ field }}
+                    </dd>
                         {% if field.errors %}
                             <div class="text-danger">
                                 {{ field.errors }}

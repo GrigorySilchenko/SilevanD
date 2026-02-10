@@ -1,13 +1,14 @@
 {% extends "base.html" %}
-{% load static %}
-
 
 {% block page_content %}
 
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 {{ form.media }}
+
+<style>
+    .select2-container--default {
+        --select2-highlighted-bg: #176e35 !important;
+    }
+</style>
 
 <div class="container">
             <h3 class="d-flex justify-content-center">
