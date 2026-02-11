@@ -17,8 +17,8 @@
                             {% csrf_token %}
                             <dl class="row">
                             {% for field in form %}
-                                <dt class="col-sm-4">{{ field.label_tag }}</dt>
-                                <dd class="col-sm-8">{{ field }}</dd>
+                                <dt class="col-sm-3">{{ field.label_tag }}</dt>
+                                <dd class="col-sm-9">{{ field }}</dd>
                                     {% if field.errors %}
                                         <div class="text-danger">
                                             {{ field.errors }}
