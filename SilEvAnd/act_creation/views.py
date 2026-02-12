@@ -468,7 +468,7 @@ def docx_create(request):
                 word_context['sticker_cupola'] = stickers_list[-1]
                 stickers_list_new = [' '.join(stickers_list[i:i+2]) for i in range(0,len(stickers_list) - 2,2)]
                 word_context['stickers'] = stickers_list_new
-            elif stick_place == stick_places.get(pk=13): #EGT BELL LINK pk=13
+            elif stick_place == stick_places.get(pk=13) or stick_place == stick_places.get(pk=19): #EGT BELL E3/E4 LINK pk=13/19
                 template_name = 'temp_BELL_tab_1.docx'
                 acts_stickers = [act.get('sticks_number') for act in acts]
                 acts_stickers_mod = []
@@ -476,9 +476,9 @@ def docx_create(request):
                 if acts_stickers:
                     for stickers in acts_stickers:
                         stickers_list = ['ИА ' + num for num in stickers.split() if num.isnumeric()]
+                        jackpot_stickers = ', '.join(stickers_list[-2:])
                         stickers_list[-1] += '*'
                         stickers_list[-2] += '*'
-                        jackpot_stickers = ', '.join(stickers_list[-2:])
                         stickers = ' '.join(stickers_list)
                         acts_stickers_mod.append(stickers)
                 for key, value in enumerate(acts_stickers_mod):
