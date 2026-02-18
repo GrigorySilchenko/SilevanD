@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import ControlJournal
 from application.models import Application, Status, NetworkGraph
 from .forms import ControlJournalInput
@@ -103,9 +103,7 @@ def distribution_change(request, pk):
     distributions = ControlJournal.objects.all().order_by('-application')
     distr_change = ControlJournal.objects.get(pk=pk)
     app_id = distr_change.application.id
-    print(app_id)
     net_graph = NetworkGraph.objects.get(application_id=app_id)
-    form = ControlJournalInput()
     success_message = ''
     if request.method == 'POST':
         form = ControlJournalInput(request.POST, instance=distr_change)
@@ -114,6 +112,7 @@ def distribution_change(request, pk):
             net_graph.control_journal = control_journal_new
             net_graph.save()
             success_message = 'Журнал "Контроль ИА" успешно изменен.'
+            return redirect('distribution')
     else:
         form = ControlJournalInput(instance=distr_change)
 
