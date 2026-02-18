@@ -252,31 +252,37 @@
                             <td></td>
                         </tr>
                     </form>
-                    {% for data in slot_machines_data %}
-                        <tr>
-                            <td class="
-                                {% for key, value in color_mapp.items %}
-                                {% if data.user.username == key %}
-                                {{ value }}
+                    {% for group in slot_machines_data_group %}
+                        {% for row in group.groups %}
+                            <tr>
+                                {% if forloop.first %}
+                                <td class="
+                                    {% for key, value in color_mapp.items %}
+                                        {% if row.user.username == key %}
+                                            {{ value }}
+                                        {% endif %}
+                                    {% endfor %}"
+                                    valign="middle"
+                                    rowspan="{{ group.count }}">{{ group.act_number }}</td>
                                 {% endif %}
-                                {% endfor %}">{{ data.act_number }}</td>
-                            <td>{{ data.distribution.application }}</td>
-                            <td>{{ data.control_sticks_number }}</td>
-                            <td>{{ data.distribution.application.declarant }}</td>
-                            <td>{{ data.conformity }}</td>
-                            <td>{{ data.model_registry.model }}</td>
-                            <td>{{ data.model_registry.version }}</td>
-                            <td>{{ data.slot_number }}</td>
-                            <td>{{ data.model_registry }}</td>
-                            <td>{{ data.board_number }}</td>
-                            <td><a href="{% url 'slot_machine_data_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a></td>
-                            <td>
-                                <form action="{% url 's_m_data_input' users_application.pk %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-success" name="get_data_to_formset" value="{{ data.pk }}" style="padding: 2px 6px; font-size: 12px;">Доб.</button>
-                                </form>
-                            </td>
-                        </tr>
+                                <td>{{ row.distribution.application }}</td>
+                                <td>{{ row.control_sticks_number }}</td>
+                                <td>{{ row.distribution.application.declarant }}</td>
+                                <td>{{ row.conformity }}</td>
+                                <td>{{ row.model_registry.model }}</td>
+                                <td>{{ row.model_registry.version }}</td>
+                                <td>{{ row.slot_number }}</td>
+                                <td>{{ row.model_registry }}</td>
+                                <td>{{ row.board_number }}</td>
+                                <td><a href="{% url 'slot_machine_data_change' row.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a></td>
+                                <td>
+                                    <form action="{% url 's_m_data_input' users_application.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success" name="get_data_to_formset" value="{{ row.pk }}" style="padding: 2px 6px; font-size: 12px;">Доб.</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
                 </tbody>
             </table>

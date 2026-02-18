@@ -14,6 +14,7 @@ from application.models import Status, Application
 from .forms import ActInput, ActDataInput
 from django.forms import formset_factory
 from datetime import date
+from itertools import groupby
 
 color_mapp = {
         'ЕАН': 'table-success',
@@ -100,6 +101,7 @@ def registry_modify_input(request):
 @permission_required('act_creation.view_act')
 def slot_machine_data(request):
     slot_machines_data = Act.objects.all().order_by('-act_number')
+
     list_keys = [
         'act_number', 'application', 'control_sticks_number',
         'declarant', 'result', 'model', 'version', 'slot_number',
@@ -120,8 +122,17 @@ def slot_machine_data(request):
                 filter_name = f'{key}__icontains'
             slot_machines_data = slot_machines_data.filter(**{filter_name: str(value)})
 
+    slot_machines_data_group = []
+    for act_number, group in groupby(slot_machines_data, key=lambda x: x.act_number):
+        group_list = list(group)
+        slot_machines_data_group.append({
+            'act_number': act_number,
+            'groups': group_list,
+            'count': len(group_list)
+        })
+
     context = {
-            'slot_machines_data': slot_machines_data,
+            'slot_machines_data_group': slot_machines_data_group,
             'act_number': param_dict['act_number'],
             'application': param_dict['application'],
             'control_sticks_number': param_dict['control_sticks_number'],
@@ -283,8 +294,17 @@ def s_m_data_input(request, pk):
     slot_machines_count = slot_machines_data.filter(
         distribution__application__application_number=str(users_application)).count()
 
+    slot_machines_data_group = []
+    for act_number, group in groupby(slot_machines_data, key=lambda x: x.act_number):
+        group_list = list(group)
+        slot_machines_data_group.append({
+            'act_number': act_number,
+            'groups': group_list,
+            'count': len(group_list)
+        })
+
     context = {
-        'slot_machines_data': slot_machines_data,
+        'slot_machines_data_group': slot_machines_data_group,
         'slot_machines_count': slot_machines_count,
         'users_application': users_application,
         'formset': formset,
@@ -519,9 +539,18 @@ def docx_create(request):
                 filter_name = f'{key}__icontains'
             slot_machines_data = slot_machines_data.filter(**{filter_name: str(value)})
 
+    slot_machines_data_group = []
+    for act_number, group in groupby(slot_machines_data, key=lambda x: x.act_number):
+        group_list = list(group)
+        slot_machines_data_group.append({
+            'act_number': act_number,
+            'groups': group_list,
+            'count': len(group_list)
+        })
+
     context = {
         'form': form,
-        'slot_machines_data': slot_machines_data,
+        'slot_machines_data_group': slot_machines_data_group,
         'act_number': param_dict['act_number'],
         'application': param_dict['application'],
         'control_sticks_number': param_dict['control_sticks_number'],

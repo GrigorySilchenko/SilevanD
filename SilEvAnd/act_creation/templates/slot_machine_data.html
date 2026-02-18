@@ -72,25 +72,31 @@
             </td>
             <td></td>
         </tr>
-      {% for data in slot_machines_data %}
-        <tr>
-            <td class="
-                {% for key, value in color_mapp.items %}
-                {% if data.user.username == key %}
-                {{ value }}
+      {% for group in slot_machines_data_group %}
+        {% for row in group.groups %}
+            <tr>
+                {% if forloop.first %}
+                <td class="
+                    {% for key, value in color_mapp.items %}
+                        {% if row.user.username == key %}
+                            {{ value }}
+                        {% endif %}
+                    {% endfor %}"
+                    valign="middle"
+                    rowspan="{{ group.count }}">{{ group.act_number }}</td>
                 {% endif %}
-                {% endfor %}">{{ data.act_number }}</td>
-            <td>{{ data.distribution.application }} от {{ data.distribution.application.created_on|date:"d.m.Y" }}</td>
-            <td>{{ data.control_sticks_number }}</td>
-            <td>{{ data.distribution.application.declarant }}</td>
-            <td>{{ data.conformity }}</td>
-            <td>{{ data.model_registry.model }}</td>
-            <td>{{ data.model_registry.version }}</td>
-            <td>{{ data.slot_number }}</td>
-            <td>{{ data.model_registry }}</td>
-            <td>{{ data.board_number }}</td>
-            <td><a href="{% url 'slot_machine_data_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
-        </tr>
+                <td>{{ row.distribution.application }} от {{ row.distribution.application.created_on|date:"d.m.Y" }}</td>
+                <td>{{ row.control_sticks_number }}</td>
+                <td>{{ row.distribution.application.declarant }}</td>
+                <td>{{ row.conformity }}</td>
+                <td>{{ row.model_registry.model }}</td>
+                <td>{{ row.model_registry.version }}</td>
+                <td>{{ row.slot_number }}</td>
+                <td>{{ row.model_registry }}</td>
+                <td>{{ row.board_number }}</td>
+                <td><a href="{% url 'slot_machine_data_change' row.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
+            </tr>
+        {% endfor %}
       {% endfor %}
       </tbody>
     </table>
