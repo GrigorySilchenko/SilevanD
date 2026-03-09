@@ -87,6 +87,7 @@ def application_distribution(request, pk):
             net_graph.save()
             form = ControlJournalInput()
             success_message = 'Заявка добавлена в журнал и отправлена исполнителю'
+            return redirect('distribution')
 
     context = {
         'form': form,
