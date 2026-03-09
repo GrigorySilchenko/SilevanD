@@ -26,6 +26,9 @@
     .select2-container--default {
         --select2-highlighted-bg: #176e35 !important;
     }
+    .spacing {
+        margin-bottom: 10px
+    }
 
 </style>
 
@@ -70,13 +73,16 @@
             <div class="col">
                 <form action="{% url 's_m_data_input' users_application.pk %}" method="post">
                     {% csrf_token %}
-                    <div>
+                    <div class="spacing">
                         <label for="id_amount_numbers">Количество СК:</label>
                         <select id="id_amount_numbers" name="amount_numbers">
                             {% for i in "123456789" %}
                                 <option value="{{ i }}" {% if i == number_stickers %}selected{% endif %}>{{ i }}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                    <div class="spacing">
+                        <button type="button" id="add-form" class="btn btn-success">Добавить пустую форму</button>
                     </div>
                     {{ formset.management_form }}
                         <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
@@ -127,7 +133,6 @@
                         });
                     </script>
 
-                    <button type="button" id="add-form" class="btn btn-success">Добавить пустую форму</button>
                     <button type="submit" class="btn btn-success" name="save_draft">Сохранить черновик</button>
                     <button type="submit" class="btn btn-success" name="save_form">Отправить в журнал актов ТО</button>
                     <a href="{% url 'docx_create' %}" class="btn btn-success">Сформировать акт ТО в формате .docx</a>
