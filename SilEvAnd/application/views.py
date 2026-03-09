@@ -24,13 +24,6 @@ def status_giving(cleaned_data):
 @permission_required('application.view_application')
 def application(request):
     applications = Application.objects.all().order_by('-application_number')
-    last_app = applications.first().application_number
-
-    if last_app:
-        application_number_new = last_app + 1
-    else:
-        application_number_new = 1
-    created_on_new = date.today()
     form = ApplicationInput()
     success_message, danger_message = '', ''
 
@@ -38,6 +31,13 @@ def application(request):
         if request.user.has_perm('application.add_application'):
             form = ApplicationInput(request.POST, request.FILES)
             if form.is_valid():
+                applications = Application.objects.all().order_by('-application_number')
+                last_app = applications.first().application_number
+                if last_app:
+                    application_number_new = last_app + 1
+                else:
+                    application_number_new = 1
+                created_on_new = date.today()
                 status = status_giving(form.cleaned_data)
                 application_new = Application(
                     application_number=application_number_new,
@@ -66,12 +66,12 @@ def application(request):
     if request.GET:
         filter_dict = request.GET
         for key, value in filter_dict.items():
-            if value:
+            if value and key != 'page':
                 if key == 'declarant':
                     filter_name = f'declarant__name__icontains'
                 else:
                     filter_name = f'{key}__icontains'
-                applications = applications.filter(**{filter_name: str(value)})
+                applications = applications.filter(**{filter_name: str(value)}).order_by('-application_number')
     else:
         filter_dict = dict()
 

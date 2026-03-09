@@ -206,9 +206,11 @@
 
     {% if page_obj.has_previous %}
       <li class="page-item">
-        <a class="page-link text-success" href="?page={{ page_obj.previous_page_number }}{% if flag_get %}&is_publ=1{% endif %}{% if title_get %}&title={{ title_get }}{% endif %}{% if category_get %}&cat={{ category_get }}{% endif %}{% if order %}&order={{ order }}{% endif %}" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
+        {% with params=request.GET.urlencode %}
+            <a class="page-link text-success" href="?{{ params }}&page={{ page_obj.previous_page_number }}{% if flag_get %}&is_publ=1{% endif %}{% if title_get %}&title={{ title_get }}{% endif %}{% if category_get %}&cat={{ category_get }}{% endif %}{% if order %}&order={{ order }}{% endif %}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+        {% endwith  %}
       </li>
     {% else %}
       <li class="page-item disabled">
@@ -223,16 +225,20 @@
         </li>
       {% else %}
         <li class="page-item">
-          <a class="page-link text-success" href="?page={{ num }}{% if flag_get %}&is_publ=1{% endif %}{% if title_get %}&title={{ title_get }}{% endif %}{% if category_get %}&cat={{ category_get }}{% endif %}{% if order %}&order={{ order }}{% endif %}">{{ num }}</a>
+            {% with params=request.GET.urlencode %}
+                <a class="page-link text-success" href="?{{ params }}&page={{ num }}{% if flag_get %}&is_publ=1{% endif %}{% if title_get %}&title={{ title_get }}{% endif %}{% if category_get %}&cat={{ category_get }}{% endif %}{% if order %}&order={{ order }}{% endif %}">{{ num }}</a>
+            {% endwith  %}
         </li>
       {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
       <li class="page-item">
-        <a class="page-link text-success" href="?page={{ page_obj.next_page_number }}{% if flag_get %}&is_publ=1{% endif %}{% if title_get %}&title={{ title_get }}{% endif %}{% if category_get %}&cat={{ category_get }}{% endif %}{% if order %}&order={{ order }}{% endif %}" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
+        {% with params=request.GET.urlencode %}
+            <a class="page-link text-success" href="?{{ params }}&page={{ page_obj.next_page_number }}{% if flag_get %}&is_publ=1{% endif %}{% if title_get %}&title={{ title_get }}{% endif %}{% if category_get %}&cat={{ category_get }}{% endif %}{% if order %}&order={{ order }}{% endif %}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+        {% endwith  %}
       </li>
     {% else %}
       <li class="page-item disabled">
