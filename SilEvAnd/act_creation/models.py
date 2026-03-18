@@ -11,7 +11,7 @@ class Registry(models.Model):
         return self.number
 
 class RegistryModify(models.Model):
-    number = models.CharField(max_length=10)
+    number = models.CharField(max_length=20)
     model = models.CharField(max_length=200)
     version = models.CharField(max_length=200)
     manufacturer = models.CharField(max_length=500)
@@ -44,7 +44,7 @@ class Conformity(models.Model):
 class Act(models.Model):
     act_number = models.IntegerField(blank=True, null=True, verbose_name='№ Акта')
     distribution = models.ForeignKey('distribution.ControlJournal', on_delete=models.CASCADE, related_name='act_to')
-    control_sticks_number = models.TextField(max_length=500, blank=True, null=True, verbose_name='Номера средств контроля')
+    control_sticks_number = models.TextField(max_length=600, blank=True, null=True, verbose_name='Номера средств контроля')
     conformity = models.ForeignKey('Conformity', on_delete=models.CASCADE, related_name='manufacturer',
                                    blank=True, null=True, verbose_name='Результат')
     model_registry = models.ForeignKey('RegistryModify', on_delete=models.CASCADE, verbose_name='Номер по реестру')
