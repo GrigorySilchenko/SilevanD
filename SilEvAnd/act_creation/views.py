@@ -504,6 +504,16 @@ def docx_create(request):
                 for key, value in enumerate(acts_stickers_mod):
                     acts[key]['sticks_number'] = value
                 word_context['jackpot_stickers'] = jackpot_stickers
+            elif stick_place == stick_places.get(pk=20): #R8TS Alfastreet pk=20
+                template_name = 'temp_R8TS.docx'
+                stickers = [act.get('sticks_number') for act in acts][0]
+                stickers_list = ['ИА ' + num for num in stickers.split() if num.isnumeric()]
+                word_context['sticker_cupola'] = stickers_list[-1]
+                word_context['sticker_keyb'] = stickers_list[-2]
+                word_context['sticker_KVM'] = ' '.join(stickers_list[-5:-2])
+                word_context['sticker_terminal'] = ' '.join(stickers_list[-11:-5])
+                stickers_list_new = [' '.join(stickers_list[i:i+6]) for i in range(0,len(stickers_list) - 11,6)]
+                word_context['stickers'] = stickers_list_new
             else:
                 template_name = 'temp_tab_1.docx'
 
