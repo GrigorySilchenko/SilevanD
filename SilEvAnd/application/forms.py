@@ -28,6 +28,21 @@ class ApplicationInput(forms.ModelForm):
             'pdf': forms.ClearableFileInput()
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            # Устанавливаем value для полей с датами через attrs
+            if self.instance.bill_date:
+                self.fields['bill_date'].widget.attrs['value'] = self.instance.bill_date.strftime('%Y-%m-%d')
+                # Удаляем initial для этого поля
+                self.initial.pop('bill_date', None)
+            if self.instance.payment_date:
+                self.fields['payment_date'].widget.attrs['value'] = self.instance.payment_date.strftime('%Y-%m-%d')
+                self.initial.pop('payment_date', None)
+            if self.instance.date_belgiss:
+                self.fields['date_belgiss'].widget.attrs['value'] = self.instance.date_belgiss.strftime('%Y-%m-%d')
+                self.initial.pop('date_belgiss', None)
+
     def clean(self):
         cleaned_data = super().clean()
         application_number_belgiss_value = cleaned_data.get('application_number_belgiss')
