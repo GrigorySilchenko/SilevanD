@@ -119,6 +119,7 @@ def application_change(request, pk):
                 form.instance.status = status
             form.save()
             success_message = 'Заявка успешно изменена!'
+            return redirect('application')
     else:
         form = ApplicationInput(instance=app_change)
 
