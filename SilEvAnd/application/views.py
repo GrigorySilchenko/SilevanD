@@ -31,7 +31,7 @@ def application(request):
         if request.user.has_perm('application.add_application'):
             form = ApplicationInput(request.POST, request.FILES)
             if form.is_valid():
-                applications = Application.objects.all().order_by('-application_number')
+                applications = Application.objects.select_related('declarant').order_by('-application_number')
                 last_app = applications.first().application_number
                 if last_app:
                     application_number_new = last_app + 1
@@ -174,7 +174,7 @@ def declarant_change(request, pk):
 
 @permission_required('application.view_networkgraph')
 def network_graph(request):
-    network_graph_data = NetworkGraph.objects.all().order_by('-application__application_number')
+    network_graph_data = NetworkGraph.objects.select_related('application', 'control_journal').order_by('-application__application_number')
 
     if 'reset' in request.GET:
         request.session.pop('net_graph_filters', None)

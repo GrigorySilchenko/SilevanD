@@ -100,7 +100,7 @@ def registry_modify_input(request):
 
 @permission_required('act_creation.view_act')
 def slot_machine_data(request):
-    slot_machines_data = Act.objects.all().order_by('-act_number')
+    slot_machines_data = Act.objects.select_related('distribution__application__declarant', 'conformity', 'model_registry').order_by('-act_number')
 
     list_keys = [
         'act_number', 'application', 'control_sticks_number',
@@ -173,7 +173,7 @@ def slot_machine_data_change(request, pk):
 def s_m_data_input(request, pk):
     """Представление для занесения данных об игровом автомате в журнал актов ИА"""
     users_application = ControlJournal.objects.get(pk=pk)
-    slot_machines_data = Act.objects.all().order_by('-act_number')
+    slot_machines_data = Act.objects.select_related('distribution__application__declarant', 'conformity', 'model_registry').order_by('-act_number')
     conformity = Conformity.objects.all()
     registry = RegistryModify.objects.all()
     ActFormSet = formset_factory(ActInput,extra=1)
@@ -347,7 +347,7 @@ def act_creation(request):
 @permission_required('act_creation.add_act')
 def docx_create(request):
     """Страница для создания акта ТО"""
-    slot_machines_data = Act.objects.all().order_by('-act_number')
+    slot_machines_data = Act.objects.select_related('distribution__application__declarant', 'conformity', 'model_registry').order_by('-act_number')
     bosses = Boss.objects.all()
     stick_places = StickPlace.objects.all()
     manufacturers = Manufacturer.objects.all()

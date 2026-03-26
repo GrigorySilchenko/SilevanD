@@ -11,7 +11,7 @@ from datetime import date
 
 @permission_required('distribution.view_controljournal')
 def distribution(request):
-    distributions = ControlJournal.objects.all().order_by('-application')
+    distributions = ControlJournal.objects.select_related('application__declarant').order_by('-application')
     applications = Application.objects.filter(status__in=['2', '1', '7', '8']).order_by('id')
 
     app_get = request.GET.get('app')
@@ -68,7 +68,7 @@ def application_distribution(request, pk):
     net_graph = NetworkGraph.objects.get(application_id=pk)
     form = ControlJournalInput()
     success_message = ''
-    distributions = ControlJournal.objects.all().order_by('-application')
+    distributions = ControlJournal.objects.select_related('application__declarant').order_by('-application')
     if request.method == 'POST':
         form = ControlJournalInput(request.POST)
         if form.is_valid():
