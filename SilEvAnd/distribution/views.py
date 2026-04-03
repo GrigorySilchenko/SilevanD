@@ -44,7 +44,7 @@ def distribution(request):
 
     user_get = request.GET.get('user')
     if user_get:
-        distributions = distributions.filter(user__username__icontains=user_get)
+        distributions = distributions.filter(user_many__username__icontains=user_get)
 
     mach_total = distributions.aggregate(total=Sum('application__num_of_mach')).get('total')
 
