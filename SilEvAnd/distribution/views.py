@@ -46,6 +46,10 @@ def distribution(request):
     if user_get:
         distributions = distributions.filter(user_many__username__icontains=user_get)
 
+    place_get = request.GET.get('place')
+    if place_get:
+        distributions = distributions.filter(application__place__icontains=place_get)
+
     mach_total = distributions.aggregate(total=Sum('application__num_of_mach')).get('total')
 
     context = {
@@ -56,6 +60,7 @@ def distribution(request):
         'declarant_get': declarant_get,
         'act_get': act_get,
         'user_get': user_get,
+        'place_get': place_get,
         'applications': applications,
         'mach_total': mach_total
          }
