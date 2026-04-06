@@ -57,21 +57,31 @@
                 </div>
             </div>
 
-            <table class="table table-hover table-striped table-bordered border-2 border-success text-center">
+            <div class="d-flex justify-content-center align-items-center py-1 mb-1">
+                <div class="col">
+                    <div class="row">
+                        <dt class="col-sm-4" style="font-size: 20px;">Сумма по отфильтрованным заявкам:</dt>
+                        <dd class="col-sm-8" style="font-size: 20px;"><b>{{ payment_sum }}</b></dd>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table  table-hover custom-table table-striped table-bordered border-2 border-success text-center">
                 <thead class="table table-success table-bordered border-success align-middle">
                     <tr>
                         <th scope="col">Заявитель</th>
                         <th scope="col" style="width: 120px;">Счет</th>
                         <th scope="col">Заявка</th>
-                        <th scope="col">Кол. ИА</th>
-                        <th scope="col">Сумма</th>
+                        <th scope="col" style="width: 20px;">Кол. ИА</th>
+                        <th scope="col" style="width: 40px;">Сумма</th>
                         <th scope="col">Пере-расчёт</th>
-                        <th scope="col">Оплата</th>
-                        <th scope="col">Кол. искл. ИА</th>
+                        <th scope="col" style="width: 100px;">Оплата</th>
+                        <th scope="col" style="width: 50px;">Прим. по оплате</th>
+                        <th scope="col" style="width: 20px;">Кол. иск. ИА</th>
                         <th scope="col">Письма об отказе</th>
-                        <th scope="col">Дата направления акта</th>
+                        <th scope="col" style="width: 50px;">Дата направ-я счет-акта</th>
                         <th scope="col" style="width: 120px;">Номер акта</th>
-                        <th scope="col">Примечания</th>
+                        <th scope="col" style="width: 50px;">Прим-я</th>
                         <th scope="col" rowspan="2" style="width: 50px;">Изм.</th>
                     </tr>
                 </thead>
@@ -92,6 +102,7 @@
                         <td>
                             <input type="search" name="payment" class="form-control me-2" value="{{ payment|default:'' }}" aria-label="Search">
                         </td>
+                        <td></td>
                         <td>
                             <input type="search" name="recalculation" class="form-control me-2" value="{{ recalculation|default:'' }}" aria-label="Search">
                         </td>
@@ -121,10 +132,22 @@
                     {% for data in network_graph %}
                     <tr class="{% if data.final_notice %} table-success {% elif data.app_closed %} table-warning {% endif %}">
                         <td class="text-start ps-2">{{ data.application.declarant }}</td>
-                        <td>{{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}</td>
+                        <td>
+                            {% if data.application.bill_number %}
+                            {{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}
+                            {% else %}
+                               <span class="text-danger">---</span>
+                            {% endif %}
+                        </td>
                         <td>{{ data.application.application_number }} от {{ data.application.created_on|date:"d.m.Y" }}</td>
                         <td>{{ data.application.num_of_mach }}</td>
-                        <td>{{ data.application.payment }}</td>
+                        <td>
+                            {% if data.application.payment %}
+                            {{ data.application.payment }}
+                            {% else %}
+                               <span class="text-danger">---</span>
+                            {% endif %}
+                        </td>
                         <td>
                             {% if data.recalculation %}
                               {{ data.recalculation }}
@@ -137,6 +160,13 @@
                               п/п {{ data.application.payment_document }} от {{ data.application.payment_date|date:"d.m.Y" }}
                             {% else %}
                                <span class="text-danger">---</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if data.application.notice %}
+                            {{ data.application.notice }}
+                            {% else %}
+                               <span class="text-success">---</span>
                             {% endif %}
                         </td>
                         <td>{{ data.num_exclude_mach }}</td>

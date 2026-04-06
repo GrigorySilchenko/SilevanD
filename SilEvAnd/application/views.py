@@ -234,6 +234,17 @@ def network_graph(request):
                 filter_name = f'{key}__icontains'
             network_graph_data = network_graph_data.filter(**{filter_name: value})
 
+    payment_sum = 0
+    for data in network_graph_data:
+        if data.recalculation:
+            money = int(data.recalculation * 100)
+        elif data.application.payment:
+            money = int(data.application.payment * 100)
+        else:
+            money = 0
+        payment_sum += money
+    payment_sum /= 100
+
     context = {
         'network_graph': network_graph_data,
         'app_closed': param_dict.get('app_closed'),
@@ -251,7 +262,8 @@ def network_graph(request):
         'num_exclude_mach': param_dict.get('num_exclude_mach'),
         'notice_recalculation': param_dict.get('notice_recalculation'),
         'act_send_date': param_dict.get('act_send_date'),
-        'final_notice': param_dict.get('final_notice')
+        'final_notice': param_dict.get('final_notice'),
+        'payment_sum': payment_sum
         }
 
     return render(request, 'network_graph.html', context)
@@ -267,6 +279,7 @@ def network_graph_change(request,pk):
             form.save()
             # form = NetworkGraphInput()
             success_message = 'Изменения в сетевой график внесены успешно'
+            return redirect('network_graph')
     else:
         form = NetworkGraphInput(instance=network_graph_data)
     context = {
