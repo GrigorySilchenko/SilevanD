@@ -114,6 +114,8 @@ def slot_machine_data(request):
                 filter_name = f'distribution__application__application_number__icontains'
             elif key == 'declarant':
                 filter_name = f'distribution__application__declarant__name__icontains'
+            elif key == 'result':
+                filter_name = f'conformity__conformity__icontains'
             elif key == 'model' or key == 'version':
                 filter_name = f'model_registry__{key}__icontains'
             elif key == 'reg_number':
