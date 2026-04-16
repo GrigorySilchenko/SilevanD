@@ -338,7 +338,7 @@ def act_creation(request):
         slot_machines_count = slot_machines_data.filter(
             distribution__application__application_number=str(app)).count()
         app.slot_machines_count = slot_machines_count
-
+        app.network_graph_closed = app.network_graph.first().app_closed
 
     context = {
         'users_applications': users_applications,

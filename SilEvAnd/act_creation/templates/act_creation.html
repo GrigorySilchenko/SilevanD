@@ -29,14 +29,16 @@
                         <div>Отраб-но: <b>{{ users_application.slot_machines_count }} шт.</b></div>
                         </a>
                     </div>
-                    <div class="card-footer p-2">
-                        <form action="{% url 'application_status_change' users_application.application.pk %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-sm w-100">
-                                Закрыть заявку
-                            </button>
-                        </form>
-                    </div>
+                    {% if users_application.network_graph_closed %}
+                        <div class="card-footer p-2">
+                            <form action="{% url 'application_status_change' users_application.application.pk %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm w-100">
+                                    Закрыть заявку
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
