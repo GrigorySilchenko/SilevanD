@@ -19,7 +19,7 @@ class ActInput(forms.ModelForm):
                   'slot_number',
                   'board_number']
         widgets = {
-            'model_registry': autocomplete.ModelSelect2(url='registry-autocomplete', attrs={'class': 'autocomplete'}),
+            'model_registry': autocomplete.ModelSelect2(url='registry-autocomplete', attrs={'class': 'autocomplete', 'style': 'width: 400px;'}),
             'control_sticks_number': forms.Textarea(attrs={'class': 'auto-resize-textarea', 'rows': '1'}),
             'act_number': forms.NumberInput(attrs={'size': '10', 'maxlength': '10'}),
         }

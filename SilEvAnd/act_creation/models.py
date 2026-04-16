@@ -16,7 +16,7 @@ class RegistryModify(models.Model):
     version = models.CharField(max_length=200)
     manufacturer = models.CharField(max_length=500)
     def __str__(self):
-        return self.number
+        return f'{self.number} ({self.model})'
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=200)
