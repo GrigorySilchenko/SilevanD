@@ -516,6 +516,20 @@ def docx_create(request):
                 word_context['sticker_terminal'] = ' '.join(stickers_list[-11:-5])
                 stickers_list_new = [' '.join(stickers_list[i:i+6]) for i in range(0,len(stickers_list) - 11,6)]
                 word_context['stickers'] = stickers_list_new
+            elif stick_place == stick_places.get(pk=22): #Рулетка EGT MCore pk=22
+                template_name = 'temp_EGT_MCore.docx'
+                word_context['model_egt'] = act_first.model_registry.model
+                word_context['version_egt'] = act_first.model_registry.version
+                word_context['model_registry_egt'] = str(act_first.model_registry).split()[0]
+                word_context['slot_number_egt'] = act_first.slot_number
+                word_context['board_number_egt'] = act_first.board_number
+                stickers_first = ['ИА ' + num for num in act_first.control_sticks_number.split() if num.isnumeric()]
+                word_context['sticks_number_egt'] = ' '.join(stickers_first[:-1])
+                word_context['sticker_cupola'] = stickers_first[-1]
+                acts_p = acts[1:9] if len(acts) >= 9 else []
+                acts_t = acts[9:] if len(acts) >= 10 else []
+                word_context['acts_p'] = acts_p
+                word_context['acts_t'] = acts_t
             else:
                 template_name = 'temp_tab_1.docx'
 
