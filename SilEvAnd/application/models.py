@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Application(models.Model):
@@ -20,6 +21,16 @@ class Application(models.Model):
     status = models.ForeignKey('Status', on_delete=models.CASCADE, related_name='applications')
     def __str__(self):
         return str(self.application_number)
+
+class ApplicationTest(models.Model):
+    application_number = models.IntegerField()
+    created_on = models.DateField(default=timezone.now, blank=True, null=True)
+    declarant = models.ForeignKey('Declarant', on_delete=models.CASCADE, related_name='application_test', verbose_name='Заявитель')
+    user = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name='app_test_as_user',
+                             verbose_name='Исполнитель')
+    app_model = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Заявленные модели')
+    test_report = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Протоколы КФХ')
+
 
 class Declarant(models.Model):
     name = models.CharField(max_length=200, verbose_name='Наименование заявителя')
