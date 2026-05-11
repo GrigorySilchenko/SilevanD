@@ -1,7 +1,8 @@
 from django import forms
 from dal import autocomplete
 from django.core.exceptions import ValidationError
-from .models import Application, Declarant, NetworkGraph
+from .models import Application, Declarant, NetworkGraph, ApplicationTest
+from django.contrib.auth.models import User
 
 
 class ApplicationInput(forms.ModelForm):
@@ -83,3 +84,62 @@ class NetworkGraphInput(forms.ModelForm):
             'final_notice': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
             'app_closed': forms.RadioSelect(choices=[(True, 'Да'), (False, 'Нет')])
         }
+
+class ApplicationTestInput(forms.ModelForm):
+    class Meta:
+        model = ApplicationTest
+        fields = ['declarant',
+                  'bill_number',
+                  'bill_date',
+                  'payment',
+                  'payment_document',
+                  'payment_date',
+                  'notice',
+                  'user',
+                  'app_model',
+                  'test_report'
+                  ]
+        widgets = {
+            'declarant': autocomplete.ModelSelect2(url='declarant-autocomplete'),
+            'bill_date': forms.DateInput(attrs={'type': 'date'}),
+            'payment_date': forms.DateInput(attrs={'type': 'date'}),
+            'notice': forms.Textarea(attrs={'cols': 30, 'rows': 2}),
+            'app_model': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+            'test_report': forms.Textarea(attrs={'cols': 60, 'rows': 3})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance and self.instance.pk:
+            # Устанавливаем value для полей с датами через attrs
+            if self.instance.bill_date:
+                self.fields['bill_date'].widget.attrs['value'] = self.instance.bill_date.strftime('%Y-%m-%d')
+                # Удаляем initial для этого поля
+                self.initial.pop('bill_date', None)
+            if self.instance.payment_date:
+                self.fields['payment_date'].widget.attrs['value'] = self.instance.payment_date.strftime('%Y-%m-%d')
+                self.initial.pop('payment_date', None)
+
+        group_workers = 'workers'
+        group_users = User.objects.filter(groups__name=group_workers)
+        self.fields['user'].queryset = group_users
+
+    def clean(self):
+        cleaned_data = super().clean()
+        bill_number_value = cleaned_data.get('bill_number')
+        bill_date_value = cleaned_data.get('bill_date')
+        user_value = cleaned_data.get('user')
+        payment_document_value = cleaned_data.get('payment_document')
+        payment_date_value = cleaned_data.get('payment_date')
+        if bill_number_value and not bill_date_value:
+            self.add_error('bill_date', 'Заполните поле даты счета')
+        elif not bill_number_value and bill_date_value:
+            self.add_error('bill_number', 'Заполните поле номера счета')
+        if payment_document_value and not payment_date_value:
+            self.add_error('payment_document', 'Заполните поле номера п/п')
+        elif not payment_document_value and payment_date_value:
+            self.add_error('payment_date', 'Заполните поле даты п/п')
+        if user_value == None:
+            self.add_error('user', 'Выберите исполнителя')
+        return cleaned_data

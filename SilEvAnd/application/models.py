@@ -25,11 +25,19 @@ class Application(models.Model):
 class ApplicationTest(models.Model):
     application_number = models.IntegerField()
     created_on = models.DateField(default=timezone.now, blank=True, null=True)
+    bill_number = models.CharField(max_length=20, blank=True, null=True, verbose_name='Номер счета')
+    bill_date = models.DateField(blank=True, null=True, verbose_name='Дата счета')
+    payment = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, verbose_name='Сумма')
+    payment_document = models.CharField(max_length=10, blank=True, null=True, verbose_name='Номер п/п')
+    payment_date = models.DateField(blank=True, null=True, verbose_name='Дата п/п')
+    notice = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Примечание')
     declarant = models.ForeignKey('Declarant', on_delete=models.CASCADE, related_name='application_test', verbose_name='Заявитель')
     user = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name='app_test_as_user',
                              verbose_name='Исполнитель')
     app_model = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Заявленные модели')
     test_report = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Протоколы КФХ')
+    def __str__(self):
+        return str(self.application_number)
 
 
 class Declarant(models.Model):
@@ -45,8 +53,12 @@ class Status(models.Model):
         return self.status
 
 class NetworkGraph(models.Model):
-    application = models.ForeignKey('Application', on_delete=models.CASCADE, related_name='network_graph', verbose_name='Заявка')
-    control_journal = models.ForeignKey('distribution.ControlJournal', on_delete=models.CASCADE, related_name='network_graph', blank=True, null=True, verbose_name='Акт по заявке')
+    application = models.ForeignKey('Application', on_delete=models.CASCADE, related_name='network_graph',
+                                    blank=True, null=True, verbose_name='Заявка на ТО')
+    application_test = models.ForeignKey('ApplicationTest', on_delete=models.CASCADE, related_name='network_graph',
+                                         blank=True, null=True, verbose_name='Заявка на испытания')
+    control_journal = models.ForeignKey('distribution.ControlJournal', on_delete=models.CASCADE, related_name='network_graph',
+                                        blank=True, null=True, verbose_name='Акт по заявке')
     recalculation = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, verbose_name='Перерасчет')
     notice_recalculation = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Основание для перерасчета')
     num_exclude_mach = models.IntegerField(default=0, blank=True, null=True, verbose_name='Кол. искл. ИА')
@@ -54,5 +66,9 @@ class NetworkGraph(models.Model):
     final_notice = models.TextField(max_length=200, default='', blank=True, null=True, verbose_name='Примечание')
     app_closed = models.BooleanField(default=False, blank=True, verbose_name='Можно закрывать заявку?')
     def __str__(self):
-        return str(self.application)
+        if self.application:
+            num = self.application
+        else:
+            num = self.application_test
+        return str(num)
 

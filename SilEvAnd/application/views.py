@@ -1,8 +1,10 @@
 import openpyxl
 from django.contrib.auth.decorators import permission_required
+from django.db.models import F
+from django.db.models.functions import Coalesce
 from django.shortcuts import render, redirect
-from .models import Application, Status, Declarant, NetworkGraph
-from .forms import ApplicationInput, DeclarantInput, NetworkGraphInput
+from .models import Application, Status, Declarant, NetworkGraph, ApplicationTest
+from .forms import ApplicationInput, DeclarantInput, NetworkGraphInput, ApplicationTestInput
 from datetime import date
 from django.core.paginator import Paginator
 
@@ -175,7 +177,9 @@ def declarant_change(request, pk):
 
 @permission_required('application.view_networkgraph')
 def network_graph(request):
-    network_graph_data = NetworkGraph.objects.select_related('application', 'control_journal').order_by('-application__application_number')
+    network_graph_data = NetworkGraph.objects.select_related('application', 'control_journal').order_by('-application__created_on')
+    network_graph_data_to = network_graph_data.filter(application__isnull=False)
+    network_graph_data_test = network_graph_data.filter(application_test__isnull=False)
 
     if 'reset' in request.GET:
         request.session.pop('net_graph_filters', None)
@@ -204,42 +208,61 @@ def network_graph(request):
             end = date.fromisoformat(date_get_end)
         else:
             end = date.today().isoformat()
-        network_graph_data = network_graph_data.filter(application__created_on__range=(start, end))
+        network_graph_data_to = network_graph_data_to.filter(application__created_on__range=(start, end))
+        network_graph_data_test = network_graph_data_test.filter(application_test__created_on__range=(start, end))
     else:
         if date_get_end:
             end = date.fromisoformat(date_get_end)
         else:
             end = date.today().isoformat()
-        network_graph_data = network_graph_data.filter(application__created_on__lte=end)
+        network_graph_data_to = network_graph_data_to.filter(application__created_on__lte=end)
+        network_graph_data_test = network_graph_data_test.filter(application_test__created_on__lte=end)
 
     is_final_notice = param_dict.get('is_final_notice')
     if is_final_notice:
-        network_graph_data = network_graph_data.exclude(final_notice='')
+        network_graph_data_to = network_graph_data_to.exclude(final_notice='')
+        network_graph_data_test = network_graph_data_test.exclude(final_notice='')
 
     for key, value in param_dict.items():
         if key == 'date_from' or key == 'date_to' or key == 'is_final_notice':
             pass
         elif value:
             if key == 'application_number' or key == 'bill_number' or key == 'payment' or key == 'payment_document' or key == 'num_of_mach':
-                filter_name = f'application__{key}__icontains'
+                filter_name_to = f'application__{key}__icontains'
+                filter_name_test = f'application_test__{key}__icontains'
             elif key == 'declarant':
-                filter_name = f'application__declarant__name__icontains'
+                filter_name_to = f'application__declarant__name__icontains'
+                filter_name_test = f'application_test__declarant__name__icontains'
             elif key == 'act':
-                filter_name = f'control_journal__{key}__icontains'
+                filter_name_to = f'control_journal__{key}__icontains'
+                filter_name_test = f'application_test__test_report__icontains'
             elif key == 'app_closed':
-                filter_name = key
+                network_graph_data_to = network_graph_data_to.exclude(num_exclude_mach=F('application__num_of_mach'))
+                network_graph_data_test = network_graph_data_test.exclude(num_exclude_mach=F('application__num_of_mach'))
+                filter_name_to = key
+                filter_name_test = key
                 if value == 'True':
-                    network_graph_data = network_graph_data.filter(final_notice='')
+                    network_graph_data_to = network_graph_data_to.filter(final_notice='')
+                    network_graph_data_test = network_graph_data_test.filter(final_notice='')
             else:
-                filter_name = f'{key}__icontains'
-            network_graph_data = network_graph_data.filter(**{filter_name: value})
+                filter_name_to = f'{key}__icontains'
+                filter_name_test = f'{key}__icontains'
+            network_graph_data_to = network_graph_data_to.filter(**{filter_name_to: value})
+            network_graph_data_test = network_graph_data_test.filter(**{filter_name_test: value})
+
+    network_graph_data = network_graph_data_to | network_graph_data_test
+    # проводим сортировку по датам по двум полям совместно
+    network_graph_data = network_graph_data.annotate(sort_date=Coalesce(
+        'application__created_on', 'application_test__created_on')).order_by('-sort_date')
 
     payment_sum = 0
     for data in network_graph_data:
         if data.recalculation:
             money = int(data.recalculation * 100)
-        elif data.application.payment:
+        elif data.application and data.application.payment:
             money = int(data.application.payment * 100)
+        elif data.application_test and data.application_test.payment:
+            money = int(data.application_test.payment * 100)
         else:
             money = 0
         payment_sum += money
@@ -290,6 +313,95 @@ def network_graph_change(request,pk):
 
     return render(request, 'network_graph_change.html', context)
 
+@permission_required('application.view_applicationtest')
+def application_test(request):
+    applications = ApplicationTest.objects.select_related('declarant').order_by('-application_number')
+    form = ApplicationTestInput()
+    success_message, danger_message = '', ''
+
+    if request.method == 'POST':
+        if request.user.has_perm('application.add_applicationtest'):
+            form = ApplicationTestInput(request.POST)
+            if form.is_valid():
+                last_app = applications.first().application_number
+                if last_app:
+                    application_number_new = last_app + 1
+                else:
+                    application_number_new = 1
+                created_on_new = date.today()
+                # status = status_giving(form.cleaned_data)
+                application_new = ApplicationTest(
+                    application_number=application_number_new,
+                    created_on=created_on_new,
+                    user=form.cleaned_data['user'],
+                    bill_number=form.cleaned_data['bill_number'],
+                    bill_date=form.cleaned_data['bill_date'],
+                    payment=form.cleaned_data['payment'],
+                    payment_document=form.cleaned_data['payment_document'],
+                    payment_date=form.cleaned_data['payment_date'],
+                    declarant=form.cleaned_data['declarant'],
+                    app_model=form.cleaned_data['app_model'],
+                    test_report=form.cleaned_data['test_report'],
+                    notice=form.cleaned_data['notice']
+                    #status=status
+                )
+                application_new.save()
+                network_graph_new = NetworkGraph.objects.create(application_test=application_new, num_exclude_mach=None)
+                form = ApplicationTestInput()
+                success_message = 'Заявка успешно зарегистрирована!'
+        else:
+            danger_message = 'У вас недостаточно прав для регистрации заявки по испытаниям'
+
+    # if request.GET:
+    #     filter_dict = request.GET
+    #     for key, value in filter_dict.items():
+    #         if value and key != 'page':
+    #             if key == 'declarant':
+    #                 filter_name = f'declarant__name__icontains'
+    #             else:
+    #                 filter_name = f'{key}__icontains'
+    #             applications = applications.filter(**{filter_name: str(value)}).order_by('-application_number')
+    # else:
+    #     filter_dict = dict()
+
+    # paginator = Paginator(applications, 50)
+    # page_number = request.GET.get('page')
+    # page_obj = paginator.get_page(page_number)
+
+    context = {
+        'applications': applications,
+        'form': form,
+        'success_message': success_message,
+        'danger_message': danger_message
+        #'filter_dict': filter_dict
+        }
+
+    return render(request, 'application_test.html', context)
+
+@permission_required('application.change_applicationtest')
+def application_test_change(request, pk):
+    app_change = ApplicationTest.objects.get(pk=pk)
+    success_message = ''
+    #status = app_change.status.id
+    if request.method == 'POST':
+        form = ApplicationTestInput(request.POST, instance=app_change)
+        if form.is_valid():
+            # if status == 1 or status == 2 or status == 7:
+            #     status = status_giving(form.cleaned_data)
+            #     form.instance.status = status
+            form.save()
+            success_message = 'Заявка успешно изменена!'
+            return redirect('application_test')
+    else:
+        form = ApplicationTestInput(instance=app_change)
+
+    context = {
+        'form': form,
+        'applications': app_change,
+        'success_message': success_message
+         }
+
+    return render(request, 'application_test_change.html', context)
 
 def declarant_del(request, pk):
     declarants = Declarant.objects.all().order_by('name')
@@ -315,3 +427,5 @@ def declarant_input():
             unp=row[2].value
         )
         declarant_new.save()
+
+

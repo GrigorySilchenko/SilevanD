@@ -135,53 +135,103 @@
                         <td></td>
                     </tr>
                     {% for data in network_graph %}
-                    <tr class="{% if data.final_notice %} table-success {% elif data.num_exclude_mach == data.application.num_of_mach %} table-danger {% elif data.app_closed %} table-warning {% endif %}">
-                        <td class="text-start ps-2">{{ data.application.declarant }}</td>
-                        <td>
-                            {% if data.application.bill_number %}
-                            {{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}
-                            {% else %}
-                               <span class="text-danger">---</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ data.application.application_number }} от {{ data.application.created_on|date:"d.m.Y" }}</td>
-                        <td>{{ data.application.num_of_mach }}</td>
-                        <td>
-                            {% if data.application.payment %}
-                            {{ data.application.payment }}
-                            {% else %}
-                               <span class="text-danger">---</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if data.recalculation %}
-                              {{ data.recalculation }}
-                            {% else %}
-                               <span class="text-success">---</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if data.application.payment_document %}
-                              п/п {{ data.application.payment_document }} от {{ data.application.payment_date|date:"d.m.Y" }}
-                            {% else %}
-                               <span class="text-danger">---</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if data.application.notice %}
-                            {{ data.application.notice }}
-                            {% else %}
-                               <span class="text-success">---</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ data.num_exclude_mach }}</td>
-                        <td>{{ data.notice_recalculation }}</td>
-                        <td>{{ data.act_send_date }}</td>
-                        <td>{{ data.control_journal.act }}</td>
-                        <td>{{ data.final_notice }}</td>
-                        <td><a href="{% url 'network_graph_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
-                        </td>
-                    </tr>
+                        {% if data.application %}
+                            <tr class="{% if data.final_notice %} table-success {% elif data.num_exclude_mach == data.application.num_of_mach %} table-danger {% elif data.app_closed %} table-warning {% endif %}">
+                                <td class="text-start ps-2">{{ data.application.declarant }}</td>
+                                <td>
+                                    {% if data.application.bill_number %}
+                                    {{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}
+                                    {% else %}
+                                       <span class="text-danger">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ data.application.application_number }} от {{ data.application.created_on|date:"d.m.Y" }}</td>
+                                <td>{{ data.application.num_of_mach }}</td>
+                                <td>
+                                    {% if data.application.payment %}
+                                    {{ data.application.payment }}
+                                    {% else %}
+                                       <span class="text-danger">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.recalculation %}
+                                      {{ data.recalculation }}
+                                    {% else %}
+                                       <span class="text-success">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.application.payment_document %}
+                                      п/п {{ data.application.payment_document }} от {{ data.application.payment_date|date:"d.m.Y" }}
+                                    {% else %}
+                                       <span class="text-danger">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.application.notice %}
+                                    {{ data.application.notice }}
+                                    {% else %}
+                                       <span class="text-success">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ data.num_exclude_mach }}</td>
+                                <td>{{ data.notice_recalculation }}</td>
+                                <td>{{ data.act_send_date }}</td>
+                                <td>{{ data.control_journal.act }}</td>
+                                <td>{{ data.final_notice }}</td>
+                                <td><a href="{% url 'network_graph_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
+                                </td>
+                            </tr>
+                        {% elif data.application_test %}
+                            <tr class="{% if data.final_notice %} table-success {% elif data.app_closed %} table-warning {% endif %}">
+                                <td class="text-start ps-2">{{ data.application_test.declarant }}</td>
+                                <td>
+                                    {% if data.application_test.bill_number %}
+                                    {{ data.application_test.bill_number }} от {{ data.application_test.bill_date|date:"d.m.Y" }}
+                                    {% else %}
+                                       <span class="text-danger">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ data.application_test.application_number }} от {{ data.application_test.created_on|date:"d.m.Y" }}</td>
+                                <td>---</td>
+                                <td>
+                                    {% if data.application_test.payment %}
+                                    {{ data.application_test.payment }}
+                                    {% else %}
+                                       <span class="text-danger">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.recalculation %}
+                                      {{ data.recalculation }}
+                                    {% else %}
+                                       <span class="text-success">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.application_test.payment_document %}
+                                      п/п {{ data.application_test.payment_document }} от {{ data.application_test.payment_date|date:"d.m.Y" }}
+                                    {% else %}
+                                       <span class="text-danger">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.application_test.notice %}
+                                    {{ data.application_test.notice }}
+                                    {% else %}
+                                       <span class="text-success">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>---</td>
+                                <td>{{ data.notice_recalculation }}</td>
+                                <td>{{ data.act_send_date }}</td>
+                                <td>{{ data.application_test.test_report }}</td>
+                                <td>{{ data.final_notice }}</td>
+                                <td><a href="{% url 'network_graph_change' data.pk  %}" class="btn btn-success" style="padding: 2px 6px; font-size: 12px;">Изм.</a>
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
               </tbody>
             </table>
