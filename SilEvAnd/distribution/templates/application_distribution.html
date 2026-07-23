@@ -1,12 +1,6 @@
 {% extends "base.html" %}
+{% block body_class %}body-distribution{% endblock %}
 {% block page_content %}
-<style>
-    .myclass:focus-visible {
-        border-color: #198754;
-        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-    }
-</style>
-
 
 <div class="container">
   <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
@@ -99,7 +93,7 @@
                 <a class="text text-danger">Пусто</a>
               {% endif %}
           </td>
-          <td class="text-start ps-4">{{ distribution.application.declarant }}</td>
+          <td class="text-start ps-1">{{ distribution.application.declarant }}</td>
           <td>{{ distribution.short_slot_name }}</td>
           <td>{{ distribution.application.num_of_mach }}</td>
           <td>

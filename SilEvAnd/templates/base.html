@@ -9,39 +9,10 @@
     <link rel="icon" href="/static/icons/favicon_oak.ico">
     <link rel="stylesheet" href="/static/admin/css/vendor/select2/select2.min.css">
     <link rel="stylesheet" href="/static/autocomplete_light/select2.css">
-    <style type="text/css">
-        h1, h3, h5 { text-align: center; }
-        .nav-link { background-color: #f0f0f0; color: #176e35; }
-        .nav-link:hover { background-color: #176e35; color: #fff; }
-        footer .nav-link:hover { background-color: #C0C0C0; color: #fff !important; }
-        .table-bordered, .table-bordered th, .table-bordered td { border: 1px solid #198754 !important; }
-        .dropdown .dropdown-toggle:hover,
-        .dropdown .dropdown-toggle:focus,
-        .dropdown .dropdown-toggle:active {
-            background-color: #176e35;
-            color: #fff !important;
-        }
-        .dropdown-menu .dropdown-item:hover,
-        .dropdown-menu .dropdown-item:focus,
-        .dropdown-menu .dropdown-item:active {
-            background-color: #176e35;
-            color: #fff !important;
-        }
-        .search-form .form-control:focus {
-            border-color: #198754;
-            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-        }
-        .table { border-collapse: separate; border-spacing: 0; }
-        .table td, .table th {
-            padding-top: 2px;
-            padding-bottom: 2px;
-            padding-left: 6px;
-            padding-right: 6px;
-        }
-        table.custom-table { --bs-table-hover-bg: #b6effa; }
-    </style>
+    <link rel="stylesheet" href="/static/css/silevand_style.css">
+
 </head>
-<body style="background-color: #f0f0f0;">
+<body class="{% block body_class %}{% endblock %}">
     <div class="container">
         <header class="d-flex flex-wrap justify-content-center align-items-center py-3 border-bottom border-success">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
@@ -52,13 +23,13 @@
                 <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Главная</a></li>
             </ul>
             <div class="dropdown">
-                <button class="btn text-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn text-header dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Офис
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="text-success dropdown-item" href="/application/">Регистрация заявки на ТО</a></li>
-                    <li><a class="text-success dropdown-item" href="/application_test/">Регистрация заявки на испытания</a></li>
-                    <li><a class="text-success dropdown-item" href="/network_graph/">Сетевой график</a></li>
+                    <li><a class="text-header dropdown-item" href="/application/">Регистрация заявки на ТО</a></li>
+                    <li><a class="text-header dropdown-item" href="/application_test/">Регистрация заявки на испытания</a></li>
+                    <li><a class="text-header dropdown-item" href="/network_graph/">Сетевой график</a></li>
                 </ul>
             </div>
             <ul class="nav nav-pills">
@@ -66,14 +37,14 @@
                 <li class="nav-item"><a href="/act_creation/" class="nav-link">Кабинет исполнителя</a></li>
             </ul>
             <div class="dropdown">
-                <button class="btn text-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn text-header dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Доп. информация
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="text-success dropdown-item" href="/declarant/">Журнал заявителей</a></li>
-                    <li><a class="text-success dropdown-item" href="/act_creation/registry/">Реестр ИА</a></li>
-                    <li><a class="text-success dropdown-item" href="/act_creation/registry_modify/">Реестр для работы</a></li>
-                    <li><a class="text-success dropdown-item" href="/act_creation/slot_machine_data/">Журнал актов ТО</a></li>
+                    <li><a class="text-header dropdown-item" href="/declarant/">Журнал заявителей</a></li>
+                    <li><a class="text-header dropdown-item" href="/act_creation/registry/">Реестр ИА</a></li>
+                    <li><a class="text-header dropdown-item" href="/act_creation/registry_modify/">Реестр для работы</a></li>
+                    <li><a class="text-header dropdown-item" href="/act_creation/slot_machine_data/">Журнал актов ТО</a></li>
                 </ul>
             </div>
             <div class="d-flex align-items-center">
@@ -86,13 +57,15 @@
                 <li>
                   <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <button type="submit" class="dropdown-item">Выйти</button>
+                    <button type="submit" class="text-success dropdown-item">Выйти</button>
                   </form>
                 </li>
               </ul>
             </div>
           {% else %}
-            <a class="btn btn-outline-success" href="{% url 'login' %}">Войти</a>
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Войти</a></li>
+            </ul>
           {% endif %}
         </div>
         </header>

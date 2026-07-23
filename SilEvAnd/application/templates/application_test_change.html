@@ -1,14 +1,9 @@
 {% extends "base.html" %}
-
+{% block body_class %}body-application_test{% endblock %}
 {% block page_content %}
 
 {{ form.media }}
 
-<style>
-    .select2-container--default {
-        --select2-highlighted-bg: #176e35 !important;
-    }
-</style>
 
 <div class="container">
             <h3 class="d-flex justify-content-center">
@@ -71,7 +66,7 @@
         <tr>
           <td>{{ applications.application_number }}</td>
           <td>{{ applications.created_on|date:"d.m.Y" }}</td>
-          <td class="text-start ps-4">{{ applications.declarant }}</td>
+          <td class="text-start ps-1">{{ applications.declarant }}</td>
           <td>
               {% if applications.bill_number %}
                 {{ applications.bill_number }}

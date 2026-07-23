@@ -1,14 +1,8 @@
 {% extends "base.html" %}
-
+{% block body_class %}body-application{% endblock %}
 {% block page_content %}
 
 {{ form.media }}
-
-<style>
-    .select2-container--default {
-        --select2-highlighted-bg: #176e35 !important;
-    }
-</style>
 
 <div class="container">
             <h3 class="d-flex justify-content-center">
@@ -80,7 +74,7 @@
                 <a class="text text-danger">Пусто</a>
               {% endif %}
           </td>
-          <td class="text-start ps-4">{{ applications.declarant }}</td>
+          <td class="text-start ps-1">{{ applications.declarant }}</td>
           <td>
               {% if applications.application_number_belgiss %}
                 {{ applications.application_number_belgiss }}

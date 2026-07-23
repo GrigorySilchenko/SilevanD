@@ -1,32 +1,6 @@
 {% extends "base.html" %}
 {% block page_content %}
-<style>
-    .search-form .form-control:focus {
-        border-color: #198754;
-        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-    }
-    .form-select:focus {
-        border-color: #198754;
-        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-    }
-    .form-check-input:focus {
-        border-color: #198754;
-        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-    }
-    .checkbox-success {
-    accent-color: #198754 !important; /* Принудительно задаем цвет */
-    }
-    .checkbox-success:checked {
-        background-color: #198754;
-        border-color: #198754;
-    }
-    tr.table-danger {
-        --bs-table-bg: #f24141;
-        --bs-table-striped-bg: #f24141;
-        --bs-table-hover-bg: #ff3636;
-    }
 
-</style>
 
 <div class="container">
     <h3>
@@ -136,8 +110,8 @@
                     </tr>
                     {% for data in network_graph %}
                         {% if data.application %}
-                            <tr class="{% if data.final_notice %} table-success {% elif data.num_exclude_mach == data.application.num_of_mach %} table-danger {% elif data.app_closed %} table-warning {% endif %}">
-                                <td class="text-start ps-2">{{ data.application.declarant }}</td>
+                            <tr class="{% if data.final_notice %}table-success{% elif data.num_exclude_mach == data.application.num_of_mach %}table-danger{% elif data.app_closed %}table-warning{% endif %}">
+                                <td class="text-start ps-1">{{ data.application.declarant }}</td>
                                 <td>
                                     {% if data.application.bill_number %}
                                     {{ data.application.bill_number }} от {{ data.application.bill_date|date:"d.m.Y" }}

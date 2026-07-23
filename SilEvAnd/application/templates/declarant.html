@@ -1,6 +1,6 @@
 {% extends "base.html" %}
+{% block body_class %}body-declarant{% endblock %}
 {% block page_content %}
-
 
 <div class="container">
         <div class="d-flex justify-content-center py-3 mb-4 border-bottom border-success">
@@ -13,15 +13,15 @@
                     <form action="{% url 'declarant' %}" method="post">
                         {% csrf_token %}
                         <dl class="row">
-                        {% for field in form %}
-                            <dt class="col-sm-4">{{ field.label_tag }}</dt>
-                            <dd class="col-sm-8">{{ field }}</dd>
-                                {% if field.errors %}
-                                    <div class="text-danger">
-                                        {{ field.errors }}
-                                    </div>
-                                {% endif %}
-                        {% endfor %}
+                            {% for field in form %}
+                                <dt class="col-sm-4">{{ field.label_tag }}</dt>
+                                <dd class="col-sm-8">{{ field }}</dd>
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+                            {% endfor %}
                         </dl>
                         <button type="submit" class="btn btn-success">Добавить нового заявителя</button>
                     </form>

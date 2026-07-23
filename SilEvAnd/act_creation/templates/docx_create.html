@@ -1,11 +1,5 @@
 {% extends "base.html" %}
 {% block page_content %}
-<style>
-    .search-form .form-control:focus {
-        border-color: #198754;
-        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-    }
-</style>
 
 <div class="container">
     <br>
@@ -101,7 +95,7 @@
                 {% endif %}
                 <td>{{ row.distribution.application }}</td>
                 <td>{{ row.control_sticks_number }}</td>
-                <td>{{ row.distribution.application.declarant }}</td>
+                <td class="text-start ps-1">{{ row.distribution.application.declarant }}</td>
                 <td>{{ row.conformity }}</td>
                 <td>{{ row.model_registry.model }}</td>
                 <td>{{ row.model_registry.version }}</td>

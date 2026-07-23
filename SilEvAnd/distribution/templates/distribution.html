@@ -1,14 +1,10 @@
 {% extends "base.html" %}
+{% block body_class %}body-distribution{% endblock %}
 {% block page_content %}
-<style>
-    .search-form .form-control:focus {
-        border-color: #198754;
-        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-    }
-</style>
 
 <br>
 <div class="container">
+    <div>
         <h5 class="d-flex justify-content-center">
             <b>Заявки ожидающие исполнения:</b>
         </h5>
@@ -29,6 +25,7 @@
                 </div>
                 {% endfor %}
         </div>
+    </div>
     <h3 class="d-flex justify-content-center">
         <b>Журнал распределения работ по техническому освидетельствованию игровых автоматов</b>
     </h3>
@@ -92,7 +89,7 @@
                 <a class="text text-danger">Пусто</a>
               {% endif %}
           </td>
-          <td class="text-start ps-4">{{ distribution.application.declarant }}</td>
+          <td class="text-start ps-1">{{ distribution.application.declarant }}</td>
           <td>{{ distribution.short_slot_name }}</td>
           <td>{{ distribution.application.num_of_mach }}</td>
           <td>

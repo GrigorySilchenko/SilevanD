@@ -1,0 +1,136 @@
+/*стили из base.html */
+h1, h3, h5 {
+    text-align: center;
+}
+.nav-link {
+    color: #176e35;
+    }
+.nav-link:hover {
+    background-color: #176e35;
+    color: #fff;
+    }
+footer .nav-link:hover {
+    background-color: #C0C0C0;
+    color: #fff;
+}
+.table-bordered,
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #198754;
+}
+.dropdown-toggle:hover,
+.dropdown-toggle:focus,
+.dropdown-toggle:active {
+    background-color: #176e35;
+    color: #fff;
+}
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-item:active {
+    background-color: #176e35;
+    color: #fff;
+}
+.table { border-collapse: separate; border-spacing: 0; }
+.table td, .table th {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+table.custom-table {
+    --bs-table-hover-bg: #b6effa;
+}
+.text-header {
+    color:#176e35;
+}
+/* стили для полей ввода */
+textarea, input, select {
+    border-radius: 6px;
+    border: 1px solid;
+    border-color: #198754;
+}
+textarea:focus, input:focus, select:focus {
+    outline: none;
+    border-radius: 6px;
+    border: 2px solid;
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+/* цвета фона */
+body {
+    background-color: color-mix(in srgb, #228b22, white 90%);
+}
+.body-declarant {
+    background-color: color-mix(in srgb, #A9CCE3, white 70%);
+}
+.body-application {
+    background-color: color-mix(in srgb, #FFB6C1, white 90%);
+}
+.body-application_test {
+    background-color: color-mix(in srgb, #f5f558, white 80%);
+}
+.body-distribution {
+    background-color: color-mix(in srgb, #D7BDE2, white 70%);
+}
+.body-act_creation {
+    background-color: color-mix(in srgb, #E67E22, white 90%);
+}
+.body-slot_machine_data {
+    background-color: color-mix(in srgb, #FFB27F, white 80%);
+}
+/* стили к автоподбору */
+.select2-container--default .select2-selection,
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border-color: #176e35 !important;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #176e35 !important;
+}
+select:-internal-list-box option:checked {
+    background-color: #176e35 !important;
+}
+/* стиль к чекбоксу в "Сетевом графике" */
+.form-check-input:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+.checkbox-success {
+accent-color: #198754 !important; /* Принудительно задаем цвет */
+}
+.checkbox-success:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+/* стиль к полям формы поиска */
+.search-form .form-control {
+    border-color: #198754;
+}
+.search-form .form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+/* стиль к полям формы поиска для s_m_data_input */
+.form-control {
+    border-color: #198754;
+}
+.form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+/* стиль к полю средства контроля формсета для s_m_data_input */
+.auto-resize-textarea {
+    overflow-y: hidden;
+}
+.spacing {
+    margin-bottom: 10px
+}
+/* красное поле при аннулированной заявке в Сетевом графике network_graph */
+tr.table-danger {
+    --bs-table-bg: #f24141;
+    --bs-table-striped-bg: #f24141;
+    --bs-table-hover-bg: #ff3636;
+}

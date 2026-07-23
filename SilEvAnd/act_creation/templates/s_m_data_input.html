@@ -1,36 +1,6 @@
 {% extends "base.html" %}
-
+{% block body_class %}body-act_creation{% endblock %}
 {% block page_content %}
-
-
-<style>
-
-    #formset-tbody td {
-        padding-top: 0.1rem;
-        padding-bottom: 0.1rem;
-    }
-    .auto-resize-textarea {
-    overflow-y: hidden;
-    }
-    .form-control:focus {
-        border-color: #198754 !important;
-        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25) !important;
-    }
-    .search-form .form-control:focus {
-        border-color: #198754;
-        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-    }
-    .select2-container {
-        min-width: 120px !important;
-    }
-    .select2-container--default {
-        --select2-highlighted-bg: #176e35 !important;
-    }
-    .spacing {
-        margin-bottom: 10px
-    }
-
-</style>
 
 <div class="container">
     <div class="d-flex justify-content-center align-items-center py-3 mb-4 border-bottom border-success">

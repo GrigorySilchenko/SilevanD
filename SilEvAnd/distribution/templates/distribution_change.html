@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block body_class %}body-distribution{% endblock %}
 {% block page_content %}
 
 <br>
@@ -58,7 +59,7 @@
                 <a class="text text-danger">Пусто</a>
               {% endif %}
           </td>
-          <td class="text-start ps-4">{{ distribution.application.declarant }}</td>
+          <td class="text-start ps-1">{{ distribution.application.declarant }}</td>
           <td>{{ distribution.short_slot_name }}</td>
           <td>{{ distribution.application.num_of_mach }}</td>
           <td>{{ distribution.application.place }}</td>
